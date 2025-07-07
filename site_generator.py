@@ -105,18 +105,18 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None):
         else:
             # Fall back to current directory
             output_path = "./carolina_theatre_schedule.html"
-            print(f"⚠️  Cannot write to /var/www/html (requires sudo)")
-            print(f"📁 Writing to current directory instead: {output_path}")
+            print(f"Cannot write to /var/www/html (requires sudo)")
+            print(f"Writing to current directory instead: {output_path}")
     else:
         output_path = output_html_file
     
     # Check if we have write permissions for the chosen path
     output_dir = os.path.dirname(output_path) or "."
     if not os.access(output_dir, os.W_OK):
-        print(f"❌ Error: No write permission for {output_dir} directory")
+        print(f"Error: No write permission for {output_dir} directory")
         if "/var/www/html" in output_path:
-            print("💡 Try running with sudo: sudo python site_generator.py")
-            print("💡 Or specify a different output path")
+            print("Try running with sudo: sudo python site_generator.py")
+            print("Or specify a different output path")
         return False
     
     # Create backup of existing file if it exists
@@ -124,9 +124,9 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None):
         backup_path = f"{output_path}.backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         try:
             shutil.copy2(output_path, backup_path)
-            print(f"💾 Created backup: {backup_path}")
+            print(f"Created backup: {backup_path}")
         except Exception as e:
-            print(f"⚠️  Warning: Could not create backup: {str(e)}")
+            print(f"Warning: Could not create backup: {str(e)}")
             # Continue anyway since this is not critical
 
     showtimes_by_date = defaultdict(list)
@@ -1178,10 +1178,10 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None):
     try:
         with open(output_path, "w", encoding="utf-8") as file:
             file.write(html_content)
-        print(f"✅ HTML file successfully saved to: {output_path}")
+        print(f"HTML file successfully saved to: {output_path}")
         return True
     except Exception as e:
-        print(f"❌ Error writing HTML file: {str(e)}")
+        print(f"Error writing HTML file: {str(e)}")
         return False
 
 if __name__ == "__main__":
@@ -1191,32 +1191,32 @@ if __name__ == "__main__":
     
     # Check if database exists
     if not os.path.exists(DB_NAME):
-        print(f"❌ Database file '{DB_NAME}' not found!")
-        print("💡 Make sure to run the movie scraper first to create the database")
+        print(f"Error: Database file '{DB_NAME}' not found!")
+        print("Make sure to run the movie scraper first to create the database")
         exit(1)
     
     # Allow user to specify output file as command line argument
     output_file = None
     if len(sys.argv) > 1:
         output_file = sys.argv[1]
-        print(f"📝 Using custom output file: {output_file}")
+        print(f"Using custom output file: {output_file}")
     
-    print("🎬 Generating Carolina Theatre website from database...")
+    print("Generating Carolina Theatre website from database...")
     success = generate_html(DB_NAME, output_file)
     
     if not success:
-        print("\n❌ Failed to generate and deploy the website")
-        print("\n💡 Solutions:")
+        print("\nFailed to generate and deploy the website")
+        print("\nSolutions:")
         print("   1. Run with sudo: sudo python site_generator.py")
         print("   2. Specify a local path: python site_generator.py ./website.html")
         print("   3. Use current directory: python site_generator.py")
         exit(1)
     
-    print("✅ Website successfully generated!")
+    print("Website successfully generated!")
     if output_file:
         if "/var/www/html" in output_file:
-            print("🌐 Website deployed to web server")
+            print("Website deployed to web server")
         else:
-            print(f"📁 HTML file saved to: {output_file}")
+            print(f"HTML file saved to: {output_file}")
     else:
-        print("📁 HTML file saved locally - you can now upload it to your web server")
+        print("HTML file saved locally - you can now upload it to your web server")

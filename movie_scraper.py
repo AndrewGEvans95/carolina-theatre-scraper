@@ -182,7 +182,7 @@ def create_database(db_name="movie_showtimes.db"):
     
     conn.commit()
     conn.close()
-    print(f"✅ Database '{db_name}' created/verified")
+    print(f"Database '{db_name}' created/verified")
 
 def save_to_database(showtimes, db_name="movie_showtimes.db"):
     """Save movie showtimes to SQLite database"""
@@ -218,7 +218,7 @@ def save_to_database(showtimes, db_name="movie_showtimes.db"):
     conn.commit()
     conn.close()
     
-    print(f"✅ Database updated: {inserted_count} new records inserted, {skipped_count} duplicates skipped")
+    print(f"Database updated: {inserted_count} new records inserted, {skipped_count} duplicates skipped")
     return inserted_count, skipped_count
 
 def query_showtimes(db_name="movie_showtimes.db", movie_title=None, cinema=None, date_filter=None):
@@ -263,7 +263,7 @@ def export_to_csv_from_db(db_name="movie_showtimes.db", csv_filename="movie_show
         writer.writerows(results)
     
     conn.close()
-    print(f"✅ Database exported to {csv_filename}")
+    print(f"Database exported to {csv_filename}")
 
 def get_movie_showtimes(movie_links):
     """Fetch showtimes concurrently for all movies"""
@@ -317,4 +317,4 @@ if __name__ == "__main__":
         for showtime in cinema_one_showtimes[:5]:
             print(f"  {showtime[1]} - {showtime[2]} {showtime[3]} at {showtime[4]}")
     
-    print(f"\n✅ Complete! Database: {DB_NAME}, CSV: movie_showtimes.csv")
+    print(f"\nComplete! Database: {DB_NAME}, CSV: movie_showtimes.csv")
