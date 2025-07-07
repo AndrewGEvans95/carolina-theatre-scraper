@@ -1,0 +1,431 @@
+Movie Title,Date,Time,Formatted DateTime,Cinema,Link
+Jurassic World: Rebirth,"Tue, Jul 8",6:30pm,2025-07-08 18:30,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Tue, Jul 8",6:40pm,2025-07-08 18:40,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Tue, Jul 8",9:10pm,2025-07-08 21:10,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Tue, Jul 8",9:20pm,2025-07-08 21:20,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Wed, Jul 9",6:30pm,2025-07-09 18:30,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Gamera vs Viras,"Wed, Jul 9",7:00pm,2025-07-09 19:00,Cinema One,https://carolinatheatre.org/gamera-vs-viras/
+Jurassic World: Rebirth,"Wed, Jul 9",9:00pm,2025-07-09 21:00,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Wed, Jul 9",9:10pm,2025-07-09 21:10,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Thu, Jul 10",6:30pm,2025-07-10 18:30,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Thu, Jul 10",6:40pm,2025-07-10 18:40,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+Superman,"Thu, Jul 10",6:50pm,2025-07-10 18:50,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Thu, Jul 10",9:10pm,2025-07-10 21:10,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Thu, Jul 10",9:20pm,2025-07-10 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Superman,"Thu, Jul 10",9:30pm,2025-07-10 21:30,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Superman,"Fri, Jul 11",4:00pm,2025-07-11 16:00,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Fri, Jul 11",4:10pm,2025-07-11 16:10,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Fri, Jul 11",4:20pm,2025-07-11 16:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Superman,"Fri, Jul 11",6:40pm,2025-07-11 18:40,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Fri, Jul 11",6:50pm,2025-07-11 18:50,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Goonies & Fletch,"Fri, Jul 11",7:00pm,2025-07-11 19:00,Cinema One,https://carolinatheatre.org/the-goonies-fletch/
+Superman,"Fri, Jul 11",9:20pm,2025-07-11 21:20,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Fri, Jul 11",9:30pm,2025-07-11 21:30,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Lion King,"Sat, Jul 12",11:00am,2025-07-12 11:00,Cinema One,https://carolinatheatre.org/the-lion-king-2/
+The Phoenician Scheme,"Sat, Jul 12",1:00pm,2025-07-12 13:00,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Superman,"Sat, Jul 12",1:10pm,2025-07-12 13:10,Cinema One,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sat, Jul 12",3:50pm,2025-07-12 15:50,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Sat, Jul 12",4:00pm,2025-07-12 16:00,Cinema One,https://carolinatheatre.org/superman-durham/
+Superman,"Sat, Jul 12",6:40pm,2025-07-12 18:40,Cinema One,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sat, Jul 12",6:50pm,2025-07-12 18:50,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Sat, Jul 12",9:20pm,2025-07-12 21:20,Cinema One,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sat, Jul 12",9:30pm,2025-07-12 21:30,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+To Catch a Thief,"Sun, Jul 13",2:00pm,2025-07-13 14:00,Cinema One,https://carolinatheatre.org/to-catch-a-thief/
+Jurassic World: Rebirth,"Sun, Jul 13",2:10pm,2025-07-13 14:10,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Sun, Jul 13",2:20pm,2025-07-13 14:20,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sun, Jul 13",4:10pm,2025-07-13 16:10,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Sun, Jul 13",4:50pm,2025-07-13 16:50,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Superman,"Sun, Jul 13",5:00pm,2025-07-13 17:00,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sun, Jul 13",7:00pm,2025-07-13 19:00,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Sun, Jul 13",7:20pm,2025-07-13 19:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Superman,"Sun, Jul 13",7:40pm,2025-07-13 19:40,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Tue, Jul 15",6:40pm,2025-07-15 18:40,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Tue, Jul 15",6:50pm,2025-07-15 18:50,Cinema One,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Tue, Jul 15",9:20pm,2025-07-15 21:20,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Tue, Jul 15",9:30pm,2025-07-15 21:30,Cinema One,https://carolinatheatre.org/superman-durham/
+Superman,"Wed, Jul 16",6:50pm,2025-07-16 18:50,Cinema Two,https://carolinatheatre.org/superman-durham/
+The Window,"Wed, Jul 16",7:00pm,2025-07-16 19:00,Cinema One,https://carolinatheatre.org/the-window/
+Superman,"Wed, Jul 16",9:00pm,2025-07-16 21:00,Cinema One,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Wed, Jul 16",9:20pm,2025-07-16 21:20,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Jurassic World: Rebirth,"Thu, Jul 17",6:40pm,2025-07-17 18:40,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Thu, Jul 17",6:50pm,2025-07-17 18:50,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+The Phoenician Scheme,"Thu, Jul 17",7:00pm,2025-07-17 19:00,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Thu, Jul 17",9:10pm,2025-07-17 21:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Jurassic World: Rebirth,"Thu, Jul 17",9:20pm,2025-07-17 21:20,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Thu, Jul 17",9:30pm,2025-07-17 21:30,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Superman,"Fri, Jul 18",4:00pm,2025-07-18 16:00,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Fri, Jul 18",4:10pm,2025-07-18 16:10,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Sundance Film Festival Short Film Tour 2025,"Fri, Jul 18",4:20pm,2025-07-18 16:20,Cinema One,https://carolinatheatre.org/sundance-film-festival-2025/
+Superman,"Fri, Jul 18",6:40pm,2025-07-18 18:40,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Fri, Jul 18",6:50pm,2025-07-18 18:50,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Big Trouble in Little China & Overboard,"Fri, Jul 18",7:00pm,2025-07-18 19:00,Cinema One,https://carolinatheatre.org/big-trouble-in-little-china-overboard/
+Superman,"Fri, Jul 18",9:20pm,2025-07-18 21:20,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Sundance Film Festival Short Film Tour 2025,"Fri, Jul 18",9:30pm,2025-07-18 21:30,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Muppets from Space,"Sat, Jul 19",11:00am,2025-07-19 11:00,Cinema One,https://carolinatheatre.org/muppets-from-space/
+Superman,"Sat, Jul 19",1:00pm,2025-07-19 13:00,Cinema One,https://carolinatheatre.org/superman-durham/
+Sundance Film Festival Short Film Tour 2025,"Sat, Jul 19",1:10pm,2025-07-19 13:10,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Sundance Film Festival Short Film Tour 2025,"Sat, Jul 19",3:30pm,2025-07-19 15:30,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Superman,"Sat, Jul 19",3:40pm,2025-07-19 15:40,Cinema One,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sat, Jul 19",6:40pm,2025-07-19 18:40,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Sat, Jul 19",6:50pm,2025-07-19 18:50,Cinema One,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sat, Jul 19",9:20pm,2025-07-19 21:20,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Sat, Jul 19",9:30pm,2025-07-19 21:30,Cinema One,https://carolinatheatre.org/superman-durham/
+"The Adventures of Priscilla, Queen of the Desert","Sun, Jul 20",2:00pm,2025-07-20 14:00,Cinema One,https://carolinatheatre.org/the-adventures-of-priscilla-queen-of-the-desert/
+Sundance Film Festival Short Film Tour 2025,"Sun, Jul 20",2:10pm,2025-07-20 14:10,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Superman,"Sun, Jul 20",2:20pm,2025-07-20 14:20,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sun, Jul 20",4:10pm,2025-07-20 16:10,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Sundance Film Festival Short Film Tour 2025,"Sun, Jul 20",4:20pm,2025-07-20 16:20,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Superman,"Sun, Jul 20",5:00pm,2025-07-20 17:00,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Sun, Jul 20",7:00pm,2025-07-20 19:00,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Sundance Film Festival Short Film Tour 2025,"Sun, Jul 20",7:20pm,2025-07-20 19:20,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Superman,"Sun, Jul 20",7:40pm,2025-07-20 19:40,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Tue, Jul 22",6:40pm,2025-07-22 18:40,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Tue, Jul 22",6:50pm,2025-07-22 18:50,Cinema One,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Tue, Jul 22",9:20pm,2025-07-22 21:20,Cinema Two,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Tue, Jul 22",9:30pm,2025-07-22 21:30,Cinema One,https://carolinatheatre.org/superman-durham/
+Superman,"Wed, Jul 23",6:50pm,2025-07-23 18:50,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Desk Set,"Wed, Jul 23",7:00pm,2025-07-23 19:00,Cinema One,https://carolinatheatre.org/desk-set/
+Sundance Film Festival Short Film Tour 2025,"Wed, Jul 23",7:10pm,2025-07-23 19:10,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Sundance Film Festival Short Film Tour 2025,"Wed, Jul 23",9:10pm,2025-07-23 21:10,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Jurassic World: Rebirth,"Wed, Jul 23",9:20pm,2025-07-23 21:20,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Wed, Jul 23",9:30pm,2025-07-23 21:30,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Jurassic World: Rebirth,"Thu, Jul 24",6:40pm,2025-07-24 18:40,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Thu, Jul 24",6:50pm,2025-07-24 18:50,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Sundance Film Festival Short Film Tour 2025,"Thu, Jul 24",7:00pm,2025-07-24 19:00,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Sundance Film Festival Short Film Tour 2025,"Thu, Jul 24",9:10pm,2025-07-24 21:10,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Jurassic World: Rebirth,"Thu, Jul 24",9:20pm,2025-07-24 21:20,Cinema One,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Superman,"Thu, Jul 24",9:30pm,2025-07-24 21:30,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+My Blue Heaven,"Fri, Jul 25",2:30pm,2025-07-25 14:30,Cinema One,https://carolinatheatre.org/my-blue-heaven/
+Wet Hot American Summer,"Fri, Jul 25",2:40pm,2025-07-25 14:40,Cinema Two,https://carolinatheatre.org/wet-hot-american-summer/
+Superman,"Fri, Jul 25",4:00pm,2025-07-25 16:00,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Mamma Mia!,"Fri, Jul 25",4:30pm,2025-07-25 16:30,Cinema One,https://carolinatheatre.org/mamma-mia/
+Joe Versus the Volcano,"Fri, Jul 25",4:40pm,2025-07-25 16:40,Cinema Two,https://carolinatheatre.org/joe-versus-the-volcano/
+Superman,"Fri, Jul 25",6:40pm,2025-07-25 18:40,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+The Mummy,"Fri, Jul 25",6:50pm,2025-07-25 18:50,Cinema One,https://carolinatheatre.org/the-mummy/
+Sundance Film Festival Short Film Tour 2025,"Fri, Jul 25",7:00pm,2025-07-25 19:00,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Sundance Film Festival Short Film Tour 2025,"Fri, Jul 25",9:10pm,2025-07-25 21:10,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+The Rock,"Fri, Jul 25",9:20pm,2025-07-25 21:20,Cinema One,https://carolinatheatre.org/the-rock/
+Superman,"Fri, Jul 25",9:30pm,2025-07-25 21:30,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Shrek 2,"Sat, Jul 26",11:00am,2025-07-26 11:00,Cinema One,https://carolinatheatre.org/shrek-2/
+Superman,"Sat, Jul 26",1:10pm,2025-07-26 13:10,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Sneakers,"Sat, Jul 26",1:30pm,2025-07-26 13:30,Cinema Two,https://carolinatheatre.org/sneakers/
+Mamma Mia!,"Sat, Jul 26",1:40pm,2025-07-26 13:40,Cinema One,https://carolinatheatre.org/mamma-mia/
+Superman,"Sat, Jul 26",3:50pm,2025-07-26 15:50,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+My Blue Heaven,"Sat, Jul 26",4:00pm,2025-07-26 16:00,Cinema Two,https://carolinatheatre.org/my-blue-heaven/
+Atlantis: The Lost Empire,"Sat, Jul 26",4:10pm,2025-07-26 16:10,Cinema One,https://carolinatheatre.org/atlantis-the-lost-empire/
+Superman,"Sat, Jul 26",6:40pm,2025-07-26 18:40,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Sundance Film Festival Short Film Tour 2025,"Sat, Jul 26",7:00pm,2025-07-26 19:00,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Joe Versus the Volcano,"Sat, Jul 26",7:10pm,2025-07-26 19:10,Cinema One,https://carolinatheatre.org/joe-versus-the-volcano/
+Sundance Film Festival Short Film Tour 2025,"Sat, Jul 26",9:10pm,2025-07-26 21:10,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Wet Hot American Summer,"Sat, Jul 26",9:20pm,2025-07-26 21:20,Cinema One,https://carolinatheatre.org/wet-hot-american-summer/
+Superman,"Sat, Jul 26",9:30pm,2025-07-26 21:30,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+The Mummy,"Sun, Jul 27",2:00pm,2025-07-27 14:00,Fletcher Hall,https://carolinatheatre.org/the-mummy/
+Atlantis: The Lost Empire,"Sun, Jul 27",2:10pm,2025-07-27 14:10,Cinema One,https://carolinatheatre.org/atlantis-the-lost-empire/
+Superman,"Sun, Jul 27",2:20pm,2025-07-27 14:20,Cinema Two,https://carolinatheatre.org/superman-durham/
+The Rock,"Sun, Jul 27",4:20pm,2025-07-27 16:20,Cinema One,https://carolinatheatre.org/the-rock/
+Superman,"Sun, Jul 27",4:30pm,2025-07-27 16:30,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Sundance Film Festival Short Film Tour 2025,"Sun, Jul 27",5:00pm,2025-07-27 17:00,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Sneakers,"Sun, Jul 27",7:10pm,2025-07-27 19:10,Cinema One,https://carolinatheatre.org/sneakers/
+Superman,"Sun, Jul 27",7:20pm,2025-07-27 19:20,Fletcher Hall,https://carolinatheatre.org/superman-durham/
+Sundance Film Festival Short Film Tour 2025,"Sun, Jul 27",7:30pm,2025-07-27 19:30,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Together,"Tue, Jul 29",7:00pm,2025-07-29 19:00,Cinema One,https://carolinatheatre.org/together-durham/
+Atlantis: The Lost Empire,"Tue, Jul 29",7:10pm,2025-07-29 19:10,Cinema Two,https://carolinatheatre.org/atlantis-the-lost-empire/
+Sneakers,"Tue, Jul 29",9:10pm,2025-07-29 21:10,Cinema Two,https://carolinatheatre.org/sneakers/
+Superman,"Tue, Jul 29",9:20pm,2025-07-29 21:20,Cinema One,https://carolinatheatre.org/superman-durham/
+The Mummy,"Wed, Jul 30",6:50pm,2025-07-30 18:50,Cinema Two,https://carolinatheatre.org/the-mummy/
+From Up on Poppy Hill,"Wed, Jul 30",7:00pm,2025-07-30 19:00,Cinema One,https://carolinatheatre.org/from-up-on-poppy-hill/
+Together,"Wed, Jul 30",9:00pm,2025-07-30 21:00,Cinema One,https://carolinatheatre.org/together-durham/
+Wet Hot American Summer,"Wed, Jul 30",9:20pm,2025-07-30 21:20,Cinema Two,https://carolinatheatre.org/wet-hot-american-summer/
+The Rock,"Thu, Jul 31",6:50pm,2025-07-31 18:50,Cinema One,https://carolinatheatre.org/the-rock/
+Together,"Thu, Jul 31",7:00pm,2025-07-31 19:00,Fletcher Hall,https://carolinatheatre.org/together-durham/
+Sundance Film Festival Short Film Tour 2025,"Thu, Jul 31",7:10pm,2025-07-31 19:10,Cinema Two,https://carolinatheatre.org/sundance-film-festival-2025/
+Together,"Thu, Jul 31",9:10pm,2025-07-31 21:10,Fletcher Hall,https://carolinatheatre.org/together-durham/
+Superman,"Thu, Jul 31",9:20pm,2025-07-31 21:20,Cinema Two,https://carolinatheatre.org/superman-durham/
+Joe Versus the Volcano,"Thu, Jul 31",9:30pm,2025-07-31 21:30,Cinema One,https://carolinatheatre.org/joe-versus-the-volcano/
+Together,"Fri, Aug 1",4:50pm,2025-08-01 16:50,Cinema Two,https://carolinatheatre.org/together-durham/
+Mallrats,"Fri, Aug 1",5:00pm,2025-08-01 17:00,Fletcher Hall,https://carolinatheatre.org/mallrats-30th-anniversary/
+CatVideoFest 2025,"Fri, Aug 1",5:10pm,2025-08-01 17:10,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+Better Off Dead & Three O’Clock High,"Fri, Aug 1",7:00pm,2025-08-01 19:00,Cinema One,https://carolinatheatre.org/better-off-dead-three-oclock-high/
+CatVideoFest 2025,"Fri, Aug 1",7:10pm,2025-08-01 19:10,Fletcher Hall,https://carolinatheatre.org/catvideofest-2025/
+Together,"Fri, Aug 1",7:20pm,2025-08-01 19:20,Cinema Two,https://carolinatheatre.org/together-durham/
+Mallrats,"Fri, Aug 1",9:00pm,2025-08-01 21:00,Fletcher Hall,https://carolinatheatre.org/mallrats-30th-anniversary/
+Together,"Fri, Aug 1",9:30pm,2025-08-01 21:30,Cinema Two,https://carolinatheatre.org/together-durham/
+From Up on Poppy Hill,"Sat, Aug 2",11:00am,2025-08-02 11:00,Cinema One,https://carolinatheatre.org/from-up-on-poppy-hill/
+Together,"Sat, Aug 2",12:50pm,2025-08-02 12:50,Cinema Two,https://carolinatheatre.org/together-durham/
+CatVideoFest 2025,"Sat, Aug 2",1:00pm,2025-08-02 13:00,Fletcher Hall,https://carolinatheatre.org/catvideofest-2025/
+Mallrats,"Sat, Aug 2",1:10pm,2025-08-02 13:10,Cinema One,https://carolinatheatre.org/mallrats-30th-anniversary/
+Together,"Sat, Aug 2",3:00pm,2025-08-02 15:00,Cinema Two,https://carolinatheatre.org/together-durham/
+CatVideoFest 2025,"Sat, Aug 2",3:10pm,2025-08-02 15:10,Fletcher Hall,https://carolinatheatre.org/catvideofest-2025/
+Batman Forever,"Sat, Aug 2",3:20pm,2025-08-02 15:20,Cinema One,https://carolinatheatre.org/batman-forever-30th-anniversary/
+CatVideoFest 2025,"Sat, Aug 2",5:00pm,2025-08-02 17:00,Fletcher Hall,https://carolinatheatre.org/catvideofest-2025/
+Together,"Sat, Aug 2",5:10pm,2025-08-02 17:10,Cinema Two,https://carolinatheatre.org/together-durham/
+Batman Forever,"Sat, Aug 2",6:50pm,2025-08-02 18:50,Cinema One,https://carolinatheatre.org/batman-forever-30th-anniversary/
+CatVideoFest 2025,"Sat, Aug 2",7:00pm,2025-08-02 19:00,Fletcher Hall,https://carolinatheatre.org/catvideofest-2025/
+Together,"Sat, Aug 2",7:20pm,2025-08-02 19:20,Cinema Two,https://carolinatheatre.org/together-durham/
+Mallrats,"Sat, Aug 2",9:00pm,2025-08-02 21:00,Fletcher Hall,https://carolinatheatre.org/mallrats-30th-anniversary/
+Batman Forever,"Sat, Aug 2",9:20pm,2025-08-02 21:20,Cinema One,https://carolinatheatre.org/batman-forever-30th-anniversary/
+Together,"Sat, Aug 2",9:30pm,2025-08-02 21:30,Cinema Two,https://carolinatheatre.org/together-durham/
+A Star is Born,"Sun, Aug 3",2:00pm,2025-08-03 14:00,Cinema One,https://carolinatheatre.org/a-star-is-born/
+Together,"Sun, Aug 3",2:10pm,2025-08-03 14:10,Cinema Two,https://carolinatheatre.org/together-durham/
+CatVideoFest 2025,"Sun, Aug 3",2:20pm,2025-08-03 14:20,Fletcher Hall,https://carolinatheatre.org/catvideofest-2025/
+CatVideoFest 2025,"Sun, Aug 3",4:20pm,2025-08-03 16:20,Fletcher Hall,https://carolinatheatre.org/catvideofest-2025/
+Together,"Sun, Aug 3",4:30pm,2025-08-03 16:30,Cinema Two,https://carolinatheatre.org/together-durham/
+CatVideoFest 2025,"Sun, Aug 3",5:40pm,2025-08-03 17:40,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+Mallrats,"Sun, Aug 3",7:00pm,2025-08-03 19:00,Fletcher Hall,https://carolinatheatre.org/mallrats-30th-anniversary/
+Together,"Sun, Aug 3",7:10pm,2025-08-03 19:10,Cinema Two,https://carolinatheatre.org/together-durham/
+Batman Forever,"Sun, Aug 3",7:20pm,2025-08-03 19:20,Cinema One,https://carolinatheatre.org/batman-forever-30th-anniversary/
+Godzilla vs King Ghidorah,"Wed, Aug 6",7:00pm,2025-08-06 19:00,Cinema One,https://carolinatheatre.org/godzilla-vs-king-ghidorah/
+CatVideoFest 2025,"Wed, Aug 6",7:10pm,2025-08-06 19:10,Cinema Two,https://carolinatheatre.org/catvideofest-2025/
+Batman Forever,"Wed, Aug 6",9:00pm,2025-08-06 21:00,Cinema Two,https://carolinatheatre.org/batman-forever-30th-anniversary/
+Together,"Wed, Aug 6",9:20pm,2025-08-06 21:20,Cinema One,https://carolinatheatre.org/together-durham/
+Together,"Thu, Aug 7",7:00pm,2025-08-07 19:00,Cinema Two,https://carolinatheatre.org/together-durham/
+CatVideoFest 2025,"Thu, Aug 7",7:10pm,2025-08-07 19:10,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+Mallrats,"Thu, Aug 7",9:00pm,2025-08-07 21:00,Cinema One,https://carolinatheatre.org/mallrats-30th-anniversary/
+Together,"Thu, Aug 7",9:10pm,2025-08-07 21:10,Cinema Two,https://carolinatheatre.org/together-durham/
+Together,"Fri, Aug 8",5:00pm,2025-08-08 17:00,Cinema Two,https://carolinatheatre.org/together-durham/
+CatVideoFest 2025,"Fri, Aug 8",5:10pm,2025-08-08 17:10,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+Stir Crazy & Used Cars,"Fri, Aug 8",7:00pm,2025-08-08 19:00,Cinema One,https://carolinatheatre.org/stir-crazy-used-cars/
+Harley Flanagan: Wired for Chaos,"Fri, Aug 8",7:10pm,2025-08-08 19:10,Cinema Two,https://carolinatheatre.org/harley-flanagan-wired-for-chaos/
+Together,"Fri, Aug 8",9:20pm,2025-08-08 21:20,Cinema Two,https://carolinatheatre.org/together-durham/
+Together,"Sat, Aug 9",2:00pm,2025-08-09 14:00,Cinema Two,https://carolinatheatre.org/together-durham/
+CatVideoFest 2025,"Sat, Aug 9",2:10pm,2025-08-09 14:10,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+CatVideoFest 2025,"Sat, Aug 9",4:10pm,2025-08-09 16:10,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+Harley Flanagan: Wired for Chaos,"Sat, Aug 9",4:20pm,2025-08-09 16:20,Cinema Two,https://carolinatheatre.org/harley-flanagan-wired-for-chaos/
+CatVideoFest 2025,"Sat, Aug 9",7:00pm,2025-08-09 19:00,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+Together,"Sat, Aug 9",7:10pm,2025-08-09 19:10,Cinema Two,https://carolinatheatre.org/together-durham/
+Harley Flanagan: Wired for Chaos,"Sat, Aug 9",9:00pm,2025-08-09 21:00,Cinema One,https://carolinatheatre.org/harley-flanagan-wired-for-chaos/
+Together,"Sat, Aug 9",9:20pm,2025-08-09 21:20,Cinema Two,https://carolinatheatre.org/together-durham/
+Blackmail,"Sun, Aug 10",2:00pm,2025-08-10 14:00,Cinema One,https://carolinatheatre.org/blackmail/
+Harley Flanagan: Wired for Chaos,"Sun, Aug 10",2:10pm,2025-08-10 14:10,Cinema Two,https://carolinatheatre.org/harley-flanagan-wired-for-chaos/
+CatVideoFest 2025,"Sun, Aug 10",4:00pm,2025-08-10 16:00,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+Together,"Sun, Aug 10",4:20pm,2025-08-10 16:20,Cinema Two,https://carolinatheatre.org/together-durham/
+CatVideoFest 2025,"Sun, Aug 10",5:40pm,2025-08-10 17:40,Cinema One,https://carolinatheatre.org/catvideofest-2025/
+Together,"Sun, Aug 10",7:10pm,2025-08-10 19:10,Cinema Two,https://carolinatheatre.org/together-durham/
+Harley Flanagan: Wired for Chaos,"Sun, Aug 10",7:20pm,2025-08-10 19:20,Cinema One,https://carolinatheatre.org/harley-flanagan-wired-for-chaos/
+Beyond A Reasonable Doubt,"Wed, Aug 13",7:00pm,2025-08-13 19:00,Cinema One,https://carolinatheatre.org/beyond-a-reasonable-doubt/
+CatVideoFest 2025,"Wed, Aug 13",7:10pm,2025-08-13 19:10,Cinema Two,https://carolinatheatre.org/catvideofest-2025/
+Harley Flanagan: Wired for Chaos,"Wed, Aug 13",9:00pm,2025-08-13 21:00,Cinema Two,https://carolinatheatre.org/harley-flanagan-wired-for-chaos/
+Together,"Wed, Aug 13",9:10pm,2025-08-13 21:10,Cinema One,https://carolinatheatre.org/together-durham/
+Clueless & Romy and Michele’s High School Reunion,"Fri, Aug 22",7:00pm,2025-08-22 19:00,Cinema One,https://carolinatheatre.org/clueless-romy-and-micheles-high-school-reunion/
+"O Brother, Where Art Thou?","Sun, Aug 24",2:00pm,2025-08-24 14:00,Cinema One,https://carolinatheatre.org/o-brother-where-art-thou-2/
+Nausicaä of the Valley of the Wind,"Wed, Aug 27",7:00pm,2025-08-27 19:00,Cinema One,https://carolinatheatre.org/nausicaa-of-the-valley-of-the-wind-4/
+The Fifth Element & Johnny Mnemonic,"Fri, Aug 29",7:00pm,2025-08-29 19:00,Cinema One,https://carolinatheatre.org/the-fifth-element-johnny-mnemonic/
+Nausicaä of the Valley of the Wind,"Sat, Aug 30",11:00am,2025-08-30 11:00,Cinema One,https://carolinatheatre.org/nausicaa-of-the-valley-of-the-wind-4/
+Scarface,"Sun, Aug 31",2:00pm,2025-08-31 14:00,Cinema One,https://carolinatheatre.org/scarface/
+Imitation of Life,"Wed, Sep 3",7:00pm,2025-09-03 19:00,Cinema One,https://carolinatheatre.org/imitation-of-life/
+The Thing From Another World & The Incredible Shrinking Man,"Fri, Sep 5",7:00pm,2025-09-05 19:00,Cinema One,https://carolinatheatre.org/the-thing-from-another-world-the-incredible-shrinking-man/
+Marnie,"Sun, Sep 7",2:00pm,2025-09-07 14:00,Cinema One,https://carolinatheatre.org/marnie/
+Thieves’ Highway,"Wed, Sep 10",7:00pm,2025-09-10 19:00,Cinema One,https://carolinatheatre.org/thieves-highway/
+The King of Comedy & A Fish Called Wanda,"Fri, Sep 12",7:00pm,2025-09-12 19:00,Cinema One,https://carolinatheatre.org/the-king-of-comedy-a-fish-called-wanda/
+Monty Python’s Life of Brian,"Sat, Sep 13",2:00pm,2025-09-13 14:00,Cinema One,https://carolinatheatre.org/monty-pythons-life-of-brian/
+Monty Python’s Life of Brian,"Sun, Sep 14",2:00pm,2025-09-14 14:00,Cinema One,https://carolinatheatre.org/monty-pythons-life-of-brian/
+Godzilla vs Mothra: The Battle for Earth,"Wed, Sep 17",7:00pm,2025-09-17 19:00,Cinema One,https://carolinatheatre.org/godzilla-vs-mothra-the-battle-for-earth/
+Stand By Me & Lady In White,"Fri, Sep 19",7:00pm,2025-09-19 19:00,Cinema One,https://carolinatheatre.org/stand-by-me-lady-in-white/
+Saturday Night Fever,"Sun, Sep 21",2:00pm,2025-09-21 14:00,Cinema One,https://carolinatheatre.org/saturday-night-fever/
+"The Long, Long Trailer","Wed, Sep 24",7:00pm,2025-09-24 19:00,Cinema One,https://carolinatheatre.org/the-long-long-trailer/
+The Bride of Frankenstein,"Fri, Sep 26",2:10pm,2025-09-26 14:10,Cinema Two,https://carolinatheatre.org/the-bride-of-frankenstein/
+Creature from the Black Lagoon,"Fri, Sep 26",2:20pm,2025-09-26 14:20,Cinema One,https://carolinatheatre.org/creature-from-the-black-lagoon/
+The Invisible Man,"Fri, Sep 26",4:00pm,2025-09-26 16:00,Cinema Two,https://carolinatheatre.org/the-invisible-man-2/
+The Black Cat,"Fri, Sep 26",5:30pm,2025-09-26 17:30,Cinema Two,https://carolinatheatre.org/the-black-cat/
+Frankenstein,"Fri, Sep 26",7:10pm,2025-09-26 19:10,Cinema Two,https://carolinatheatre.org/frankenstein/
+Son of Frankenstein,"Fri, Sep 26",9:00pm,2025-09-26 21:00,Cinema Two,https://carolinatheatre.org/son-of-frankenstein/
+Frankenstein Meets the Wolf Man,"Sat, Sep 27",12:20pm,2025-09-27 12:20,Cinema One,https://carolinatheatre.org/frankenstein-meets-the-wolf-man/
+The Wolf Man,"Sat, Sep 27",12:30pm,2025-09-27 12:30,Cinema Two,https://carolinatheatre.org/the-wolf-man/
+Dracula,"Sat, Sep 27",2:10pm,2025-09-27 14:10,Cinema Two,https://carolinatheatre.org/dracula/
+The Black Cat,"Sat, Sep 27",4:00pm,2025-09-27 16:00,Cinema Two,https://carolinatheatre.org/the-black-cat/
+The Bride of Frankenstein,"Sat, Sep 27",5:30pm,2025-09-27 17:30,Cinema Two,https://carolinatheatre.org/the-bride-of-frankenstein/
+Creature from the Black Lagoon,"Sat, Sep 27",7:10pm,2025-09-27 19:10,Cinema Two,https://carolinatheatre.org/creature-from-the-black-lagoon/
+Frankenstein,"Sat, Sep 27",9:00pm,2025-09-27 21:00,Cinema Two,https://carolinatheatre.org/frankenstein/
+The Black Cat,"Sun, Sep 28",2:00pm,2025-09-28 14:00,Cinema Two,https://carolinatheatre.org/the-black-cat/
+Son of Frankenstein,"Sun, Sep 28",3:30pm,2025-09-28 15:30,Cinema Two,https://carolinatheatre.org/son-of-frankenstein/
+Dracula,"Sun, Sep 28",5:30pm,2025-09-28 17:30,Cinema Two,https://carolinatheatre.org/dracula/
+The Bride of Frankenstein,"Sun, Sep 28",7:10pm,2025-09-28 19:10,Cinema Two,https://carolinatheatre.org/the-bride-of-frankenstein/
+Frankenstein Meets the Wolf Man,"Tue, Sep 30",7:10pm,2025-09-30 19:10,Cinema Two,https://carolinatheatre.org/frankenstein-meets-the-wolf-man/
+The Invisible Man,"Tue, Sep 30",9:00pm,2025-09-30 21:00,Cinema Two,https://carolinatheatre.org/the-invisible-man-2/
+Kiki’s Delivery Service,"Wed, Oct 1",7:00pm,2025-10-01 19:00,Cinema One,https://carolinatheatre.org/kikis-delivery-service-2/
+Dracula,"Wed, Oct 1",7:10pm,2025-10-01 19:10,Cinema Two,https://carolinatheatre.org/dracula/
+Not Dead Yet! – John Cleese and the Holy Grail at 50,"Wed, Oct 1",7:30pm,2025-10-01 19:30,Fletcher Hall,https://carolinatheatre.org/monty-python-holy-grail-movie-anniversary/
+The Wolf Man,"Wed, Oct 1",9:00pm,2025-10-01 21:00,Cinema Two,https://carolinatheatre.org/the-wolf-man/
+Frankenstein,"Thu, Oct 2",7:10pm,2025-10-02 19:10,Cinema Two,https://carolinatheatre.org/frankenstein/
+The Bride of Frankenstein,"Thu, Oct 2",9:00pm,2025-10-02 21:00,Cinema Two,https://carolinatheatre.org/the-bride-of-frankenstein/
+Race With The Devil & The Devil’s Rain,"Fri, Oct 3",7:00pm,2025-10-03 19:00,Cinema One,https://carolinatheatre.org/race-with-the-devil-the-devils-rain/
+Kiki’s Delivery Service,"Sat, Oct 4",11:00am,2025-10-04 11:00,Cinema One,https://carolinatheatre.org/kikis-delivery-service-2/
+Psycho,"Sun, Oct 5",2:00pm,2025-10-05 14:00,Cinema One,https://carolinatheatre.org/psycho-2/
+Godzilla vs Megaguirus,"Wed, Oct 8",7:00pm,2025-10-08 19:00,Cinema One,https://carolinatheatre.org/godzilla-vs-megaguirus/
+House of Wax,"Fri, Oct 10",2:30pm,2025-10-10 14:30,Cinema Two,https://carolinatheatre.org/house-of-wax-2/
+The Thing,"Fri, Oct 10",2:40pm,2025-10-10 14:40,Cinema One,https://carolinatheatre.org/the-thing-2/
+Cujo,"Fri, Oct 10",2:50pm,2025-10-10 14:50,Fletcher Hall,https://carolinatheatre.org/cujo/
+The Lift,"Fri, Oct 10",4:50pm,2025-10-10 16:50,Cinema Two,https://carolinatheatre.org/the-lift/
+In the Mouth of Madness,"Fri, Oct 10",5:00pm,2025-10-10 17:00,Cinema One,https://carolinatheatre.org/in-the-mouth-of-madness/
+The Dead Zone,"Fri, Oct 10",7:10pm,2025-10-10 19:10,Cinema One,https://carolinatheatre.org/the-dead-zone/
+Alien: Director’s Cut,"Fri, Oct 10",9:20pm,2025-10-10 21:20,Cinema One,https://carolinatheatre.org/alien-directors-cut/
+Prince of Darkness,"Fri, Oct 10",9:30pm,2025-10-10 21:30,Fletcher Hall,https://carolinatheatre.org/prince-of-darkness/
+Nightmare on Elm Street 4: The Dream Master,"Sat, Oct 11",12:20pm,2025-10-11 12:20,Fletcher Hall,https://carolinatheatre.org/nightmare-on-elm-street-4-the-dream-master/
+Cujo,"Sat, Oct 11",12:30pm,2025-10-11 12:30,Cinema One,https://carolinatheatre.org/cujo/
+From Beyond,"Sat, Oct 11",12:40pm,2025-10-11 12:40,Cinema Two,https://carolinatheatre.org/from-beyond/
+The Dead Zone,"Sat, Oct 11",2:20pm,2025-10-11 14:20,Fletcher Hall,https://carolinatheatre.org/the-dead-zone/
+Phantom of the Paradise + The Swan Archives,"Sat, Oct 11",2:30pm,2025-10-11 14:30,Cinema One,https://carolinatheatre.org/phantom-of-the-paradise-the-swan-archives/
+"Alice, Sweet Alice","Sat, Oct 11",2:40pm,2025-10-11 14:40,Cinema Two,https://carolinatheatre.org/alice-sweet-alice/
+Creepshow 2,"Sat, Oct 11",4:50pm,2025-10-11 16:50,Fletcher Hall,https://carolinatheatre.org/creepshow-2/
+Prince of Darkness,"Sat, Oct 11",5:00pm,2025-10-11 17:00,Cinema Two,https://carolinatheatre.org/prince-of-darkness/
+Vamp,"Sat, Oct 11",5:10pm,2025-10-11 17:10,Cinema One,https://carolinatheatre.org/vamp/
+The Thing,"Sat, Oct 11",7:00pm,2025-10-11 19:00,Fletcher Hall,https://carolinatheatre.org/the-thing-2/
+Suspiria,"Sat, Oct 11",7:10pm,2025-10-11 19:10,Cinema One,https://carolinatheatre.org/suspiria/
+The Omen,"Sat, Oct 11",9:10pm,2025-10-11 21:10,Cinema One,https://carolinatheatre.org/the-omen/
+In the Mouth of Madness,"Sat, Oct 11",9:20pm,2025-10-11 21:20,Fletcher Hall,https://carolinatheatre.org/in-the-mouth-of-madness/
+Alien: Director’s Cut,"Sun, Oct 12",2:00pm,2025-10-12 14:00,Fletcher Hall,https://carolinatheatre.org/alien-directors-cut/
+Vamp,"Sun, Oct 12",2:10pm,2025-10-12 14:10,Cinema One,https://carolinatheatre.org/vamp/
+The Lift,"Sun, Oct 12",2:20pm,2025-10-12 14:20,Cinema Two,https://carolinatheatre.org/the-lift/
+The Omen,"Sun, Oct 12",4:10pm,2025-10-12 16:10,Cinema One,https://carolinatheatre.org/the-omen/
+House of Wax,"Sun, Oct 12",4:20pm,2025-10-12 16:20,Fletcher Hall,https://carolinatheatre.org/house-of-wax-2/
+"Alice, Sweet Alice","Sun, Oct 12",4:30pm,2025-10-12 16:30,Cinema Two,https://carolinatheatre.org/alice-sweet-alice/
+Creepshow 2,"Sun, Oct 12",6:50pm,2025-10-12 18:50,Cinema One,https://carolinatheatre.org/creepshow-2/
+Suspiria,"Sun, Oct 12",7:10pm,2025-10-12 19:10,Cinema Two,https://carolinatheatre.org/suspiria/
+Nightmare on Elm Street 4: The Dream Master,"Sun, Oct 12",9:00pm,2025-10-12 21:00,Cinema One,https://carolinatheatre.org/nightmare-on-elm-street-4-the-dream-master/
+From Beyond,"Sun, Oct 12",9:10pm,2025-10-12 21:10,Cinema Two,https://carolinatheatre.org/from-beyond/
+The Dead Zone,"Tue, Oct 14",7:10pm,2025-10-14 19:10,Cinema Two,https://carolinatheatre.org/the-dead-zone/
+Cujo,"Tue, Oct 14",9:20pm,2025-10-14 21:20,Cinema Two,https://carolinatheatre.org/cujo/
+Cape Fear,"Wed, Oct 15",7:00pm,2025-10-15 19:00,Cinema One,https://carolinatheatre.org/cape-fear/
+In the Mouth of Madness,"Wed, Oct 15",7:10pm,2025-10-15 19:10,Cinema Two,https://carolinatheatre.org/in-the-mouth-of-madness/
+Prince of Darkness,"Wed, Oct 15",9:20pm,2025-10-15 21:20,Cinema Two,https://carolinatheatre.org/prince-of-darkness/
+The Thing,"Thu, Oct 16",7:10pm,2025-10-16 19:10,Cinema Two,https://carolinatheatre.org/the-thing-2/
+Suspiria,"Thu, Oct 16",9:30pm,2025-10-16 21:30,Cinema Two,https://carolinatheatre.org/suspiria/
+Hocus Pocus & Matilda,"Fri, Oct 17",7:00pm,2025-10-17 19:00,Cinema One,https://carolinatheatre.org/hocus-pocus-matilda/
+Flash Gordon,"Sun, Oct 19",2:00pm,2025-10-19 14:00,Cinema One,https://carolinatheatre.org/flash-gordon/
+Tremors,"Wed, Oct 22",7:00pm,2025-10-22 19:00,Cinema One,https://carolinatheatre.org/tremors-2/
+The Lost Boys & The Craft,"Fri, Oct 24",7:00pm,2025-10-24 19:00,Cinema One,https://carolinatheatre.org/the-lost-boys-the-craft/
+Se7en,"Sun, Oct 26",2:00pm,2025-10-26 14:00,Cinema One,https://carolinatheatre.org/se7en/
+The Cabinet of Dr. Caligari with Live Score,"Mon, Oct 27",7:00pm,2025-10-27 19:00,Cinema One,https://carolinatheatre.org/the-cabinet-of-dr-caligari-with-live-score/
+Princess Mononoke,"Wed, Oct 29",7:00pm,2025-10-29 19:00,Cinema One,https://carolinatheatre.org/princess-mononoke-4/
+The 8th Annual Rocky Horror Picture Show Halloween Ball,"Thu, Oct 30",7:30pm,2025-10-30 19:30,Fletcher Hall,https://carolinatheatre.org/the-8th-annual-rocky-horror-picture-show-halloween-ball/
+The 8th Annual Rocky Horror Picture Show Halloween Ball,"Fri, Oct 31",7:30pm,2025-10-31 19:30,Fletcher Hall,https://carolinatheatre.org/the-8th-annual-rocky-horror-picture-show-halloween-ball/
+Princess Mononoke,"Sat, Nov 1",11:00am,2025-11-01 11:00,Cinema One,https://carolinatheatre.org/princess-mononoke-4/
+Rear Window,"Sun, Nov 2",2:00pm,2025-11-02 14:00,Cinema One,https://carolinatheatre.org/rear-window-2/
+The Trouble with Angels,"Wed, Nov 5",7:00pm,2025-11-05 19:00,Cinema One,https://carolinatheatre.org/the-trouble-with-angels/
+War of the Roses & She-Devil,"Fri, Nov 7",7:00pm,2025-11-07 19:00,Cinema One,https://carolinatheatre.org/war-of-the-roses-she-devil/
+Casablanca,"Wed, Nov 12",7:00pm,2025-11-12 19:00,Cinema One,https://carolinatheatre.org/casablanca/
+The Long Kiss Goodnight & Die Hard 2,"Fri, Nov 14",7:00pm,2025-11-14 19:00,Cinema One,https://carolinatheatre.org/the-long-kiss-goodnight-die-hard-2/
+ABBA: The Movie,"Sun, Nov 16",2:00pm,2025-11-16 14:00,Cinema One,https://carolinatheatre.org/abba-the-movie/
+"Godzilla, Mothra and King Ghidorah: Giant Monsters All-Out Attack","Wed, Nov 19",7:00pm,2025-11-19 19:00,Cinema One,https://carolinatheatre.org/godzilla-mothra-and-king-ghidorah-giant-monsters-all-out-attack/
+Mickey’s Christmas Carol & National Lampoon’s Christmas Vacation & Scrooged,"Fri, Nov 21",7:00pm,2025-11-21 19:00,Cinema One,https://carolinatheatre.org/mickeys-christmas-carol-national-lampoons-christmas-vacation-scrooged/
+Titanic,"Sun, Nov 23",2:00pm,2025-11-23 14:00,Cinema One,https://carolinatheatre.org/titanic/
+Ponyo,"Wed, Nov 26",7:00pm,2025-11-26 19:00,Cinema One,https://carolinatheatre.org/ponyo-2/
+Ponyo,"Sat, Nov 29",11:00am,2025-11-29 11:00,Cinema One,https://carolinatheatre.org/ponyo-2/
+Romeo + Juliet,"Sun, Nov 30",2:00pm,2025-11-30 14:00,Cinema One,https://carolinatheatre.org/romeo-juliet/
+Christmas in Connecticut,"Wed, Dec 3",7:00pm,2025-12-03 19:00,Cinema One,https://carolinatheatre.org/christmas-in-connecticut/
+Home Alone & The ‘Burbs,"Fri, Dec 5",7:00pm,2025-12-05 19:00,Cinema One,https://carolinatheatre.org/home-alone-the-burbs/
+Under Capricorn,"Sun, Dec 7",2:00pm,2025-12-07 14:00,Cinema One,https://carolinatheatre.org/under-capricorn/
+Howl’s Moving Castle,"Wed, Dec 10",7:00pm,2025-12-10 19:00,Cinema One,https://carolinatheatre.org/howls-moving-castle-3/
+Throw Momma from the Train & Harlem Nights,"Fri, Dec 12",7:00pm,2025-12-12 19:00,Cinema One,https://carolinatheatre.org/throw-momma-from-the-train-harlem-nights/
+Howl’s Moving Castle,"Sat, Dec 13",11:00am,2025-12-13 11:00,Cinema One,https://carolinatheatre.org/howls-moving-castle-3/
+Doctor Zhivago,"Sun, Dec 14",2:00pm,2025-12-14 14:00,Cinema One,https://carolinatheatre.org/doctor-zhivago/
+Blast of Silence,"Wed, Dec 17",7:00pm,2025-12-17 19:00,Cinema One,https://carolinatheatre.org/blast-of-silence/
+The Phoenician Scheme,"Fri, Jun 6",4:40pm,2026-06-06 16:40,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Fri, Jun 6",7:10pm,2026-06-06 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Fri, Jun 6",9:20pm,2026-06-06 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 7",2:00pm,2026-06-07 14:00,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 7",4:30pm,2026-06-07 16:30,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 7",7:00pm,2026-06-07 19:00,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 7",9:20pm,2026-06-07 21:20,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sun, Jun 8",2:10pm,2026-06-08 14:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sun, Jun 8",4:20pm,2026-06-08 16:20,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sun, Jun 8",7:00pm,2026-06-08 19:00,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Tue, Jun 10",7:00pm,2026-06-10 19:00,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Tue, Jun 10",9:10pm,2026-06-10 21:10,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Wed, Jun 11",7:10pm,2026-06-11 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Wed, Jun 11",9:10pm,2026-06-11 21:10,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Thu, Jun 12",7:00pm,2026-06-12 19:00,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Thu, Jun 12",9:10pm,2026-06-12 21:10,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Fri, Jun 13",4:40pm,2026-06-13 16:40,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Fri, Jun 13",7:10pm,2026-06-13 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Fri, Jun 13",9:20pm,2026-06-13 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 14",2:10pm,2026-06-14 14:10,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 14",4:40pm,2026-06-14 16:40,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 14",7:10pm,2026-06-14 19:10,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 14",9:20pm,2026-06-14 21:20,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sun, Jun 15",2:10pm,2026-06-15 14:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sun, Jun 15",4:40pm,2026-06-15 16:40,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sun, Jun 15",7:10pm,2026-06-15 19:10,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Tue, Jun 17",7:10pm,2026-06-17 19:10,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Wed, Jun 18",7:10pm,2026-06-18 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Wed, Jun 18",9:10pm,2026-06-18 21:10,Cinema One,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Thu, Jun 19",7:00pm,2026-06-19 19:00,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Thu, Jun 19",7:10pm,2026-06-19 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Thu, Jun 19",9:30pm,2026-06-19 21:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Fri, Jun 20",4:20pm,2026-06-20 16:20,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Fri, Jun 20",4:30pm,2026-06-20 16:30,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Fri, Jun 20",6:50pm,2026-06-20 18:50,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Fri, Jun 20",9:20pm,2026-06-20 21:20,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sat, Jun 21",1:30pm,2026-06-21 13:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Sat, Jun 21",2:00pm,2026-06-21 14:00,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 21",4:10pm,2026-06-21 16:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Sat, Jun 21",4:20pm,2026-06-21 16:20,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sat, Jun 21",7:00pm,2026-06-21 19:00,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Sat, Jun 21",7:10pm,2026-06-21 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Sat, Jun 21",9:20pm,2026-06-21 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Sat, Jun 21",9:30pm,2026-06-21 21:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sun, Jun 22",2:10pm,2026-06-22 14:10,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sun, Jun 22",4:30pm,2026-06-22 16:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Sun, Jun 22",4:40pm,2026-06-22 16:40,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Sun, Jun 22",7:00pm,2026-06-22 19:00,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Sun, Jun 22",7:10pm,2026-06-22 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Tue, Jun 24",7:00pm,2026-06-24 19:00,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Tue, Jun 24",7:10pm,2026-06-24 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Tue, Jun 24",9:20pm,2026-06-24 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Tue, Jun 24",9:30pm,2026-06-24 21:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Wed, Jun 25",6:50pm,2026-06-25 18:50,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Wed, Jun 25",9:20pm,2026-06-25 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Wed, Jun 25",9:30pm,2026-06-25 21:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Thu, Jun 26",7:00pm,2026-06-26 19:00,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Thu, Jun 26",7:10pm,2026-06-26 19:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+The Phoenician Scheme,"Thu, Jun 26",9:20pm,2026-06-26 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Thu, Jun 26",9:30pm,2026-06-26 21:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Fri, Jun 27",1:50pm,2026-06-27 13:50,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Fri, Jun 27",4:20pm,2026-06-27 16:20,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Fri, Jun 27",7:00pm,2026-06-27 19:00,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Fri, Jun 27",9:35pm,2026-06-27 21:35,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sat, Jun 28",1:30pm,2026-06-28 13:30,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sat, Jun 28",4:10pm,2026-06-28 16:10,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sat, Jun 28",6:50pm,2026-06-28 18:50,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sat, Jun 28",9:35pm,2026-06-28 21:35,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sun, Jun 29",2:00pm,2026-06-29 14:00,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sun, Jun 29",4:40pm,2026-06-29 16:40,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+28 Years Later,"Sun, Jun 29",7:30pm,2026-06-29 19:30,Fletcher Hall,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Wed, Jul 2",6:30pm,2026-07-02 18:30,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Wed, Jul 2",6:50pm,2026-07-02 18:50,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Wed, Jul 2",9:10pm,2026-07-02 21:10,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Wed, Jul 2",9:20pm,2026-07-02 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Wed, Jul 2",9:30pm,2026-07-02 21:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Thu, Jul 3",6:30pm,2026-07-03 18:30,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Thu, Jul 3",6:50pm,2026-07-03 18:50,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Thu, Jul 3",7:00pm,2026-07-03 19:00,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Jurassic World: Rebirth,"Thu, Jul 3",9:10pm,2026-07-03 21:10,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Thu, Jul 3",9:20pm,2026-07-03 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Thu, Jul 3",9:30pm,2026-07-03 21:30,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Fri, Jul 4",4:00pm,2026-07-04 16:00,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Fri, Jul 4",4:10pm,2026-07-04 16:10,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Fri, Jul 4",4:20pm,2026-07-04 16:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Fri, Jul 4",6:40pm,2026-07-04 18:40,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Fri, Jul 4",6:50pm,2026-07-04 18:50,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Fri, Jul 4",9:10pm,2026-07-04 21:10,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Fri, Jul 4",9:30pm,2026-07-04 21:30,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Jurassic World: Rebirth,"Sat, Jul 5",1:10pm,2026-07-05 13:10,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Sat, Jul 5",1:20pm,2026-07-05 13:20,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Sat, Jul 5",1:30pm,2026-07-05 13:30,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Jurassic World: Rebirth,"Sat, Jul 5",4:00pm,2026-07-05 16:00,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Sat, Jul 5",4:10pm,2026-07-05 16:10,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Sat, Jul 5",4:20pm,2026-07-05 16:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Sat, Jul 5",6:40pm,2026-07-05 18:40,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Sat, Jul 5",6:50pm,2026-07-05 18:50,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Sat, Jul 5",7:00pm,2026-07-05 19:00,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Sat, Jul 5",9:10pm,2026-07-05 21:10,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+The Phoenician Scheme,"Sat, Jul 5",9:20pm,2026-07-05 21:20,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+Jurassic World: Rebirth,"Sat, Jul 5",9:30pm,2026-07-05 21:30,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+Jurassic World: Rebirth,"Sun, Jul 6",2:10pm,2026-07-06 14:10,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+28 Years Later,"Sun, Jul 6",2:20pm,2026-07-06 14:20,Cinema Two,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Sun, Jul 6",5:00pm,2026-07-06 17:00,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Sun, Jul 6",5:10pm,2026-07-06 17:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Sun, Jul 6",5:20pm,2026-07-06 17:20,Cinema One,https://carolinatheatre.org/28-years-later-durham/
+Jurassic World: Rebirth,"Sun, Jul 6",8:00pm,2026-07-06 20:00,Fletcher Hall,https://carolinatheatre.org/jurassic-world-rebirth-durham/
+The Phoenician Scheme,"Sun, Jul 6",8:10pm,2026-07-06 20:10,Cinema Two,https://carolinatheatre.org/the-phoenician-scheme-durham/
+28 Years Later,"Sun, Jul 6",8:20pm,2026-07-06 20:20,Cinema One,https://carolinatheatre.org/28-years-later-durham/
