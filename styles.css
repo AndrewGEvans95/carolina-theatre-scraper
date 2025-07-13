@@ -540,7 +540,9 @@ footer {
     padding: 16px;
     margin: 0;
     border-width: 2px;
-    /* Better mobile padding */
+    overflow-x: hidden;
+    box-sizing: border-box;
+    /* Better mobile padding and prevent horizontal scroll */
   }
   
   h1 {
@@ -565,8 +567,8 @@ footer {
   }
   
   .tab {
-    padding: 12px 16px;
-    font-size: 11px;
+    padding: 12px 8px;
+    font-size: 12px;
     flex: none;
     width: 100%;
     text-align: center;
@@ -575,6 +577,8 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1.2;
+    word-wrap: break-word;
     /* Stack tabs vertically on mobile for better touch targets */
   }
   
@@ -584,6 +588,8 @@ footer {
     font-size: 12px;
     flex-direction: column;
     align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
     /* Stack movie elements vertically for better mobile layout */
   }
   
@@ -607,9 +613,22 @@ footer {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     margin-top: 8px;
     /* Simple vertical stack for mobile */
+  }
+  
+  .movie-info > .movie-time,
+  .movie-info > .movie-cinema {
+    order: 1;
+  }
+  
+  .movie-info > .other-times-btn {
+    order: 2;
+  }
+  
+  .movie-info > .share-btn {
+    order: 3;
   }
   
   
@@ -620,8 +639,10 @@ footer {
     min-height: 44px;
     min-width: auto;
     width: 100%;
+    max-width: 100%;
     text-align: center;
     white-space: normal;
+    box-sizing: border-box;
     /* Full width, larger text, proper spacing */
   }
   
@@ -630,9 +651,11 @@ footer {
     padding: 12px 16px;
     min-width: auto;
     width: 100%;
+    max-width: 100%;
     height: auto;
     min-height: 44px;
     white-space: normal;
+    box-sizing: border-box;
     /* Full width button with larger text */
   }
   
@@ -643,7 +666,9 @@ footer {
     min-height: 44px;
     min-width: auto;
     width: 100%;
+    max-width: 100%;
     white-space: normal;
+    box-sizing: border-box;
     /* Full width button with larger text */
   }
   
@@ -829,9 +854,11 @@ footer {
   }
   
   .tab {
-    padding: 10px 12px;
-    font-size: 10px;
-    min-height: 40px;
+    padding: 12px 8px;
+    font-size: 11px;
+    min-height: 44px;
+    line-height: 1.2;
+    word-wrap: break-word;
   }
   
   .movie {
@@ -854,6 +881,9 @@ footer {
     padding: 10px 12px;
     height: auto;
     min-height: 40px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   .other-times-btn {
@@ -861,6 +891,9 @@ footer {
     padding: 10px 12px;
     height: auto;
     min-height: 40px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   .share-btn {
@@ -868,7 +901,9 @@ footer {
     padding: 10px 12px;
     height: auto;
     min-height: 40px;
-    min-width: 40px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
 
