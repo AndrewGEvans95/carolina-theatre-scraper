@@ -4,527 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carolina Theatre Schedule</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-    body {
-      font-family: 'Press Start 2P', cursive, Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
-      color: #39ff14;
-      text-shadow: 0 0 2px #39ff14, 0 0 4px #00fff7;
-      text-align: center;
-      padding: 20px;
-      margin: 0;
-      image-rendering: pixelated;
-      min-height: 100vh;
-      box-sizing: border-box;
-      overflow-x: hidden;
-    }
-    .container {
-      width: 95%;
-      max-width: 960px;
-      margin: 0 auto;
-      background: rgba(20, 20, 40, 0.95);
-      padding: 24px;
-      border: 4px solid #ff0080;
-      border-radius: 0;
-      box-shadow: 0 0 24px #00fff7, 0 0 8px #ff0080 inset;
-      box-sizing: border-box;
-      overflow-x: hidden;
-    }
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .tab {
-      padding: 12px 20px;
-      background: #222;
-      border: 2px solid #ff0080;
-      border-radius: 0;
-      color: #fff;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 12px;
-      font-weight: normal;
-      cursor: pointer;
-      box-shadow: 0 0 8px #00fff7;
-      transition: background 0.2s, color 0.2s;
-    }
-    .tab:hover, .tab:focus {
-      background: #ff0080;
-      color: #39ff14;
-      outline: none;
-    }
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    h1, h2 {
-      color: #ff0080;
-      text-shadow: 0 0 2px #00fff7;
-      font-family: 'Press Start 2P', cursive;
-      font-weight: normal;
-    }
-    .day {
-      background: #111;
-      border: 2px dashed #00fff7;
-      padding: 18px;
-      margin: 16px 0;
-      text-align: left;
-      box-shadow: 0 0 8px #00fff7 inset;
-    }
-    .movie {
-      padding: 12px;
-      font-size: 14px;
-      color: #39ff14;
-      display: flex;
-      flex-wrap: nowrap;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px dotted #ff0080;
-      font-family: 'Press Start 2P', cursive;
-      font-weight: normal;
-      gap: 8px;
-    }
-    .movie:last-child {
-      border-bottom: none;
-    }
-    .movie-title {
-      font-weight: normal;
-      font-size: 16px;
-      flex: 0 1 auto;
-      text-shadow: 0 0 2px #00fff7;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-      max-width: 60%;
-    }
-    .movie-title a {
-      color: #00fff7;
-      text-decoration: none;
-      font-weight: normal;
-      transition: color 0.2s;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .movie-title a:hover,
-    .movie-title a:focus {
-      color: #ff0080;
-      text-decoration: underline;
-    }
-    .share-btn {
-      background: #ff0080;
-      color: #fff;
-      border: none;
-      border-radius: 0;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 10px;
-      cursor: pointer;
-      padding: 2px 4px;
-      box-shadow: 0 0 4px #00fff7;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-    }
-    .share-btn:hover {
-      background: #39ff14;
-      color: #000;
-    }
-    .share-btn.copied {
-      background: #39ff14;
-      color: #000;
-    }
-    .movie-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 0 0 auto;
-      flex-wrap: nowrap;
-    }
-    .movie-time, .movie-cinema {
-      flex: 0 0 auto;
-      text-align: center;
-      font-size: 12px;
-      color: #fff;
-      background: #222;
-      border: 1px solid #00fff7;
-      padding: 4px 8px;
-      border-radius: 0;
-      box-shadow: 0 0 4px #00fff7;
-      white-space: nowrap;
-    }
-    .other-times-btn {
-      flex: 0 0 auto;
-      white-space: nowrap;
-    }
-    pre {
-      text-align: center;
-      background: #222;
-      padding: 10px;
-      border: 2px solid #ff0080;
-      border-radius: 0;
-      overflow-x: auto;
-      color: #39ff14;
-      font-family: 'Press Start 2P', cursive;
-      font-weight: normal;
-    }
-    footer {
-      margin-top: 2rem;
-      font-style: italic;
-      text-align: center;
-      font-size: 0.9em;
-      opacity: 0.8;
-      color: #00fff7;
-      text-shadow: 0 0 2px #ff0080;
-    }
-    @media (max-width: 767px) {
-      body {
-        padding: 10px;
-        font-size: 12px;
-      }
-      .container {
-        width: 100%;
-        padding: 12px;
-        margin: 0;
-        border-width: 2px;
-      }
-      h1 {
-        font-size: 18px;
-        margin: 8px 0;
-        word-wrap: break-word;
-      }
-      h2 {
-        font-size: 14px;
-        margin: 6px 0;
-        word-wrap: break-word;
-      }
-      .tabs {
-        gap: 4px;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-      }
-      .tab {
-        padding: 6px 8px;
-        font-size: 9px;
-        flex: 1;
-        min-width: 80px;
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .movie {
-        padding: 8px;
-        gap: 4px;
-        font-size: 12px;
-        flex-wrap: wrap;
-      }
-      .movie-title {
-        max-width: calc(100% - 24px);
-        font-size: 12px;
-        min-width: 0;
-      }
-      .movie-title a {
-        font-size: 12px;
-        max-width: 100%;
-      }
-      .movie-info {
-        width: 100%;
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        gap: 4px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 4px;
-        margin-top: 4px;
-      }
-      .movie-time, .movie-cinema {
-        font-size: 10px;
-        padding: 3px 6px;
-        flex: 0 0 auto;
-        min-width: max-content;
-      }
-      .share-btn {
-        font-size: 8px;
-        padding: 2px 3px;
-        min-width: 20px;
-        height: 20px;
-        position: absolute;
-        right: 8px;
-        top: 8px;
-      }
-      .other-times-btn {
-        font-size: 10px;
-        padding: 3px 6px;
-        flex: 0 0 auto;
-        min-width: max-content;
-      }
-      .day, .movie-group {
-        padding: 8px;
-        margin: 8px 0;
-      }
-      .filter {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        margin-bottom: 12px;
-        padding: 0 4px;
-      }
-      .filter select {
-        width: 100%;
-        padding: 6px;
-        font-size: 10px;
-        font-family: 'Press Start 2P', cursive;
-      }
-      .filter label {
-        font-size: 10px;
-        margin-bottom: 2px;
-      }
-      .other-times-dialog {
-        width: 90%;
-        max-width: none;
-        padding: 12px;
-        font-size: 11px;
-        margin: 0 5%;
-      }
-      .other-times-dialog-title {
-        font-size: 12px;
-        margin-bottom: 8px;
-        word-wrap: break-word;
-      }
-      .other-times-link {
-        font-size: 11px;
-        padding: 6px;
-        margin: 3px 0;
-        word-wrap: break-word;
-      }
-      .other-times-dialog button {
-        width: 100%;
-        margin-top: 8px;
-        padding: 8px;
-        font-size: 11px;
-      }
-      .glitch-button {
-        width: 100%;
-        margin: 12px 0;
-        padding: 10px;
-        font-size: 11px;
-      }
-      pre {
-        font-size: 7px;
-        padding: 6px;
-        margin: 6px 0;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-      footer {
-        font-size: 9px;
-        margin-top: 12px;
-        padding: 0 4px;
-        word-wrap: break-word;
-      }
-    }
-    /* Add styles for very small screens */
-    @media (max-width: 360px) {
-      body {
-        padding: 5px;
-        font-size: 10px;
-      }
-      .container {
-        padding: 8px;
-      }
-      .movie-title {
-        font-size: 11px;
-      }
-      .movie-time, .movie-cinema {
-        font-size: 9px;
-        padding: 2px 4px;
-      }
-      .other-times-btn {
-        font-size: 9px;
-        padding: 2px 4px;
-      }
-      .tab {
-        font-size: 8px;
-        padding: 4px 6px;
-      }
-    }
-    /* New styles for the glitch button and dialog */
-    .glitch-button {
-      margin: 20px auto;
-      padding: 10px 20px;
-      background: #ff0080;
-      color: #fff;
-      border: none;
-      border-radius: 0;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 0 8px #00fff7;
-      transition: all 0.2s;
-    }
-    .glitch-button:hover {
-      background: #39ff14;
-      color: #000;
-    }
-    .dialog {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #111;
-      border: 2px solid #ff0080;
-      padding: 20px;
-      color: #39ff14;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 14px;
-      text-align: center;
-      box-shadow: 0 0 24px #00fff7;
-      z-index: 1000;
-    }
-    .dialog button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background: #ff0080;
-      color: #fff;
-      border: none;
-      border-radius: 0;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 12px;
-      cursor: pointer;
-      box-shadow: 0 0 8px #00fff7;
-    }
-    .dialog button:hover {
-      background: #39ff14;
-      color: #000;
-    }
-    .glitch {
-      animation: glitch 0.3s infinite;
-    }
-    @keyframes glitch {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(-2px, -2px); }
-      60% { transform: translate(2px, 2px); }
-      80% { transform: translate(2px, -2px); }
-      100% { transform: translate(0); }
-    }
-    /* New styles for movie grouping */
-    .movie-group {
-      background: #111;
-      border: 2px dashed #00fff7;
-      padding: 18px;
-      margin: 16px 0;
-      text-align: left;
-      box-shadow: 0 0 8px #00fff7 inset;
-    }
-    .movie-group h3 {
-      color: #ff0080;
-      text-shadow: 0 0 2px #00fff7;
-      font-family: 'Press Start 2P', cursive;
-      font-weight: normal;
-    }
-    .other-times-dialog {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #181830;
-      border: 3px solid #00fff7;
-      padding: 28px 32px 20px 32px;
-      color: #39ff14;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 15px;
-      text-align: center;
-      box-shadow: 0 0 32px #00fff7, 0 0 8px #ff0080 inset;
-      z-index: 2000;
-      min-width: 340px;
-      border-radius: 8px;
-    }
-    .other-times-dialog-title {
-      color: #ff0080;
-      font-size: 16px;
-      margin-bottom: 12px;
-      text-shadow: 0 0 4px #00fff7;
-    }
-    .other-times-list {
-      margin-bottom: 16px;
-      text-align: left;
-    }
-    .other-times-link {
-      display: block;
-      color: #00fff7;
-      background: #222;
-      border: 1px solid #ff0080;
-      border-radius: 4px;
-      margin: 6px 0;
-      padding: 8px 10px;
-      text-decoration: none;
-      font-size: 14px;
-      font-family: 'Press Start 2P', cursive;
-      transition: background 0.2s, color 0.2s, border 0.2s;
-      box-shadow: 0 0 6px #00fff7;
-    }
-    .other-times-link:hover {
-      background: #ff0080;
-      color: #fff;
-      border: 1px solid #00fff7;
-    }
-    .other-times-dialog button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background: #ff0080;
-      color: #fff;
-      border: none;
-      border-radius: 0;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 12px;
-      cursor: pointer;
-      box-shadow: 0 0 8px #00fff7;
-      transition: background 0.2s, color 0.2s;
-    }
-    .other-times-dialog button:hover {
-      background: #39ff14;
-      color: #000;
-    }
-    .share-btn.error {
-      background: #ff0000;
-      color: #fff;
-    }
-    @media (max-width: 767px) {
-      .copy-error-message {
-        font-size: 10px !important;
-        padding: 12px !important;
-      }
-      .copy-error-message button {
-        font-size: 10px !important;
-        padding: 6px 12px !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Carolina Theatre Schedule</h1>
+    
+    <div class="tabs">
+      <div class="tab" style="background: #3498db; color: #1a1a2e;">Movie Schedule</div>
+      <a href="daily-cinema.html" class="tab">The Daily Cinema Club</a>
+      <a href="about.html" class="tab">Why This Exists</a>
+    </div>
+    
+    <div id="otherTimesDialog" class="other-times-dialog">
+      <div class='other-times-dialog-title'></div>
+      <div class="other-times-list"></div>
+      <button onclick="closeOtherTimesDialog()">Close</button>
+    </div>
+    
+    <!-- Movie Schedule Content -->
+    <div id="schedule" class="tab-content active">
+      <div class="filter">
+        <div class="filter-group">
+          <label for="groupFilter">View:</label>
+          <select id="groupFilter" onchange="filterByDay()" aria-label="Group movies by day or movie">
+            <option value="by-day">By Day</option>
+            <option value="by-movie">By Movie</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="dayFilter">Date:</label>
+          <select id="dayFilter" onchange="filterByDay()" aria-label="Filter movies by day">
+            <option value="all">All Days</option>
+{{DAY_FILTER_OPTIONS}}
+          </select>
+        </div>
+      </div>
+{{SCHEDULE_CONTENT}}
+    </div>
+    
+    <footer>
+      <p>"I wish it need not have happened in my time," said Frodo.<br>
+      "So do I," said Gandalf, "and so do all who live to see such times. But that is not for them to decide. 
+      All we have to decide is what to do with the time that is given us." – J.R.R. Tolkien</p>
+    </footer>
+  </div>
+
   <script>
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(function(tab) {
-        tab.classList.remove('active');
-      });
-      document.querySelectorAll('.tab').forEach(function(tab) {
-        tab.setAttribute("aria-selected", "false");
-      });
-      document.getElementById(tabId).classList.add('active');
-      document.getElementById("tab-" + tabId).setAttribute("aria-selected", "true");
-    }
     function filterByDay() {
       var selectedDay = document.getElementById("dayFilter").value;
       var selectedGroup = document.getElementById("groupFilter").value;
@@ -550,22 +76,7 @@
         });
       }
     }
-    // Copy the shareable link (with hash) to clipboard and show temporary feedback.
-    function copyLink(movieId) {
-      var url = window.location.href.split('#')[0] + '#' + movieId;
-      navigator.clipboard.writeText(url).then(function() {
-        var shareLink = document.getElementById("share-" + movieId);
-        if (shareLink) {
-          var originalContent = shareLink.innerHTML;
-          shareLink.innerHTML = "Copied!";
-          setTimeout(function() {
-            shareLink.innerHTML = "🔗";
-          }, 2000);
-        }
-      }, function() {
-        alert("Failed to copy link.");
-      });
-    }
+
     // On page load, if a hash is present, scroll to that movie and highlight it.
     document.addEventListener("DOMContentLoaded", function() {
       if (window.location.hash) {
@@ -581,47 +92,26 @@
         }
       }
     });
-    // New JavaScript for the glitch button and dialog
-    let clickCount = 0;
-    function handleGlitchButtonClick() {
-      clickCount++;
-      document.body.classList.add('glitch');
-      setTimeout(() => {
-        document.body.classList.remove('glitch');
-      }, 300);
-      if (clickCount === 3) {
-        window.location.href = 'truth.html';
-      } else {
-        document.getElementById('glitchDialog').style.display = 'block';
-      }
-    }
-    function closeDialog() {
-      document.getElementById('glitchDialog').style.display = 'none';
-    }
+
     let allShowtimes = {};
     function showOtherTimes(title, currentTime, currentDate, currentCinema, currentId) {
       let dialog = document.getElementById('otherTimesDialog');
       let list = '';
       let found = false;
-      let seenShowtimes = new Set(); // Track unique showtimes
+      let seenShowtimes = new Set();
 
       if (allShowtimes[title]) {
-        // Sort showtimes by date and time using formatted datetime
         allShowtimes[title].sort((a, b) => {
-          // Use formatted datetime for proper chronological sorting
           return a.formatted_datetime.localeCompare(b.formatted_datetime);
         });
 
         allShowtimes[title].forEach(function(st) {
-          // Create a unique key for this showtime
           const showtimeKey = `${st.time}-${st.date}-${st.cinema}`;
           
-          // Only show if we haven't seen this exact showtime before and it's not the current one
           if (!seenShowtimes.has(showtimeKey) && 
               !(st.time === currentTime && st.date === currentDate && st.cinema === currentCinema)) {
             seenShowtimes.add(showtimeKey);
             let targetId = st.id ? st.id : '';
-            // Ensure we always have a date
             const displayDate = st.date || 'Unknown Date';
             list += `<a class='other-times-link' href='#${targetId}' onclick="closeOtherTimesDialog(); setTimeout(function(){document.getElementById('${targetId}').scrollIntoView({behavior:'smooth',block:'center'});}, 100);">${displayDate} — ${st.time} @ ${st.cinema}</a>`;
             found = true;
@@ -635,11 +125,12 @@
       dialog.querySelector('.other-times-dialog-title').innerText = `Other Showtimes for: ${title}`;
       dialog.style.display = 'block';
     }
+    
     function closeOtherTimesDialog() {
       document.getElementById('otherTimesDialog').style.display = 'none';
     }
+    
     document.addEventListener('DOMContentLoaded', function() {
-      // Build allShowtimes from data attributes, using a Set to track unique showtimes
       let seenShowtimes = new Set();
       document.querySelectorAll('[data-movie-title]').forEach(function(el) {
         let title = el.getAttribute('data-movie-title');
@@ -649,16 +140,13 @@
         let formatted_datetime = el.getAttribute('data-formatted-datetime') || '';
         let id = el.getAttribute('id');
         
-        // Ensure we have all required data
         if (!title || !time || !date || !cinema) {
           console.warn('Missing data for showtime:', {title, time, date, cinema});
           return;
         }
         
-        // Create a unique key for this showtime
         const showtimeKey = `${title}|${time}|${date}|${cinema}`;
         
-        // Only add if we haven't seen this exact showtime before
         if (!seenShowtimes.has(showtimeKey)) {
           seenShowtimes.add(showtimeKey);
           if (!allShowtimes[title]) allShowtimes[title] = [];
@@ -666,21 +154,18 @@
         }
       });
     });
+    
     function copyShareLink(movieId, event) {
       event.preventDefault();
       event.stopPropagation();
       
-      // Create the shareable URL
       const url = window.location.href.split('#')[0] + '#' + movieId;
       const btn = event.currentTarget;
       const originalText = btn.innerHTML;
       
-      // Fallback method for copying
       function fallbackCopyToClipboard(text) {
         const textArea = document.createElement('textarea');
         textArea.value = text;
-        
-        // Make the textarea out of viewport
         textArea.style.position = 'fixed';
         textArea.style.left = '-999999px';
         textArea.style.top = '-999999px';
@@ -699,14 +184,12 @@
         return successful;
       }
       
-      // Try modern clipboard API first, then fallback
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(url)
           .then(() => {
             showCopySuccess(btn, originalText);
           })
           .catch(() => {
-            // If clipboard API fails, try fallback
             if (fallbackCopyToClipboard(url)) {
               showCopySuccess(btn, originalText);
             } else {
@@ -714,7 +197,6 @@
             }
           });
       } else {
-        // Try fallback for non-secure contexts
         if (fallbackCopyToClipboard(url)) {
           showCopySuccess(btn, originalText);
         } else {
@@ -727,7 +209,6 @@
       btn.innerHTML = '✓';
       btn.classList.add('copied');
       
-      // Reset after 2 seconds
       setTimeout(() => {
         btn.innerHTML = originalText;
         btn.classList.remove('copied');
@@ -738,7 +219,6 @@
       btn.innerHTML = '❌';
       btn.classList.add('error');
       
-      // Show a more helpful error message
       const errorMsg = document.createElement('div');
       errorMsg.className = 'copy-error-message';
       errorMsg.textContent = 'Click to copy manually: ' + window.location.href.split('#')[0] + '#' + btn.closest('.movie').id;
@@ -760,7 +240,6 @@
         word-break: break-all;
       `;
       
-      // Add close button
       const closeBtn = document.createElement('button');
       closeBtn.textContent = 'Close';
       closeBtn.style.cssText = `
@@ -784,121 +263,14 @@
       errorMsg.appendChild(closeBtn);
       document.body.appendChild(errorMsg);
       
-      // Reset button after 2 seconds if error message is closed
       setTimeout(() => {
         if (document.body.contains(errorMsg)) {
           document.body.removeChild(errorMsg);
         }
         btn.innerHTML = originalText;
         btn.classList.remove('error');
-      }, 10000); // Auto-close after 10 seconds
+      }, 10000);
     }
   </script>
-</head>
-<body>
-  <div class="container">
-    <h1>Carolina Theatre Schedule</h1>
-    <div class="tabs" role="tablist">
-      <div id="tab-schedule" class="tab" role="tab" tabindex="0" onclick="showTab('schedule')" aria-selected="true">Movie Schedule</div>
-      <div id="tab-daily-cinema" class="tab" role="tab" tabindex="0" onclick="showTab('daily-cinema')" aria-selected="false">The Daily Cinema Club</div>
-      <div id="tab-about" class="tab" role="tab" tabindex="0" onclick="showTab('about')" aria-selected="false">Why This Exists</div>
-    </div>
-    <div id="otherTimesDialog" class="other-times-dialog">
-      <div class='other-times-dialog-title'></div>
-      <div class="other-times-list"></div>
-      <button onclick="closeOtherTimesDialog()">Close</button>
-    </div>
-    <!-- Movie Schedule Tab -->
-    <div id="schedule" class="tab-content active" role="tabpanel">
-      <div class="filter">
-        <label for="groupFilter">Group By:</label>
-        <select id="groupFilter" onchange="filterByDay()" aria-label="Group movies by day or movie">
-          <option value="by-day">By Day</option>
-          <option value="by-movie">By Movie</option>
-        </select>
-        <label for="dayFilter">Filter by Day:</label>
-        <select id="dayFilter" onchange="filterByDay()" aria-label="Filter movies by day">
-          <option value="all">All Days</option>
-{{DAY_FILTER_OPTIONS}}
-        </select>
-      </div>
-{{SCHEDULE_CONTENT}}
-    </div>
-    <!-- The Daily Cinema Club Tab -->
-    <div id="daily-cinema" class="tab-content" role="tabpanel">
-      <div class="block richText">
-        <h2 class="gela">The Daily Cinema Club</h2><br>
-        <strong><a href="https://www.thedailybeerbar.com/about/events" target="_blank">The Daily's Event Page</a></strong></br>
-        <p>6 PM | <strong>Retro Reels: A VHS Cinema Club</strong></p>
-        <p>Calling all movie buffs, nostalgia lovers, and tape-heads! Experience a journey back in time as the clock is rolled back and the VCR dusted off to showcase cinema's greatest gems.</p>
-        <p>Every Tuesday night, catch an old-school VHS screening paired with the ultimate classic combo: <br> <strong>Miller High Life &amp; Popcorn</strong>.</p>
-        <hr>
-        <h3>Upcoming Screenings</h3>
-        <ul>
-          <li><strong>Previously (Tuesday, 03/18):</strong> Pocahontas (1995 film)</li>
-          <li><strong>Next Up (Tuesday, 03/25):</strong> TBD!</li>
-        </ul>
-        <hr>
-        <p>Grab a drink, claim a seat, and enjoy a nostalgic rewind!</p>
-        <pre>
-         o               ||   \\===
-          \\              ||^^^^^^^
-           \\      /\\     ||   ^^^
-            \\    /  o    |'-------
-             \\__/        '--------
-     _______ /  \\_________     
-    | __________________  |     
-    ||"'`':`.,~"`;"`;#'~|_|     
-    ||";";.,`~;`'+.:',!`|O|     
-    ||.;',`'`.,`':.`~,;'|O|     
-    ||':'""`~`"'`'`::'`'|o|    '
-    ||.:',~;~'`;'`.,:'`;|_|  ' @
-    ||-'`:'`.`;.:""\";/;`| |  @ |
-    ||'`'`~';?;`:`.,`.:'| |  | |
-    |'------------------' | '---'
-----'---------------------'--\\_/--
-        </pre>
-      </div>
-    </div>
-    <!-- Why This Exists Tab -->
-    <div id="about" class="tab-content" role="tabpanel">
-      <h2>Why This Exists</h2>
-      <p>Let's be honest—the official Carolina Theatre website is a maze of frustration, a test of patience for even the most devoted cinephile. Want to know what's playing? Good luck. Instead of a simple list, you're forced to navigate finicky carousels, decipher cryptic categorizations, and dig through layers of unnecessary clicks just to find a showtime.</p>
-      
-      <p>Rather than endure yet another round of digital torment, this site was built—a clean, fast, no-nonsense listing of what's actually playing.<br>
-      The list isn't manually curated; it's powered by a dedicated backend script that tirelessly gathers and organizes showtimes with precision. The result? A constantly up-to-date, frustration-free experience delivered straight to you.<br><br>
-      No fluff, no distractions—just movies and their showtimes. Because all deserve better.<br></p>
-      
-      <p><em>~Forged with noble wrath and unwavering purpose~</em><br>Built by Andrew Evans aka lilcrisp</p>
-      
-      <pre>
-               __             ___
-      // )    ___--""    "-.
- \\ |,"( /`--""              `.  
-  \\/ o                        \\  
-  (   _.-.              ,'"    ;  
-   |\\"   /`. \\  ,      /       | 
-   | \\  ' .'`.; |      |       \\ 
-   |  '-'.'    |  --..,,,\\_    \\_______      
-   |       _.-'        ___"-   )      \\\"\\\"\\--.  
-    \\____-"           '''---~""         
-      </pre>
-      <p>This little rat lives in the backend tirelessly gathering and organizing the movie showtimes for you.</p>
-      <button class="glitch-button" onclick="handleGlitchButtonClick()">DO NOT CLICK THIS BUTTON</button>
-    </div>
-    <!-- Hidden dialogs -->
-    <div id="glitchDialog" class="dialog">
-      <p>System Error...</p>
-      <p>Reality Corrupted</p>
-      <button onclick="closeDialog()">Close</button>
-    </div>
-    <!-- Footer -->
-    <footer>
-      <p>"I wish it need not have happened in my time," said Frodo.<br>
-      "So do I," said Gandalf, "and so do all who live to see such times. But that is not for them to decide. 
-      All we have to decide is what to do with the time that is given us." – J.R.R. Tolkien</p>
-    </footer>
-    <button class="glitch-button" onclick="handleGlitchButtonClick()">DO NOT CLICK THIS BUTTON</button>
-  </div>
 </body>
 </html>

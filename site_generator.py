@@ -118,7 +118,7 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
             output_path = "/var/www/html/index.html"
         else:
             # Fall back to current directory
-            output_path = "./carolina_theatre_schedule.html"
+            output_path = "./index.html"
             print(f"Cannot write to /var/www/html (requires sudo)")
             print(f"Writing to current directory instead: {output_path}")
     else:
@@ -241,12 +241,12 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
             formatted_datetime = movie.get('formatted_datetime', '')
             schedule_content += (
                 "        <div class='movie' id='" + movie_id + "' data-movie-title='" + movie['title'] + "' data-movie-time='" + movie['time'] + "' data-movie-date='" + date + "' data-movie-cinema='" + movie['cinema'] + "' data-formatted-datetime='" + formatted_datetime + "'>"
-                f"<span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a>"
-                f"<button class='share-btn' onclick='copyShareLink(\"{movie_id}\", event)' title='Copy shareable link'>🔗</button></span> "
+                f"<span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span> "
                 "<div class='movie-info'>"
                 f"<span class='movie-time'>{movie['time']}</span> "
                 f"<span class='movie-cinema'>{movie['cinema']}</span>"
                 f"<button class='other-times-btn' onclick=\"showOtherTimes('{movie['title']}', '{movie['time']}', '{date}', '{movie['cinema']}', '{movie_id}')\">Show Other Times</button>"
+                f"<button class='share-btn' onclick='copyShareLink(\"{movie_id}\", event)' title='Copy link'>🔗</button>"
                 "</div></div>\n"
             )
             movie_counter += 1
@@ -277,12 +277,12 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
             formatted_datetime = movie.get('formatted_datetime', '')
             schedule_content += (
                 "        <div class='movie' id='" + movie_id + "' data-movie-title='" + movie['title'] + "' data-movie-time='" + movie['time'] + "' data-movie-date='" + day_str + "' data-movie-cinema='" + movie['cinema'] + "' data-formatted-datetime='" + formatted_datetime + "'>"
-                f"<span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a>"
-                f"<button class='share-btn' onclick='copyShareLink(\"{movie_id}\", event)' title='Copy shareable link'>🔗</button></span> "
+                f"<span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span> "
                 "<div class='movie-info'>"
                 f"<span class='movie-time'>{movie['time']} ({day_str})</span> "
                 f"<span class='movie-cinema'>{movie['cinema']}</span>"
                 f"<button class='other-times-btn' onclick=\"showOtherTimes('{movie['title']}', '{movie['time']}', '{day_str}', '{movie['cinema']}', '{movie_id}')\">Show Other Times</button>"
+                f"<button class='share-btn' onclick='copyShareLink(\"{movie_id}\", event)' title='Copy link'>🔗</button>"
                 "</div></div>\n"
             )
             movie_counter += 1
@@ -292,6 +292,31 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
     html_content = template_content.replace('{{DAY_FILTER_OPTIONS}}', day_filter_options)
     html_content = html_content.replace('{{SCHEDULE_CONTENT}}', schedule_content)
     
+    # Copy CSS file to output directory
+    css_source = "styles.css"
+    if os.path.exists(css_source):
+        output_dir = os.path.dirname(output_path) or "."
+        css_dest = os.path.join(output_dir, "styles.css")
+        try:
+            shutil.copy2(css_source, css_dest)
+            print(f"CSS file copied to: {css_dest}")
+        except Exception as e:
+            print(f"Warning: Could not copy CSS file: {str(e)}")
+    else:
+        print(f"Warning: CSS file '{css_source}' not found")
+
+    # Copy additional HTML files to output directory
+    additional_files = ["daily-cinema.html", "about.html"]
+    output_dir = os.path.dirname(output_path) or "."
+    for filename in additional_files:
+        if os.path.exists(filename):
+            dest_path = os.path.join(output_dir, filename)
+            try:
+                shutil.copy2(filename, dest_path)
+                print(f"Additional file copied to: {dest_path}")
+            except Exception as e:
+                print(f"Warning: Could not copy {filename}: {str(e)}")
+
     # Write the HTML file with error handling
     try:
         with open(output_path, "w", encoding="utf-8") as file:

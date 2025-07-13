@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why This Exists - Carolina Showtimes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Why This Exists</h1>
+    
+    <div class="tabs">
+      <a href="index.html" class="tab">Movie Schedule</a>
+      <a href="daily-cinema.html" class="tab">The Daily Cinema Club</a>
+      <a href="about.html" class="tab" style="background: #3498db; color: #1a1a2e;">Why This Exists</a>
+    </div>
+    
+    <div class="content-section">
+      <div class="text-content">
+        <p>The official Carolina Theatre website is unnecessarily complex. This site provides a clean, fast, no-nonsense listing of what's actually playing.</p>
+        
+        <p>Powered by an automated backend script that gathers and organizes showtimes with precision. The result? A constantly up-to-date, frustration-free experience.</p>
+        
+        <p>No fluff, no distractions—just movies and their showtimes.</p>
+        
+        <p><em>Built by Andrew Evans aka lilcrisp</em></p>
+        
+        <pre>
+               __             ___
+      // )    ___--""    "-.
+ \\ |,"( /`--""              `.  
+  \\/ o                        \\  
+  (   _.-.              ,'"    ;  
+   |\\"   /`. \\  ,      /       | 
+   | \\  ' .'`.; |      |       \\ 
+   |  '-'.'    |  --..,,,\\_    \\_______      
+   |       _.-'        ___"-   )      \\\"\\\"\\--.  
+    \\____-"           '''---~""         
+        </pre>
+        <p>This little rat lives in the backend tirelessly gathering and organizing the movie showtimes for you.</p>
+        
+        <button class="glitch-button" onclick="handleGlitchButtonClick()">DO NOT CLICK THIS BUTTON</button>
+      </div>
+    </div>
+    
+    <!-- Hidden dialogs -->
+    <div id="glitchDialog" class="dialog">
+      <p>System Error...</p>
+      <p>Reality Corrupted</p>
+      <button onclick="closeDialog()">Close</button>
+    </div>
+    
+    <footer>
+      <p>"I wish it need not have happened in my time," said Frodo.<br>
+      "So do I," said Gandalf, "and so do all who live to see such times. But that is not for them to decide. 
+      All we have to decide is what to do with the time that is given us." – J.R.R. Tolkien</p>
+    </footer>
+  </div>
+
+  <script>
+    // Glitch button functionality
+    let clickCount = 0;
+    function handleGlitchButtonClick() {
+      clickCount++;
+      document.body.classList.add('glitch');
+      setTimeout(() => {
+        document.body.classList.remove('glitch');
+      }, 300);
+      if (clickCount === 3) {
+        window.location.href = 'truth.html';
+      } else {
+        document.getElementById('glitchDialog').style.display = 'block';
+      }
+    }
+    function closeDialog() {
+      document.getElementById('glitchDialog').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

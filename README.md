@@ -56,7 +56,7 @@ Generate the HTML website from the scraped data:
 python site_generator.py
 ```
 
-This will create `carolina_theatre_schedule.html` with a clean, organized view of all showtimes.
+This will create `index.html` with a clean, organized view of all showtimes.
 
 You can also specify a custom output path:
 ```bash
