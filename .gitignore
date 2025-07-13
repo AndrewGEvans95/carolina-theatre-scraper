@@ -11,3 +11,4 @@ env/
 *.db
 
 CLAUDE.md
+.DS_Store
