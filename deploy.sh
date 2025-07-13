@@ -89,15 +89,20 @@ if ! id "$APP_USER" &>/dev/null; then
     useradd -r -d "$APP_DIR" -s /bin/bash "$APP_USER"
 fi
 
+# Add application user to www-data group for web directory access
+usermod -a -G www-data "$APP_USER"
+
 # Create directories
 echo -e "${YELLOW}Creating application directories...${NC}"
 mkdir -p "$APP_DIR"
 mkdir -p "$LOG_DIR"
 mkdir -p "$WEB_DIR"
 
-# Set ownership
+# Set ownership and permissions
 chown -R "$APP_USER:$APP_USER" "$APP_DIR"
 chown -R "$APP_USER:$APP_USER" "$LOG_DIR"
+chown -R "$APP_USER:www-data" "$WEB_DIR"
+chmod -R 775 "$WEB_DIR"
 
 # Copy application files
 echo -e "${YELLOW}Setting up application files...${NC}"

@@ -75,6 +75,11 @@ sudo /opt/carolina-theatre-scraper/manual_run.sh
 sudo bash /opt/carolina-theatre-scraper/fix_chrome.sh
 ```
 
+**Permission errors with /var/www/html:**
+```bash
+sudo bash /opt/carolina-theatre-scraper/fix_permissions.sh
+```
+
 **Verify cron is running:**
 ```bash
 sudo systemctl status cron
