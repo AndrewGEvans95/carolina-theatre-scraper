@@ -33,14 +33,17 @@ fi
 # Create cron job for the application user
 echo -e "${YELLOW}Creating cron job...${NC}"
 
-# Create a temporary cron file
-TEMP_CRON=$(mktemp)
+# Create a temporary cron file in the app directory (where we have permissions)
+TEMP_CRON="$APP_DIR/temp_cron_$$"
 
 # Get existing cron jobs for the user (if any)
-sudo -u "$APP_USER" crontab -l 2>/dev/null > "$TEMP_CRON" || true
+sudo -u "$APP_USER" crontab -l 2>/dev/null > "$TEMP_CRON" || touch "$TEMP_CRON"
+
+# Set proper ownership for the temp file
+chown "$APP_USER:$APP_USER" "$TEMP_CRON"
 
 # Remove any existing carolina-theatre-scraper cron jobs
-sed -i '/carolina-theatre-scraper/d' "$TEMP_CRON"
+sed -i '/carolina-theatre-scraper/d' "$TEMP_CRON" 2>/dev/null || true
 
 # Add new cron job
 echo "$CRON_SCHEDULE $APP_DIR/run_scraper.sh # carolina-theatre-scraper" >> "$TEMP_CRON"
@@ -49,7 +52,7 @@ echo "$CRON_SCHEDULE $APP_DIR/run_scraper.sh # carolina-theatre-scraper" >> "$TE
 sudo -u "$APP_USER" crontab "$TEMP_CRON"
 
 # Clean up
-rm "$TEMP_CRON"
+rm -f "$TEMP_CRON"
 
 # Ensure cron service is running
 systemctl enable cron
