@@ -70,8 +70,18 @@ tail -20 /var/log/carolina-scraper/scraper-*.log
 sudo /opt/carolina-theatre-scraper/manual_run.sh
 ```
 
+**Chrome crashes or "tab crashed" errors:**
+```bash
+sudo bash /opt/carolina-theatre-scraper/fix_chrome.sh
+```
+
 **Verify cron is running:**
 ```bash
 sudo systemctl status cron
 sudo -u carolina-scraper crontab -l
+```
+
+**Test Chrome directly:**
+```bash
+sudo -u carolina-scraper google-chrome-stable --headless --no-sandbox --disable-gpu --dump-dom https://www.google.com
 ```

@@ -102,6 +102,15 @@ def get_movie_links():
     
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # Run Chrome in the background
+    options.add_argument("--no-sandbox")  # Bypass OS security model
+    options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+    options.add_argument("--disable-gpu")  # Disable GPU acceleration
+    options.add_argument("--disable-extensions")  # Disable extensions
+    options.add_argument("--disable-plugins")  # Disable plugins
+    options.add_argument("--disable-images")  # Don't load images
+    options.add_argument("--remote-debugging-port=9222")  # Enable remote debugging
+    options.add_argument("--window-size=1920,1080")  # Set window size
+    options.add_argument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
     movie_links = []
     
     for url in urls:

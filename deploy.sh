@@ -44,14 +44,44 @@ apt-get install -y \
     cron \
     logrotate
 
-# Install Google Chrome
-echo -e "${YELLOW}Installing Google Chrome...${NC}"
+# Install Google Chrome and dependencies
+echo -e "${YELLOW}Installing Google Chrome and dependencies...${NC}"
 if ! command -v google-chrome &> /dev/null; then
+    # Add Chrome repository
     wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
     echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
     apt-get update
-    apt-get install -y google-chrome-stable
+    
+    # Install Chrome and required dependencies
+    apt-get install -y \
+        google-chrome-stable \
+        fonts-liberation \
+        libasound2 \
+        libatk-bridge2.0-0 \
+        libdrm2 \
+        libgtk-3-0 \
+        libgtk-4-1 \
+        libu2f-udev \
+        libvulkan1 \
+        xdg-utils
 fi
+
+# Install additional dependencies for headless Chrome
+echo -e "${YELLOW}Installing additional Chrome dependencies...${NC}"
+apt-get install -y \
+    libnss3 \
+    libgconf-2-4 \
+    libxss1 \
+    libappindicator1 \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libdrm2 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1
 
 # Create application user
 echo -e "${YELLOW}Creating application user...${NC}"
@@ -105,6 +135,8 @@ echo "$(date): Starting Carolina Theatre scraper..."
 
 # Set Chrome options for headless server environment
 export DISPLAY=:99
+export CHROME_BIN=/usr/bin/google-chrome-stable
+export CHROME_PATH=/usr/bin/google-chrome-stable
 
 # Run the scraper
 python3 movie_scraper.py
