@@ -16,7 +16,7 @@
       <a href="about.html" class="tab">Why This Exists</a>
     </div>
     
-    <div id="otherTimesDialog" class="other-times-dialog">
+    <div id="otherTimesDialog" class="other-times-dialog hidden">
       <div class='other-times-dialog-title'></div>
       <div class="other-times-list"></div>
       <button onclick="closeOtherTimesDialog()">Close</button>
@@ -123,12 +123,18 @@
       }
       dialog.querySelector('.other-times-list').innerHTML = list;
       dialog.querySelector('.other-times-dialog-title').innerText = `Other Showtimes for: ${title}`;
-      dialog.style.display = 'block';
+      dialog.classList.remove("hidden")
     }
     
     function closeOtherTimesDialog() {
-      document.getElementById('otherTimesDialog').style.display = 'none';
+      document.getElementById('otherTimesDialog').classList.add("hidden");
     }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeOtherTimesDialog();
+      }
+    });
     
     document.addEventListener('DOMContentLoaded', function() {
       let seenShowtimes = new Set();

@@ -16,6 +16,11 @@ body {
   /* Removed glow effects for better readability */
 }
 
+a { 
+  text-decoration: none;
+  color: inherit;
+}
+
 .container {
   width: 90%;
   max-width: 1200px;
@@ -456,9 +461,15 @@ footer {
   /* Video game styling: consistent blue theme */
 }
 
+.hidden {
+  display: none !important;
+}
+
 .other-times-dialog {
-  display: none;
+  display: flex;
+  flex-direction: column;
   position: fixed;
+  height: 600px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -485,6 +496,7 @@ footer {
 .other-times-list {
   margin-bottom: 16px;
   text-align: left;
+  overflow: scroll;
 }
 
 .other-times-link {
