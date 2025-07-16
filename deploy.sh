@@ -161,6 +161,8 @@ if [ $? -eq 0 ]; then
         chmod 644 /var/www/html/styles.css 2>/dev/null || true
         chmod 644 /var/www/html/daily-cinema.html 2>/dev/null || true
         chmod 644 /var/www/html/about.html 2>/dev/null || true
+        chmod 644 /var/www/html/truth.html 2>/dev/null || true
+        chmod 644 /var/www/html/drawing.png 2>/dev/null || true
         
         # Generate JSON (optional)
         python3 json_generator.py > /var/www/html/showtimes.json 2>/dev/null || true

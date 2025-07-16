@@ -334,7 +334,7 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
         print(f"Warning: CSS file '{css_source}' not found")
 
     # Copy additional HTML files to output directory
-    additional_files = ["daily-cinema.html", "about.html"]
+    additional_files = ["daily-cinema.html", "about.html", "truth.html", "drawing.png"]
     output_dir = os.path.dirname(output_path) or "."
     for filename in additional_files:
         if os.path.exists(filename):

@@ -16,3 +16,4 @@ CLAUDE.md
 *.backup*
 index.html
 movie_showtimes.csv
+index.html.*
