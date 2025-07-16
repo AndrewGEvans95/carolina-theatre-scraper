@@ -12,3 +12,7 @@ env/
 
 CLAUDE.md
 .DS_Store
+
+*.backup*
+index.html
+movie_showtimes.csv

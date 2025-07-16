@@ -16,7 +16,7 @@
       <a href="about.html" class="tab">Why This Exists</a>
     </div>
     
-    <div id="otherTimesDialog" class="other-times-dialog">
+    <div id="otherTimesDialog" class="other-times-dialog hidden">
       <div class='other-times-dialog-title'></div>
       <div class="other-times-list"></div>
       <button onclick="closeOtherTimesDialog()">Close</button>
@@ -35,6 +35,8 @@
         <div class="filter-group">
           <label for="dayFilter">Date:</label>
           <select id="dayFilter" onchange="filterByDay()" aria-label="Filter movies by day">
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
             <option value="all">All Days</option>
 {{DAY_FILTER_OPTIONS}}
           </select>
@@ -57,12 +59,27 @@
       var days = document.querySelectorAll(".day");
       var movieGroups = document.querySelectorAll(".movie-group");
       if (selectedGroup === "by-day") {
+        today = Date.now();
+
         days.forEach(function(day) {
-          if (selectedDay === "all" || day.getAttribute("data-date") === selectedDay) {
-            day.style.display = "";
-          } else {
-            day.style.display = "none";
+          let shown = false;
+          movieDate = Date.parse(day.getAttribute("data-date"))
+          difference = (movieDate - today) / (1000 * 60 * 60 * 24);
+
+          if (selectedDay === "week") {
+            if (difference <= 7) {
+              shown = true;
+            } 
           }
+          if (selectedDay === "month") {
+            if (difference <= 31) {
+              shown = true;
+            } 
+          }
+          else if (selectedDay === "all" || movieDate === selectedDay) {
+            shown = true;
+          }
+          day.style.display = shown ? "" : "none";
         });
         movieGroups.forEach(function(group) {
           group.style.display = "none";
@@ -90,6 +107,8 @@
             }, 3000);
           }, 100);
         }
+      } else {
+        filterByDay();
       }
     });
 
@@ -123,12 +142,18 @@
       }
       dialog.querySelector('.other-times-list').innerHTML = list;
       dialog.querySelector('.other-times-dialog-title').innerText = `Other Showtimes for: ${title}`;
-      dialog.style.display = 'block';
+      dialog.classList.remove("hidden")
     }
     
     function closeOtherTimesDialog() {
-      document.getElementById('otherTimesDialog').style.display = 'none';
+      document.getElementById('otherTimesDialog').classList.add("hidden");
     }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeOtherTimesDialog();
+      }
+    });
     
     document.addEventListener('DOMContentLoaded', function() {
       let seenShowtimes = new Set();

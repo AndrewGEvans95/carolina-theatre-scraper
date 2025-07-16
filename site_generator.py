@@ -2,6 +2,8 @@ import sqlite3
 import re
 import os
 import shutil
+import textwrap
+
 from collections import defaultdict
 from datetime import datetime, timedelta
 
@@ -109,6 +111,9 @@ def load_template(template_file="template.html"):
     except Exception as e:
         print(f"Error reading template file: {str(e)}")
         return None
+
+def reindent(text, length):
+    return textwrap.indent(textwrap.dedent(text), " " * length)
 
 def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_file="template.html"):
     # Define the output path with better defaults
@@ -224,7 +229,10 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
     # Build day filter options
     day_filter_options = ""
     for date in sorted_dates:
-        day_filter_options += f"          <option value=\"{date}\">{date}</option>\n"
+        day_filter_options += (
+            f"""<option value="{date}">{date}</option>
+            """
+        )
     
     # Build schedule content
     schedule_content = ""
@@ -232,25 +240,34 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
     # Output movies grouped by day (as before) and also grouped by movie (new).
     movie_counter = 1
     for date in sorted_dates:
-        schedule_content += f"      <div class='day' data-date='{date}'>\n"
-        schedule_content += f"        <h2>{date}</h2>\n"
+        schedule_content += (
+            f"""
+            <div class='day' data-date='{date}'>
+              <h2>{date}</h2>
+            """
+        )
         for movie in schedule_showtimes_by_date[date]:
             # Create a unique movie ID based on the title slug and counter.
             movie_slug = slugify(movie['title'])
             movie_id = f"movie-{movie_slug}-{movie_counter}"
             formatted_datetime = movie.get('formatted_datetime', '')
             schedule_content += (
-                "        <div class='movie' id='" + movie_id + "' data-movie-title='" + movie['title'] + "' data-movie-time='" + movie['time'] + "' data-movie-date='" + date + "' data-movie-cinema='" + movie['cinema'] + "' data-formatted-datetime='" + formatted_datetime + "'>"
-                f"<span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span> "
-                "<div class='movie-info'>"
-                f"<span class='movie-time'>{movie['time']}</span> "
-                f"<span class='movie-cinema'>{movie['cinema']}</span>"
-                f"<button class='other-times-btn' onclick=\"showOtherTimes('{movie['title']}', '{movie['time']}', '{date}', '{movie['cinema']}', '{movie_id}')\">Show Other Times</button>"
-                f"<button class='share-btn' onclick='copyShareLink(\"{movie_id}\", event)' title='Copy link'>🔗</button>"
-                "</div></div>\n"
+              f"""
+              <div class='movie' id='{movie_id}' data-movie-title='{movie['title']}' data-movie-time='"{movie['time']}' data-movie-date='{date}' data-movie-cinema='{movie['cinema']}' data-formatted-datetime='{formatted_datetime}'>
+                <span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span>
+                <div class='movie-info'>
+                  <span class='movie-time'>{movie['time']}</span>
+                  <span class='movie-cinema'>{movie['cinema']}</span>
+                  <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{date}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>
+                  <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>🔗</button>
+                </div>
+              </div>
+              """
             )
             movie_counter += 1
-        schedule_content += "      </div>\n"
+        schedule_content += """
+            </div>
+        """
     
     # Group movies by movie (new) (using a new div with class 'movie-group' and a h3 for the movie title).
     movie_groups = {}
@@ -267,8 +284,12 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
                 movie_groups[title].append({**movie, 'display_date': date})
     
     for (title, movies) in sorted(movie_groups.items()):
-        schedule_content += f"      <div class='movie-group' style='display:none;'>\n"
-        schedule_content += f"        <h3>{title}</h3>\n"
+        schedule_content += (
+            f"""
+            <div class='movie-group' style='display:none;'>
+              <h3>{title}</h3>
+            """)
+      
         for movie in movies:
             movie_slug = slugify(movie['title'])
             movie_id = f"movie-{movie_slug}-{movie_counter}"
@@ -276,17 +297,24 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
             day_str = movie.get("display_date", "").strip()
             formatted_datetime = movie.get('formatted_datetime', '')
             schedule_content += (
-                "        <div class='movie' id='" + movie_id + "' data-movie-title='" + movie['title'] + "' data-movie-time='" + movie['time'] + "' data-movie-date='" + day_str + "' data-movie-cinema='" + movie['cinema'] + "' data-formatted-datetime='" + formatted_datetime + "'>"
-                f"<span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span> "
+              f"""
+              <div class='movie' id='{movie_id}' data-movie-title='{movie['title']}' data-movie-time='{movie['time']}' data-movie-date='{day_str}' data-movie-cinema='{movie['cinema']}' data-formatted-datetime='{formatted_datetime}'>"
+              <span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span>
                 "<div class='movie-info'>"
-                f"<span class='movie-time'>{movie['time']} ({day_str})</span> "
-                f"<span class='movie-cinema'>{movie['cinema']}</span>"
-                f"<button class='other-times-btn' onclick=\"showOtherTimes('{movie['title']}', '{movie['time']}', '{day_str}', '{movie['cinema']}', '{movie_id}')\">Show Other Times</button>"
-                f"<button class='share-btn' onclick='copyShareLink(\"{movie_id}\", event)' title='Copy link'>🔗</button>"
-                "</div></div>\n"
+                  <span class='movie-time'>{movie['time']} ({day_str})</span>
+                  <span class='movie-cinema'>{movie['cinema']}</span>
+                  <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{day_str}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>
+                  <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>🔗</button>
+                </div>
+              </div>
+              """
             )
             movie_counter += 1
-        schedule_content += "      </div>\n"
+        schedule_content += """
+            </div>
+        """
+    
+    schedule_content = reindent(schedule_content, 5)
     
     # Replace template variables with actual content
     html_content = template_content.replace('{{DAY_FILTER_OPTIONS}}', day_filter_options)
