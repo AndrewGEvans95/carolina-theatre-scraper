@@ -188,12 +188,12 @@ h3 {
 }
 
 .share-btn {
-  background: #95a5a6;
-  color: #2c3e50;
+  background: #2c3e50;
+  color: #e4eded;
+  opacity: 0.9;
   border: 2px solid #7f8c8d;
   border-radius: 4px;
   font-family: 'Press Start 2P', cursive;
-  font-size: 10px;
   cursor: pointer;
   padding: 8px 12px;
   transition: all 0.2s ease;
@@ -203,7 +203,6 @@ h3 {
   height: 32px;
   min-width: 32px;
   flex-shrink: 0;
-  opacity: 0.7;
   /* Standardized dimensions matching other buttons */
   /* Maintains subtle styling while aligning properly */
 }
@@ -211,7 +210,7 @@ h3 {
 .share-btn:hover {
   background: #bdc3c7;
   border-color: #95a5a6;
-  opacity: 1;
+  opacity: 0.9;
 }
 
 .share-btn.copied {
@@ -482,7 +481,7 @@ footer {
   display: flex;
   flex-direction: column;
   position: fixed;
-  height: 600px;
+  height: min(80vh, 600px);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -691,7 +690,6 @@ footer {
   }
   
   .share-btn {
-    font-size: 13px;
     padding: 14px 16px;
     min-width: auto;
     width: 100%;
@@ -703,8 +701,9 @@ footer {
     border-radius: 6px;
     font-weight: bold;
     /* Full width button with larger text */
+    font-size: 16px;
   }
-  
+
   .other-times-btn {
     font-size: 13px;
     padding: 14px 16px;
@@ -886,16 +885,32 @@ footer {
     min-width: 110px;
   }
   
-  .share-btn {
-    height: 36px;
-    min-width: 36px;
-    font-size: 9px;
-  }
-  
   .filter {
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     padding: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .share-btn {
+    font-size: 0; /* hide the text and replace with icon*/
+    width: 36px;
+    height: 36px;
+  }
+
+  .share-btn::before {
+    content: '⎘';
+    font-size: 20px;
+  }
+
+  .share-btn.copied::before {
+    content: "✓";
+  }
+
+  .share-btn.error::before {
+    content: "❌";
   }
 }
 
@@ -983,7 +998,6 @@ footer {
   }
   
   .share-btn {
-    font-size: 12px;
     padding: 12px 14px;
     height: auto;
     min-height: 44px;

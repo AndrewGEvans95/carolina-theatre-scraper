@@ -1,3 +1,4 @@
+import argparse
 import sqlite3
 import re
 import os
@@ -115,7 +116,10 @@ def load_template(template_file="template.html"):
 def reindent(text, length):
     return textwrap.indent(textwrap.dedent(text), " " * length)
 
-def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_file="template.html"):
+def generate_html(db_name="movie_showtimes.db", 
+                  output_html_file=None, 
+                  template_file="template.html", 
+                  backup=True):
     # Define the output path with better defaults
     if output_html_file is None:
         # Try web directory first, then fall back to local
@@ -138,15 +142,16 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
             print("Or specify a different output path")
         return False
     
-    # Create backup of existing file if it exists
-    if os.path.exists(output_path):
-        backup_path = f"{output_path}.backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        try:
-            shutil.copy2(output_path, backup_path)
-            print(f"Created backup: {backup_path}")
-        except Exception as e:
-            print(f"Warning: Could not create backup: {str(e)}")
-            # Continue anyway since this is not critical
+    if backup:
+      # Create backup of existing file if it exists
+      if os.path.exists(output_path):
+          backup_path = f"{output_path}.backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+          try:
+              shutil.copy2(output_path, backup_path)
+              print(f"Created backup: {backup_path}")
+          except Exception as e:
+              print(f"Warning: Could not create backup: {str(e)}")
+              # Continue anyway since this is not critical
 
     # Load template
     template_content = load_template(template_file)
@@ -259,7 +264,7 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
                   <span class='movie-time'>{movie['time']}</span>
                   <span class='movie-cinema'>{movie['cinema']}</span>
                   <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{date}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>
-                  <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>🔗</button>
+                  <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>Copy Link</button>
                 </div>
               </div>
               """
@@ -304,7 +309,7 @@ def generate_html(db_name="movie_showtimes.db", output_html_file=None, template_
                   <span class='movie-time'>{movie['time']} ({day_str})</span>
                   <span class='movie-cinema'>{movie['cinema']}</span>
                   <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{day_str}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>
-                  <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>🔗</button>
+                  <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>Copy Link</button>
                 </div>
               </div>
               """
@@ -365,15 +370,25 @@ if __name__ == "__main__":
         print(f"Error: Database file '{DB_NAME}' not found!")
         print("Make sure to run the movie scraper first to create the database")
         exit(1)
+
+    parser = argparse.ArgumentParser(
+        prog="site_generator.py",
+        description="generates the static site from template.html",
+    )
+
+    parser.add_argument("-o", "--output-file")
+    parser.add_argument("--no-backup", action="store_true")
+    args = parser.parse_args()
     
     # Allow user to specify output file as command line argument
-    output_file = None
-    if len(sys.argv) > 1:
-        output_file = sys.argv[1]
+    output_file = args.output_file
+    if output_file:
         print(f"Using custom output file: {output_file}")
+
+    backup = not args.no_backup 
     
     print("Generating Carolina Theatre website from database...")
-    success = generate_html(DB_NAME, output_file)
+    success = generate_html(DB_NAME, output_file, backup=backup)
     
     if not success:
         print("\nFailed to generate and deploy the website")
