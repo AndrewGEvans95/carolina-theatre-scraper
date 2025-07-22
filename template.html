@@ -35,8 +35,8 @@
         <div class="filter-group">
           <label for="dayFilter">Date:</label>
           <select id="dayFilter" onchange="filterByDay()" aria-label="Filter movies by day">
-            <option value="week">This Week</option>
             <option value="month">This Month</option>
+            <option value="week">This Week</option>
             <option value="all">All Days</option>
 {{DAY_FILTER_OPTIONS}}
           </select>
@@ -53,43 +53,67 @@
   </div>
 
   <script>
+
+
     function filterByDay() {
       var selectedDay = document.getElementById("dayFilter").value;
       var selectedGroup = document.getElementById("groupFilter").value;
       var days = document.querySelectorAll(".day");
       var movieGroups = document.querySelectorAll(".movie-group");
-      if (selectedGroup === "by-day") {
-        today = Date.now();
+      const today = Date.now();
 
-        days.forEach(function(day) {
-          let shown = false;
-          date = day.getAttribute("data-date");
-          movieDate = Date.parse(date);
-          difference = (movieDate - today) / (1000 * 60 * 60 * 24);
-
+      function matchesDate(dateString) {
+          let movieDate = Date.parse(dateString);
+          let difference = (movieDate - today) / (1000 * 60 * 60 * 24);
           if (selectedDay === "week") {
             if (difference <= 7) {
-              shown = true;
+              return true;
             } 
-          }
-          if (selectedDay === "month") {
+          } else if (selectedDay === "month") {
             if (difference <= 31) {
-              shown = true;
+              return true;
             } 
           } else if (selectedDay === "all" || date === selectedDay) {
-            shown = true;
+            return true;
           }
-          day.style.display = shown ? "" : "none";
-        });
-        movieGroups.forEach(function(group) {
-          group.style.display = "none";
-        });
-      } else if (selectedGroup === "by-movie") {
+          return false;
+      }
+
+      function hide(element) {
+        element.classList.add("hidden");
+      }
+
+      function show(element) {
+        element.classList.remove("hidden");
+      }
+
+      if (selectedGroup === "by-day") {
         days.forEach(function(day) {
-          day.style.display = "none";
+          let date = day.getAttribute("data-date");
+          if (matchesDate(date)) {
+            show(day);
+          } else {
+            hide(day);
+          }
         });
+        movieGroups.forEach(hide);
+      } else if (selectedGroup === "by-movie") {
+        days.forEach(hide);
+        // show the group if any of the elements inside of it are inside the requested date range
         movieGroups.forEach(function(group) {
-          group.style.display = "";
+          const movies = group.querySelectorAll(".movie");
+          let anyAreVisible = false;
+          for(let movie of movies) {
+            let date = movie.getAttribute("data-movie-date");
+            if (matchesDate(date)) {
+              anyAreVisible = true;
+            }
+          }
+          if (anyAreVisible) {
+            show(group);
+          } else {
+            hide(group);
+          }
         });
       }
     }
