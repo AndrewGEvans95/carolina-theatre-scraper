@@ -63,7 +63,8 @@
 
         days.forEach(function(day) {
           let shown = false;
-          movieDate = Date.parse(day.getAttribute("data-date"))
+          date = day.getAttribute("data-date");
+          movieDate = Date.parse(date);
           difference = (movieDate - today) / (1000 * 60 * 60 * 24);
 
           if (selectedDay === "week") {
@@ -75,8 +76,7 @@
             if (difference <= 31) {
               shown = true;
             } 
-          }
-          else if (selectedDay === "all" || movieDate === selectedDay) {
+          } else if (selectedDay === "all" || date === selectedDay) {
             shown = true;
           }
           day.style.display = shown ? "" : "none";
@@ -187,6 +187,7 @@
       const url = window.location.href.split('#')[0] + '#' + movieId;
       const btn = event.currentTarget;
       const originalText = btn.innerHTML;
+      window.location.hash = movieId;
       
       function fallbackCopyToClipboard(text) {
         const textArea = document.createElement('textarea');
@@ -231,7 +232,6 @@
     }
     
     function showCopySuccess(btn, originalText) {
-      btn.innerHTML = '✓';
       btn.classList.add('copied');
       
       setTimeout(() => {
