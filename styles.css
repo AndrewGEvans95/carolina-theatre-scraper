@@ -138,10 +138,15 @@ h3 {
   background: #1e3a8a;
   border-radius: 4px;
   border: 1px solid #2980b9;
+  transition: border 500ms ease-out;
   /* Fitt's Law: larger click targets with generous padding */
   /* Golden ratio spacing: 20px padding, 12px margin */
   /* Video game styling: solid borders, blue background, white text */
   /* Enhanced mobile-friendly styling with subtle borders */
+}
+
+.movie.highlight {
+  border-color: #a8ffee;
 }
 
 .movie-title {
@@ -545,6 +550,39 @@ footer {
   background: #39ff14;
   color: #000;
 }
+
+.closeBtn {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #ff0080;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 8px #00fff7;
+}
+
+.copy-error-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111;
+  border: 2px solid #ff0080;
+  padding: 16px;
+  color: #39ff14;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  text-align: center;
+  box-shadow: 0 0 24px #00fff7;
+  z-index: 2000;
+  max-width: 90%;
+  word-break: break-all;
+}
+
+
 
 /* Mobile responsive styles - Enhanced */
 @media (max-width: 767px) {

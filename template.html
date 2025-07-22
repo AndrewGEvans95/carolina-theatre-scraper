@@ -156,7 +156,7 @@
             seenShowtimes.add(showtimeKey);
             let targetId = st.id ? st.id : '';
             const displayDate = st.date || 'Unknown Date';
-            list += `<a class='other-times-link' href='#${targetId}' onclick="closeOtherTimesDialog(); setTimeout(function(){document.getElementById('${targetId}').scrollIntoView({behavior:'smooth',block:'center'});}, 100);">${displayDate} — ${st.time} @ ${st.cinema}</a>`;
+            list += `<a class='other-times-link' href='#${targetId}' onclick="closeOtherTimesDialog('${targetId}')">${displayDate} — ${st.time} @ ${st.cinema}</a>`;
             found = true;
           }
         });
@@ -169,8 +169,19 @@
       dialog.classList.remove("hidden")
     }
     
-    function closeOtherTimesDialog() {
+    function closeOtherTimesDialog(targetId) {
       document.getElementById('otherTimesDialog').classList.add("hidden");
+
+      if (targetId) {
+        setTimeout(() => {
+          let el = document.getElementById(targetId);
+          el.scrollIntoView({behavior:'instant',block:'center'});
+          el.classList.add("highlight");
+          setTimeout(() => {
+            el.classList.remove("highlight");
+          }, 1000);
+        }, 0);
+      }
     }
 
     window.addEventListener("keydown", (e) => {
@@ -265,44 +276,16 @@
     }
     
     function showCopyError(btn, originalText) {
-      btn.innerHTML = '❌';
       btn.classList.add('error');
       
       const errorMsg = document.createElement('div');
+      const linkSpan = `<span style="user-select: all;">${window.location.href.split('#')[0] + '#' + btn.closest('.movie').id}</span>`;
       errorMsg.className = 'copy-error-message';
-      errorMsg.textContent = 'Click to copy manually: ' + window.location.href.split('#')[0] + '#' + btn.closest('.movie').id;
-      errorMsg.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #111;
-        border: 2px solid #ff0080;
-        padding: 16px;
-        color: #39ff14;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 12px;
-        text-align: center;
-        box-shadow: 0 0 24px #00fff7;
-        z-index: 2000;
-        max-width: 90%;
-        word-break: break-all;
-      `;
+      errorMsg.innerHTML = 'Click to copy manually: ' + linkSpan;
       
       const closeBtn = document.createElement('button');
       closeBtn.textContent = 'Close';
-      closeBtn.style.cssText = `
-        margin-top: 12px;
-        padding: 8px 16px;
-        background: #ff0080;
-        color: #fff;
-        border: none;
-        border-radius: 0;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 12px;
-        cursor: pointer;
-        box-shadow: 0 0 8px #00fff7;
-      `;
+      closeBtn.className = "closeBtn";
       closeBtn.onclick = () => {
         document.body.removeChild(errorMsg);
         btn.innerHTML = originalText;
