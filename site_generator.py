@@ -258,7 +258,7 @@ def generate_html(db_name="movie_showtimes.db",
             formatted_datetime = movie.get('formatted_datetime', '')
             schedule_content += (
               f"""
-              <div class='movie' id='{movie_id}' data-movie-title='{movie['title']}' data-movie-time='"{movie['time']}' data-movie-date='{date}' data-movie-cinema='{movie['cinema']}' data-formatted-datetime='{formatted_datetime}'>
+              <div class='movie' id='{movie_id}' data-movie-title='{movie['title']}' data-movie-time='{movie['time']}' data-movie-date='{date}' data-movie-cinema='{movie['cinema']}' data-formatted-datetime='{formatted_datetime}'>
                 <span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span>
                 <div class='movie-info'>
                   <span class='movie-time'>{movie['time']}</span>
@@ -291,7 +291,7 @@ def generate_html(db_name="movie_showtimes.db",
     for (title, movies) in sorted(movie_groups.items()):
         schedule_content += (
             f"""
-            <div class='movie-group' style='display:none;'>
+            <div class='movie-group hidden'>
               <h3>{title}</h3>
             """)
       
@@ -303,9 +303,8 @@ def generate_html(db_name="movie_showtimes.db",
             formatted_datetime = movie.get('formatted_datetime', '')
             schedule_content += (
               f"""
-              <div class='movie' id='{movie_id}' data-movie-title='{movie['title']}' data-movie-time='{movie['time']}' data-movie-date='{day_str}' data-movie-cinema='{movie['cinema']}' data-formatted-datetime='{formatted_datetime}'>"
-              <span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span>
-                "<div class='movie-info'>"
+              <div class='movie' id='{movie_id}' data-movie-title='{movie['title']}' data-movie-time='{movie['time']}' data-movie-date='{day_str}' data-movie-cinema='{movie['cinema']}' data-formatted-datetime='{formatted_datetime}'>
+                <div class='movie-info'>
                   <span class='movie-time'>{movie['time']} ({day_str})</span>
                   <span class='movie-cinema'>{movie['cinema']}</span>
                   <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{day_str}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>

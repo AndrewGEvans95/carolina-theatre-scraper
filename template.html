@@ -35,8 +35,8 @@
         <div class="filter-group">
           <label for="dayFilter">Date:</label>
           <select id="dayFilter" onchange="filterByDay()" aria-label="Filter movies by day">
-            <option value="week">This Week</option>
             <option value="month">This Month</option>
+            <option value="week">This Week</option>
             <option value="all">All Days</option>
 {{DAY_FILTER_OPTIONS}}
           </select>
@@ -53,43 +53,67 @@
   </div>
 
   <script>
+
+
     function filterByDay() {
       var selectedDay = document.getElementById("dayFilter").value;
       var selectedGroup = document.getElementById("groupFilter").value;
       var days = document.querySelectorAll(".day");
       var movieGroups = document.querySelectorAll(".movie-group");
-      if (selectedGroup === "by-day") {
-        today = Date.now();
+      const today = Date.now();
 
-        days.forEach(function(day) {
-          let shown = false;
-          date = day.getAttribute("data-date");
-          movieDate = Date.parse(date);
-          difference = (movieDate - today) / (1000 * 60 * 60 * 24);
-
+      function matchesDate(dateString) {
+          let movieDate = Date.parse(dateString);
+          let difference = (movieDate - today) / (1000 * 60 * 60 * 24);
           if (selectedDay === "week") {
             if (difference <= 7) {
-              shown = true;
+              return true;
             } 
-          }
-          if (selectedDay === "month") {
+          } else if (selectedDay === "month") {
             if (difference <= 31) {
-              shown = true;
+              return true;
             } 
           } else if (selectedDay === "all" || date === selectedDay) {
-            shown = true;
+            return true;
           }
-          day.style.display = shown ? "" : "none";
-        });
-        movieGroups.forEach(function(group) {
-          group.style.display = "none";
-        });
-      } else if (selectedGroup === "by-movie") {
+          return false;
+      }
+
+      function hide(element) {
+        element.classList.add("hidden");
+      }
+
+      function show(element) {
+        element.classList.remove("hidden");
+      }
+
+      if (selectedGroup === "by-day") {
         days.forEach(function(day) {
-          day.style.display = "none";
+          let date = day.getAttribute("data-date");
+          if (matchesDate(date)) {
+            show(day);
+          } else {
+            hide(day);
+          }
         });
+        movieGroups.forEach(hide);
+      } else if (selectedGroup === "by-movie") {
+        days.forEach(hide);
+        // show the group if any of the elements inside of it are inside the requested date range
         movieGroups.forEach(function(group) {
-          group.style.display = "";
+          const movies = group.querySelectorAll(".movie");
+          let anyAreVisible = false;
+          for(let movie of movies) {
+            let date = movie.getAttribute("data-movie-date");
+            if (matchesDate(date)) {
+              anyAreVisible = true;
+            }
+          }
+          if (anyAreVisible) {
+            show(group);
+          } else {
+            hide(group);
+          }
         });
       }
     }
@@ -132,7 +156,7 @@
             seenShowtimes.add(showtimeKey);
             let targetId = st.id ? st.id : '';
             const displayDate = st.date || 'Unknown Date';
-            list += `<a class='other-times-link' href='#${targetId}' onclick="closeOtherTimesDialog(); setTimeout(function(){document.getElementById('${targetId}').scrollIntoView({behavior:'smooth',block:'center'});}, 100);">${displayDate} — ${st.time} @ ${st.cinema}</a>`;
+            list += `<a class='other-times-link' href='#${targetId}' onclick="closeOtherTimesDialog('${targetId}')">${displayDate} — ${st.time} @ ${st.cinema}</a>`;
             found = true;
           }
         });
@@ -145,8 +169,19 @@
       dialog.classList.remove("hidden")
     }
     
-    function closeOtherTimesDialog() {
+    function closeOtherTimesDialog(targetId) {
       document.getElementById('otherTimesDialog').classList.add("hidden");
+
+      if (targetId) {
+        setTimeout(() => {
+          let el = document.getElementById(targetId);
+          el.scrollIntoView({behavior:'instant',block:'center'});
+          el.classList.add("highlight");
+          setTimeout(() => {
+            el.classList.remove("highlight");
+          }, 1000);
+        }, 0);
+      }
     }
 
     window.addEventListener("keydown", (e) => {
@@ -241,44 +276,16 @@
     }
     
     function showCopyError(btn, originalText) {
-      btn.innerHTML = '❌';
       btn.classList.add('error');
       
       const errorMsg = document.createElement('div');
+      const linkSpan = `<span style="user-select: all;">${window.location.href.split('#')[0] + '#' + btn.closest('.movie').id}</span>`;
       errorMsg.className = 'copy-error-message';
-      errorMsg.textContent = 'Click to copy manually: ' + window.location.href.split('#')[0] + '#' + btn.closest('.movie').id;
-      errorMsg.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #111;
-        border: 2px solid #ff0080;
-        padding: 16px;
-        color: #39ff14;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 12px;
-        text-align: center;
-        box-shadow: 0 0 24px #00fff7;
-        z-index: 2000;
-        max-width: 90%;
-        word-break: break-all;
-      `;
+      errorMsg.innerHTML = 'Click to copy manually: ' + linkSpan;
       
       const closeBtn = document.createElement('button');
       closeBtn.textContent = 'Close';
-      closeBtn.style.cssText = `
-        margin-top: 12px;
-        padding: 8px 16px;
-        background: #ff0080;
-        color: #fff;
-        border: none;
-        border-radius: 0;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 12px;
-        cursor: pointer;
-        box-shadow: 0 0 8px #00fff7;
-      `;
+      closeBtn.className = "closeBtn";
       closeBtn.onclick = () => {
         document.body.removeChild(errorMsg);
         btn.innerHTML = originalText;
