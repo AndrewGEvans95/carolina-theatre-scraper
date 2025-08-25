@@ -6,7 +6,7 @@ import shutil
 import textwrap
 
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 def slugify(title):
     """
@@ -207,8 +207,9 @@ def generate_html(db_name="movie_showtimes.db",
     for date in showtimes_by_date:
         showtimes_by_date[date].sort(key=lambda x: parse_time_from_formatted_datetime(x.get("formatted_datetime", "")))
     
-    # Get today's date (only the date part)
-    today = datetime.today().date()
+    # Get today's date (only the date part). EST vs EDT should be close enough.
+    tz = timezone(timedelta(hours=-4))
+    today = datetime.now(tz).date()
     
     # Create a sorted list of dates (as strings) that are today or in the future.
     # Use formatted datetime to determine if date is in future
