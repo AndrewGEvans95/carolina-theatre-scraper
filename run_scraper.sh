@@ -7,7 +7,8 @@ cd /opt/carolina-theatre-scraper
 source venv/bin/activate
 
 # Set up logging
-LOG_FILE="/var/log/carolina-scraper/scraper-$(date +%Y%m%d-%H%M%S).log"
+# Single appended log so logrotate can rotate and expire it
+LOG_FILE="/var/log/carolina-scraper/scraper.log"
 exec > >(tee -a "$LOG_FILE")
 exec 2>&1
 
@@ -26,7 +27,9 @@ if [ $? -eq 0 ]; then
     echo "$(date): Scraper completed successfully"
 
     # Generate the website
-    python3 site_generator.py -o /var/www/html/index.html
+    # No backup copies: they accumulate in the public web root, and the
+    # page can be regenerated from the database at any time
+    python3 site_generator.py -o /var/www/html/index.html --no-backup
 
     if [ $? -eq 0 ]; then
         echo "$(date): Website generated successfully"
@@ -40,7 +43,7 @@ if [ $? -eq 0 ]; then
         chmod 644 /var/www/html/drawing.png 2>/dev/null || true
 
         # Generate JSON (optional)
-        python3 json_generator.py > /var/www/html/showtimes.json 2>/dev/null || true
+        python3 json_generator.py /var/www/html/showtimes.json || true
         chmod 644 /var/www/html/showtimes.json 2>/dev/null || true
 
     else
