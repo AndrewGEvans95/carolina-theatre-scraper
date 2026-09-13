@@ -45,9 +45,9 @@ def get_showtimes_from_database(db_name="movie_showtimes.db"):
         print(f"Error reading from database: {e}")
         return []
 
-def generate_json(db_name="movie_showtimes.db", output_file="carolina-theatre-astro/src/data/showtimes.json"):
+def generate_json(db_name="movie_showtimes.db", output_file="showtimes.json"):
     """
-    Generate JSON file from database for Astro to consume.
+    Generate JSON file from database.
     """
     print("Reading showtimes from database...")
     showtimes_data = get_showtimes_from_database(db_name)
@@ -60,7 +60,8 @@ def generate_json(db_name="movie_showtimes.db", output_file="carolina-theatre-as
     
     # Ensure output directory exists
     output_dir = os.path.dirname(output_file)
-    os.makedirs(output_dir, exist_ok=True)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
     
     # Generate metadata
     data = {
@@ -91,16 +92,16 @@ if __name__ == "__main__":
         exit(1)
     
     # Allow user to specify output file as command line argument
-    output_file = "carolina-theatre-astro/src/data/showtimes.json"
+    output_file = "showtimes.json"
     if len(sys.argv) > 1:
         output_file = sys.argv[1]
         print(f"Using custom output file: {output_file}")
     
-    print("Generating JSON data for Astro...")
+    print("Generating JSON data...")
     success = generate_json(DB_NAME, output_file)
     
     if not success:
         print("\nFailed to generate JSON data")
         exit(1)
     
-    print("JSON data successfully generated for Astro!")
+    print("JSON data successfully generated!")
