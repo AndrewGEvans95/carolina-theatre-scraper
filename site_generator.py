@@ -326,29 +326,57 @@ def generate_html(db_name="movie_showtimes.db",
     html_content = html_content.replace('{{SCHEDULE_CONTENT}}', schedule_content)
     
     # Copy CSS file to output directory
-    css_source = "styles.css"
+    # Use absolute path to ensure we find the CSS file even when run from cron
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    css_source = os.path.join(script_dir, "styles.css")
+    
     if os.path.exists(css_source):
         output_dir = os.path.dirname(output_path) or "."
         css_dest = os.path.join(output_dir, "styles.css")
         try:
-            shutil.copy2(css_source, css_dest)
-            print(f"CSS file copied to: {css_dest}")
+            # Skip if source and destination are the same file
+            if os.path.abspath(css_source) != os.path.abspath(css_dest):
+                shutil.copy2(css_source, css_dest)
+                print(f"CSS file copied from {css_source} to: {css_dest}")
+                
+                # Ensure proper permissions for web server
+                try:
+                    os.chmod(css_dest, 0o644)
+                    print(f"CSS file permissions set to 644")
+                except Exception as perm_e:
+                    print(f"Warning: Could not set CSS file permissions: {str(perm_e)}")
+            else:
+                print(f"CSS source and destination are the same file: {css_source}")
         except Exception as e:
             print(f"Warning: Could not copy CSS file: {str(e)}")
     else:
         print(f"Warning: CSS file '{css_source}' not found")
 
     # Copy additional HTML files to output directory
-    additional_files = ["daily-cinema.html", "about.html", "truth.html", "drawing.png"]
+    additional_files = ["daily-cinema.html", "about.html", "truth.html", "drawing.png", "favicon.ico"]
     output_dir = os.path.dirname(output_path) or "."
     for filename in additional_files:
-        if os.path.exists(filename):
+        # Use absolute path to ensure we find files even when run from cron
+        source_path = os.path.join(script_dir, filename)
+        if os.path.exists(source_path):
             dest_path = os.path.join(output_dir, filename)
             try:
-                shutil.copy2(filename, dest_path)
-                print(f"Additional file copied to: {dest_path}")
+                # Skip if source and destination are the same file
+                if os.path.abspath(source_path) != os.path.abspath(dest_path):
+                    shutil.copy2(source_path, dest_path)
+                    print(f"Additional file copied from {source_path} to: {dest_path}")
+                    
+                    # Ensure proper permissions for web server
+                    try:
+                        os.chmod(dest_path, 0o644)
+                    except Exception as perm_e:
+                        print(f"Warning: Could not set permissions for {filename}: {str(perm_e)}")
+                else:
+                    print(f"Additional file source and destination are the same: {source_path}")
             except Exception as e:
                 print(f"Warning: Could not copy {filename}: {str(e)}")
+        else:
+            print(f"Warning: Additional file '{source_path}' not found")
 
     # Write the HTML file with error handling
     try:
