@@ -58,14 +58,6 @@ rm -f "$TEMP_CRON"
 systemctl enable cron
 systemctl start cron
 
-# Create a manual run script for testing
-cat > "$APP_DIR/manual_run.sh" << 'EOF'
-#!/bin/bash
-echo "Running Carolina Theatre Scraper manually..."
-sudo -u carolina-scraper /opt/carolina-theatre-scraper/run_scraper.sh
-EOF
-
-chmod +x "$APP_DIR/manual_run.sh"
 
 echo -e "${GREEN}Cron job setup completed!${NC}"
 echo -e "${YELLOW}Cron schedule: $CRON_SCHEDULE (every 6 hours)${NC}"

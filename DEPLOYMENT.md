@@ -1,74 +1,60 @@
-# Ubuntu Server Deployment Guide
+# Deployment
 
-## Quick Setup
+The site runs on a DigitalOcean droplet (Ubuntu 22.04). SSH alias: `carolinashowtimes`.
 
-1. **Deploy the application:**
-   ```bash
-   sudo bash deploy.sh
-   ```
+## Deploying changes
 
-2. **Set up automated updates:**
-   ```bash
-   sudo bash setup_cron.sh
-   ```
-
-3. **Access your website:**
-   - HTML Schedule: `https://carolinashowtimes.com`
-   - JSON API: `https://carolinashowtimes.com/showtimes.json`
-
-## What the deployment does:
-
-- Installs all system dependencies (Python, Chrome)
-- Creates dedicated user account (`carolina-scraper`)
-- Sets up application in `/opt/carolina-theatre-scraper/`
-- Uses existing nginx configuration
-- Sets up logging and log rotation
-- Runs initial test to verify everything works
-
-## Cron Schedule
-
-The scraper runs every 6 hours automatically:
-- 12:00 AM
-- 6:00 AM  
-- 12:00 PM
-- 6:00 PM
-
-## Management Commands
+Merge to `main` on GitHub, then from your machine:
 
 ```bash
-# Manual run
-sudo /opt/carolina-theatre-scraper/manual_run.sh
-
-# View logs
-tail -f /var/log/carolina-scraper/*.log
-
-# Check cron jobs
-sudo -u carolina-scraper crontab -l
-
-# Check service status
-sudo systemctl status cron
+./deploy.sh
 ```
 
-## File Locations
+This opens one SSH connection and, on the server:
+1. `git pull --ff-only origin main` in `/opt/carolina-theatre-scraper` (as `carolina-scraper`)
+2. `pip install -r requirements.txt` into the app venv
+3. Runs `manual_run.sh` (scrape + regenerate the site) so the change is live immediately
 
-- Application: `/opt/carolina-theatre-scraper/`
-- Website: `/var/www/html/index.html`
-- JSON API: `/var/www/html/showtimes.json`
-- Logs: `/var/log/carolina-scraper/`
-- Database: `/opt/carolina-theatre-scraper/movie_showtimes.db`
+Only `main` is deployed. Don't edit files in `/opt` directly — the next pull will refuse to run until those edits are removed.
+
+## How it runs
+
+- **Code:** `/opt/carolina-theatre-scraper` — git checkout owned by `carolina-scraper`
+- **Schedule:** `carolina-scraper`'s crontab runs `run_scraper.sh` every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+- **Pipeline:** `movie_scraper.py` (headless Chrome) → `movie_showtimes.db` → `site_generator.py -o /var/www/html/index.html`
+- **Web server:** Apache 2.4 serves `/var/www/html`; HTTPS via Let's Encrypt (certbot)
+- **Database:** `/opt/carolina-theatre-scraper/movie_showtimes.db` — not in git; back it up before risky changes
+- **Logs:** `/var/log/carolina-scraper/`
+
+## Management
+
+```bash
+# Run the pipeline now
+ssh carolinashowtimes /opt/carolina-theatre-scraper/manual_run.sh
+
+# Latest log
+ssh carolinashowtimes 'tail -40 "$(ls -t /var/log/carolina-scraper/*.log | head -1)"'
+
+# Cron entry
+ssh carolinashowtimes 'crontab -l -u carolina-scraper'
+```
+
+The server's firewall rate-limits SSH (ufw `LIMIT`): more than ~6 connections in 30 seconds blocks your IP briefly. Batch commands into one `ssh` call.
+
+## Setting up a new server
+
+On a fresh Ubuntu server, as root:
+
+```bash
+git clone https://github.com/AndrewGEvans95/carolina-theatre-scraper.git /tmp/cts
+cd /tmp/cts
+sudo bash provision.sh   # user, Chrome, venv, logrotate, test run
+sudo bash setup_cron.sh  # 6-hourly cron job
+```
+
+Apache and certbot are configured separately.
 
 ## Troubleshooting
-
-**Check logs for errors:**
-```bash
-ls -la /var/log/carolina-scraper/
-tail -20 /var/log/carolina-scraper/scraper-*.log
-```
-
-**Test scraper manually:**
-```bash
-sudo /opt/carolina-theatre-scraper/manual_run.sh
-```
 
 **Chrome crashes or "tab crashed" errors:**
 ```bash
@@ -78,12 +64,6 @@ sudo bash /opt/carolina-theatre-scraper/fix_chrome.sh
 **Permission errors with /var/www/html:**
 ```bash
 sudo bash /opt/carolina-theatre-scraper/fix_permissions.sh
-```
-
-**Verify cron is running:**
-```bash
-sudo systemctl status cron
-sudo -u carolina-scraper crontab -l
 ```
 
 **Test Chrome directly:**

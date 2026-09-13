@@ -17,3 +17,13 @@ CLAUDE.md
 index.html
 movie_showtimes.csv
 index.html*
+
+# Runtime state in the server checkout (/opt/carolina-theatre-scraper)
+.cache/
+.config/
+.local/
+.pki/
+.wdm/
+.bash_history
+.lesshst
+carolina-theatre-astro/
