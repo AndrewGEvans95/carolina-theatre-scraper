@@ -74,31 +74,55 @@ python site_generator.py /path/to/output.html
 
 ## Seat Availability
 
-After scraping showtimes, `movie_scraper.py` records how full each showing is.
-
-The theatre sells through Agile Ticketing, whose seat-map page exposes the
-total seat count and marks each available seat, so for reserved-seating rooms
-we can work out the percentage still for sale:
+After scraping showtimes, `movie_scraper.py` records how full each showing
+is, using the theatre's Agile Ticketing Sales API. One request returns every
+showing in the window with its inventory:
 
 ```
-seats_available / seats_total  ->  % remaining      (the rest is unavailable)
+AvailableInventory / TotalInventory  ->  % still for sale
+SoldInventory                        ->  tickets actually bought
+HoldInventory                        ->  seats the theatre is holding back
 ```
 
 Notes:
 
-- Only showings sold with reserved seating publish a seat map, which is a
-  per-showing choice rather than a property of the room: first-run films are
-  usually reserved, repertory titles are often general admission even in the
-  same cinema. General admission showings are recorded as
-  `general_admission` with no numbers, since their quantity dropdown is a
-  per-order purchase limit rather than remaining stock. In a recent check,
-  37 of 61 upcoming showings had seat counts.
-- "Unavailable" is not strictly "sold" - it also covers comps and seats the
-  theatre holds back.
-- Only showings starting within the next 14 days are checked, and each check
-  is a single page load with a short pause between them.
+- Covers **general admission and reserved seating alike**, which scraping
+  the seat maps could not: GA showings have no seat map.
+- `SoldInventory` is real sales, so "sold" no longer has to be inferred from
+  what is left over. Available + sold + held equals capacity exactly.
+- Only showings starting within the next 14 days are recorded.
 - Readings are appended to the `availability` table rather than overwritten,
   so a showing's sales can be compared over time.
+
+### Credentials
+
+The API needs keys, which are **not** in this repository. Provide them via
+the environment or a `key=value` file at one of:
+
+```
+.env                                  (local development; git-ignored)
+/etc/carolina-scraper/api.env         (the server)
+~/.config/carolina-scraper/api.env
+```
+
+```
+AGILE_APP_KEY=...
+AGILE_USER_KEY=...
+AGILE_CORP_ORG_ID=...
+AGILE_BUYER_TYPE_ID=1816    # optional; public web buyer type
+AGILE_API_BASE=...          # optional; defaults to prod3
+```
+
+Without credentials the availability step is skipped and everything else
+works as normal.
+
+### Checking by hand
+
+```bash
+python availability.py --list              # every upcoming showing
+python availability.py --showing 1034337   # one showing, raw API response
+python availability.py --bulk              # record into the database
+```
 
 ## Database Schema
 
@@ -114,8 +138,9 @@ The SQLite database contains a `showtimes` table with:
 
 And an `availability` table, one row per check:
 - `showing_id`, `checked_at` - which showing, and when it was read
-- `status` - `reserved`, `general_admission`, `multi_section`, or `no_data`
-- `seats_total`, `seats_available` - set for `reserved` showings only
+- `status` - `reserved` or `general_admission`
+- `seats_total`, `seats_available`, `seats_sold`, `seats_held` - capacity,
+  what's left, what sold, and what the theatre is holding back
 
 ## Requirements
 

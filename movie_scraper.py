@@ -143,10 +143,6 @@ def fetch_movie_showtimes(movie):
     soup = BeautifulSoup(response.text, "html.parser")
     showtimes = []
 
-    # The film page links to its ticketing event; availability.py needs that
-    # reference to find each showing's seat map
-    event_ref = availability.extract_event_ref(response.text)
-
     for date_elem in soup.select("li.showInfo__date"):
         date = date_elem.select_one(".date").text.strip() if date_elem.select_one(".date") else ""
         
@@ -167,8 +163,7 @@ def fetch_movie_showtimes(movie):
                 "time": time,  # Keep original time
                 "formatted_datetime": formatted_datetime,  # Add formatted version
                 "cinema": cinema,
-                "link": movie["link"],
-                "event_ref": event_ref
+                "link": movie["link"]
             }
             
             if showtime_entry not in showtimes:
