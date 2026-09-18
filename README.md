@@ -10,6 +10,12 @@ A simple Python tool to scrape movie showtimes from the Carolina Theatre website
 - Supports filtering by date and grouping by movie
 - Mobile-responsive design
 
+## Contributing
+
+Changes go through a branch, a PR, then `./deploy.sh`. See
+[WORKFLOW.md](WORKFLOW.md) for the exact sequence, the SSH rules for the
+server, and the verification steps - read it before your first change.
+
 ## Setup
 
 ### 1. Clone the repository
