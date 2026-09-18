@@ -16,10 +16,11 @@
       <a href="about.html" class="tab">Why This Exists</a>
     </div>
     
+    <div id="dialogOverlay" class="dialog-overlay hidden" onclick="closeOtherTimesDialog()"></div>
     <div id="otherTimesDialog" class="other-times-dialog hidden">
       <div class='other-times-dialog-title'></div>
       <div class="other-times-list"></div>
-      <button onclick="closeOtherTimesDialog()">Close</button>
+      <button class="closeBtn" onclick="closeOtherTimesDialog()">Close</button>
     </div>
     
     <!-- Movie Schedule Content -->
@@ -39,6 +40,22 @@
             <option value="week">This Week</option>
             <option value="all">All Days</option>
 {{DAY_FILTER_OPTIONS}}
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="venueFilter">Room:</label>
+          <select id="venueFilter" onchange="filterByDay()" aria-label="Filter movies by room">
+            <option value="all">All Rooms</option>
+{{VENUE_FILTER_OPTIONS}}
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="capacityFilter">Seats:</label>
+          <select id="capacityFilter" onchange="filterByDay()" aria-label="Filter movies by how full they are">
+            <option value="all">Any</option>
+            <option value="quiet">Under half full</option>
+            <option value="busy">Half full or more</option>
+            <option value="almost">Nearly sold out</option>
           </select>
         </div>
       </div>
@@ -87,33 +104,56 @@
         element.classList.remove("hidden");
       }
 
+      var selectedVenue = document.getElementById("venueFilter").value;
+      var selectedCapacity = document.getElementById("capacityFilter").value;
+
+      function matchesVenue(movie) {
+        return selectedVenue === "all" ||
+               movie.getAttribute("data-movie-cinema") === selectedVenue;
+      }
+
+      // Rows with no inventory figure can't be judged, so they drop out
+      // whenever a specific fullness is asked for.
+      function matchesCapacity(movie) {
+        if (selectedCapacity === "all") return true;
+        let full = movie.getAttribute("data-full");
+        if (full === null) return false;
+        full = parseInt(full, 10);
+        if (selectedCapacity === "quiet") return full < 50;
+        if (selectedCapacity === "busy") return full >= 50;
+        if (selectedCapacity === "almost") return full >= 90;
+        return true;
+      }
+
+      // Filtering happens per showtime, then a section is shown only if it
+      // still has something in it.
+      function applyToSection(section, sectionDate) {
+        let visible = 0;
+        section.querySelectorAll(".movie").forEach(function(movie) {
+          let date = sectionDate || movie.getAttribute("data-movie-date");
+          if (matchesDate(date) && matchesVenue(movie) && matchesCapacity(movie)) {
+            show(movie);
+            visible++;
+          } else {
+            hide(movie);
+          }
+        });
+        if (visible > 0) {
+          show(section);
+        } else {
+          hide(section);
+        }
+      }
+
       if (selectedGroup === "by-day") {
         days.forEach(function(day) {
-          let date = day.getAttribute("data-date");
-          if (matchesDate(date)) {
-            show(day);
-          } else {
-            hide(day);
-          }
+          applyToSection(day, day.getAttribute("data-date"));
         });
         movieGroups.forEach(hide);
       } else if (selectedGroup === "by-movie") {
         days.forEach(hide);
-        // show the group if any of the elements inside of it are inside the requested date range
         movieGroups.forEach(function(group) {
-          const movies = group.querySelectorAll(".movie");
-          let anyAreVisible = false;
-          for(let movie of movies) {
-            let date = movie.getAttribute("data-movie-date");
-            if (matchesDate(date)) {
-              anyAreVisible = true;
-            }
-          }
-          if (anyAreVisible) {
-            show(group);
-          } else {
-            hide(group);
-          }
+          applyToSection(group, null);
         });
       }
     }
@@ -137,7 +177,15 @@
     });
 
     let allShowtimes = {};
-    function showOtherTimes(title, currentTime, currentDate, currentCinema, currentId) {
+    // Takes only the row's id and reads the rest from its data attributes,
+    // so titles containing quotes can't break the handler.
+    function showOtherTimes(currentId) {
+      let row = document.getElementById(currentId);
+      if (!row) return;
+      let title = row.getAttribute('data-movie-title');
+      let currentTime = row.getAttribute('data-movie-time');
+      let currentDate = row.getAttribute('data-movie-date');
+      let currentCinema = row.getAttribute('data-movie-cinema');
       let dialog = document.getElementById('otherTimesDialog');
       let list = '';
       let found = false;
@@ -166,11 +214,13 @@
       }
       dialog.querySelector('.other-times-list').innerHTML = list;
       dialog.querySelector('.other-times-dialog-title').innerText = `Other Showtimes for: ${title}`;
-      dialog.classList.remove("hidden")
+      dialog.classList.remove("hidden");
+      document.getElementById('dialogOverlay').classList.remove("hidden");
     }
-    
+
     function closeOtherTimesDialog(targetId) {
       document.getElementById('otherTimesDialog').classList.add("hidden");
+      document.getElementById('dialogOverlay').classList.add("hidden");
 
       if (targetId) {
         setTimeout(() => {
