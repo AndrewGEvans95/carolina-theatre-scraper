@@ -36,3 +36,7 @@ har_files/
 
 # API credentials - never commit
 .env
+
+# Generated power dashboard
+power.html
+power.json
