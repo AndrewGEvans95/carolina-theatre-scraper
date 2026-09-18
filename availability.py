@@ -289,7 +289,10 @@ def save_snapshots(db_name, snapshots):
     """Store one availability reading per showing."""
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-    checked_at = theatre_now().strftime("%Y-%m-%d %H:%M:%S")
+    # Deliberately the server clock, not theatre time: this only records
+    # when the check ran, and readers pick the newest row by string order.
+    # Mixing the two clocks would make a fresh row sort below an older one.
+    checked_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     for snapshot in snapshots:
         cursor.execute('''
