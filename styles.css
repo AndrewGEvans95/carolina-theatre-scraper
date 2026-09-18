@@ -766,3 +766,270 @@ footer {
   .movie-title { font-size: 16px; }
   .movie-time { width: 84px; font-size: 15px; }
 }
+
+/* ═══════════════════════════════════════════════════
+   POWER DASHBOARD (power.html)
+   Denser than the schedule but the same kit: square
+   borders, Press Start 2P, the same palette. Numbers
+   lead; labels stay small and quiet.
+═══════════════════════════════════════════════════ */
+.power-intro {
+  text-align: left;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #7dd3fc;
+  margin: 0 0 32px 0;
+}
+
+.power-intro a { color: #f39c12; text-decoration: underline; }
+
+/* ── HUD tiles ── */
+.hud {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.ptile {
+  background: #0f3460;
+  border: 2px solid #3498db;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ptile-label { font-size: 9px; color: #3498db; }
+
+.ptile-value { font-size: 20px; color: #f39c12; }
+
+.hud-note {
+  text-align: left;
+  font-size: 9px;
+  color: #95a5a6;
+  margin: 0 0 32px 0;
+}
+
+/* ── Board ── */
+.board { text-align: left; }
+
+.pshow {
+  background: #0f3460;
+  border: 2px solid #2980b9;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.pshow-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.pshow-when {
+  font-size: 12px;
+  color: #f39c12;
+  white-space: nowrap;
+}
+
+.pshow-title {
+  font-family: 'Press Start 2P', cursive;
+  font-weight: normal;
+  font-size: 13px;
+  color: #7dd3fc;
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pshow-title a { color: #7dd3fc; }
+.pshow-title a:hover { color: #38bdf8; text-decoration: underline; }
+
+.pshow-venue,
+.pshow-mode {
+  font-size: 8px;
+  padding: 4px 8px;
+  border: 1px solid #3498db;
+  color: #ecf0f1;
+  background: #2c3e50;
+  white-space: nowrap;
+}
+
+.pshow-venue[data-venue="Cinema One"] { border-color: #3498db; color: #a9d6f5; }
+.pshow-venue[data-venue="Cinema Two"] { border-color: #27ae60; color: #a8e6cf; }
+.pshow-venue[data-venue="Cinema Three"] { border-color: #9b59b6; color: #e0c3f5; }
+.pshow-venue[data-venue="Fletcher Hall"] { border-color: #f39c12; color: #ffe0b2; }
+
+.pshow-mode-reserved { border-color: #e94560; color: #ff9aa9; }
+.pshow-mode-ga { border-color: #7f8c8d; color: #cfd8dc; }
+
+/* Status bar, not a chart widget: square, one fill, label over the top */
+.pshow-bar {
+  position: relative;
+  height: 26px;
+  border: 1px solid #3498db;
+  background: #1b2a3a;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.pshow-bar-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  background: #e94560;
+  z-index: 0;
+}
+
+.pshow-bar[data-level="low"] .pshow-bar-fill { background: #27ae60; }
+.pshow-bar[data-level="mid"] .pshow-bar-fill { background: #f1c40f; }
+.pshow-bar[data-level="high"] .pshow-bar-fill { background: #e67e22; }
+.pshow-bar[data-level="full"] .pshow-bar-fill { background: #e74c3c; }
+.pshow-bar[data-level="unknown"] .pshow-bar-fill { background: #2c3e50; }
+
+.pshow-bar-label {
+  position: relative;
+  z-index: 1;
+  font-size: 9px;
+  color: #ecf0f1;
+  text-shadow: 0 0 3px #000, 0 0 3px #000;
+}
+
+/* ── Stat grid ── */
+.pshow-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 12px;
+  margin: 0 0 12px 0;
+}
+
+.pstat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 2px solid #2c3e50;
+  padding-left: 10px;
+}
+
+.pstat dt {
+  font-size: 8px;
+  color: #3498db;
+}
+
+.pstat dd {
+  margin: 0;
+  font-size: 13px;
+  color: #ecf0f1;
+}
+
+/* List price is context; the charged price is what you actually pay */
+.pstat-quiet dd { color: #95a5a6; font-size: 11px; }
+.pstat-strong dd { color: #f39c12; }
+
+.pshow-flags {
+  font-size: 8px;
+  color: #95a5a6;
+  line-height: 1.8;
+}
+
+.board-note {
+  text-align: left;
+  font-size: 9px;
+  color: #95a5a6;
+  margin: 0 0 40px 0;
+}
+
+.pempty {
+  border: 2px solid #e94560;
+  padding: 40px;
+  text-align: center;
+  font-size: 12px;
+  color: #e94560;
+}
+
+/* ── Insights ── */
+.insights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  text-align: left;
+}
+
+.pinsight {
+  background: #0f3460;
+  border: 2px solid #3498db;
+  padding: 20px;
+}
+
+.pinsight h3 {
+  font-family: 'Press Start 2P', cursive;
+  font-weight: normal;
+  font-size: 11px;
+  color: #3498db;
+  margin: 0 0 16px 0;
+}
+
+.pinsight ul { list-style: none; margin: 0; padding: 0; }
+
+.pinsight li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid #2c3e50;
+  font-size: 9px;
+}
+
+.pinsight li:first-child { border-top: none; }
+
+.pinsight-what {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #7dd3fc;
+  min-width: 0;
+}
+
+.pinsight-when { color: #95a5a6; font-size: 8px; }
+
+.pinsight-value { color: #f39c12; white-space: nowrap; }
+
+@media (max-width: 767px) {
+  .power-intro { font-size: 9px; line-height: 1.7; margin-bottom: 16px; }
+
+  .hud { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .ptile { padding: 12px 10px; gap: 8px; }
+  .ptile-label { font-size: 7px; }
+  .ptile-value { font-size: 13px; }
+  .hud-note { font-size: 7px; margin-bottom: 16px; }
+
+  .pshow { padding: 12px; margin-bottom: 10px; }
+  .pshow-head { gap: 8px; margin-bottom: 10px; }
+  .pshow-when { font-size: 10px; }
+  .pshow-title { font-size: 10px; line-height: 1.6; flex-basis: 100%; }
+  .pshow-venue, .pshow-mode { font-size: 7px; padding: 3px 6px; }
+
+  .pshow-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .pstat dt { font-size: 7px; }
+  .pstat dd { font-size: 11px; }
+  .pstat-quiet dd { font-size: 10px; }
+
+  .pshow-bar { height: 22px; }
+  .pshow-bar-label { font-size: 8px; }
+  .pshow-flags { font-size: 7px; }
+
+  .insights { grid-template-columns: 1fr; gap: 12px; }
+  .pinsight { padding: 12px; }
+  .pinsight h3 { font-size: 9px; margin-bottom: 10px; }
+  .pinsight li { font-size: 8px; }
+  .pinsight-when { font-size: 7px; }
+  .board-note { font-size: 7px; }
+}

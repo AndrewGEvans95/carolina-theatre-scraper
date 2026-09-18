@@ -20,8 +20,10 @@ stored in this repository. Without them this module does nothing, and the
 rest of the scraper carries on as normal.
 """
 
+import json
 import os
 import sqlite3
+import time
 from datetime import datetime, timedelta, timezone
 
 import requests
@@ -37,6 +39,13 @@ ITEM_TYPE_SHOWING = 1
 # bought and far-future ones have barely sold anything yet.
 LOOKAHEAD_DAYS = 14
 REQUEST_TIMEOUT_SECONDS = 30
+# Prices and order limits hardly ever change, so re-read them at most
+# this often per showing
+DETAILS_STALE_DAYS = 7
+# Pause between the per-showing detail calls, to stay gentle
+DETAIL_DELAY_SECONDS = 0.3
+# Cap on detail lookups per run so a big new listing spreads over runs
+MAX_DETAIL_FETCHES = 80
 
 # Looked for in this order; first file that exists is read. Keep these
 # outside the repository - the keys are as sensitive as passwords.
@@ -177,6 +186,8 @@ def fetch_showings(creds, lookahead_days=LOOKAHEAD_DAYS, session=None):
             "seats_held": item.get("HoldInventory"),
             "status": ("reserved" if item.get("HasReservedSeating")
                        else "general_admission"),
+            "sales_state": item.get("SalesState"),
+            "sales_message": item.get("SalesMessage") or "",
         })
     return showings
 
@@ -193,6 +204,149 @@ def fetch_showing_availability(creds, showing_id, session=None):
         "withSeats": "false",
     }, session=session)
     return payload if isinstance(payload, dict) else None
+
+
+def pick_standard_price(prices):
+    """
+    The headline ticket price out of a showing's tiers.
+
+    A showing usually lists Standard plus Senior/Student discounts. The
+    standard adult ticket is the one to lead with, so prefer a tier named
+    "Standard" and otherwise take the dearest.
+    """
+    if not prices:
+        return None
+    standard = [p for p in prices if "standard" in (p.get("name") or "").lower()]
+    return max(standard or prices, key=lambda p: p.get("charged") or 0)
+
+
+def fetch_showing_details(creds, showing_id, session=None):
+    """
+    Prices and order limits for one showing.
+
+    Two calls, because neither endpoint has everything:
+      ItemGetAvailability -> BasePrice (list) and FullPrice (charged)
+      ItemListPrices      -> MinPerOrder/MaxPerOrder, ShowAvailableQty
+    """
+    details = {"prices": [], "min_per_order": None, "max_per_order": None,
+               "show_available_qty": None, "sold_out_text": None}
+
+    availability = api_get(creds, "ItemGetAvailability", {
+        "type": ITEM_TYPE_SHOWING,
+        "itemID": showing_id,
+        "buyerTypeID": creds["buyer_type_id"],
+        "withSeats": "false",
+    }, session=session)
+
+    if isinstance(availability, dict):
+        for section in availability.get("Sections") or []:
+            for price in section.get("Prices") or []:
+                details["prices"].append({
+                    "name": price.get("Name"),
+                    "list": price.get("BasePrice"),
+                    "charged": price.get("FullPrice"),
+                    "service_fee": price.get("ServiceFeePrice"),
+                    "tax": price.get("Tax"),
+                })
+
+    limits = api_get(creds, "ItemListPrices", {
+        "type": ITEM_TYPE_SHOWING,
+        "itemID": showing_id,
+        "buyerTypeID": creds["buyer_type_id"],
+    }, session=session)
+
+    if isinstance(limits, list):
+        for group in limits:
+            if details["show_available_qty"] is None:
+                details["show_available_qty"] = group.get("ShowAvailableQty")
+                details["sold_out_text"] = group.get("SoldOutText") or None
+            for price in group.get("Prices") or []:
+                # Order limits are per price tier but in practice uniform;
+                # take the widest range on offer.
+                lo, hi = price.get("MinPerOrder"), price.get("MaxPerOrder")
+                if lo is not None:
+                    details["min_per_order"] = (lo if details["min_per_order"] is None
+                                                else min(details["min_per_order"], lo))
+                if hi is not None:
+                    details["max_per_order"] = (hi if details["max_per_order"] is None
+                                                else max(details["max_per_order"], hi))
+
+    return details
+
+
+def save_showings(db_name, showings):
+    """
+    Record the basics for each showing (from the single ItemList call),
+    leaving any price details already stored in place.
+    """
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    for showing in showings:
+        cursor.execute('''
+            INSERT INTO showings
+                (showing_id, title, venue, starts_at, seat_mode,
+                 sales_state, sales_message)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(showing_id) DO UPDATE SET
+                title = excluded.title,
+                venue = excluded.venue,
+                starts_at = excluded.starts_at,
+                seat_mode = excluded.seat_mode,
+                sales_state = excluded.sales_state,
+                sales_message = excluded.sales_message
+        ''', (showing["showing_id"], showing["title"], showing["venue"],
+              showing["starts_at"], showing["status"],
+              showing.get("sales_state"), showing.get("sales_message")))
+
+    conn.commit()
+    conn.close()
+
+
+def showings_needing_details(db_name, lookahead_days=LOOKAHEAD_DAYS,
+                             stale_days=DETAILS_STALE_DAYS):
+    """
+    Upcoming showings whose prices we've never fetched, or fetched a while
+    ago. Prices and limits barely change, so this keeps a steady-state run
+    down to the handful of newly announced showings.
+    """
+    start, end = window_bounds(lookahead_days)
+    cutoff = (theatre_now() - timedelta(days=stale_days)).strftime("%Y-%m-%d %H:%M:%S")
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT showing_id FROM showings
+        WHERE starts_at BETWEEN ? AND ?
+          AND (details_updated_at IS NULL OR details_updated_at < ?)
+        ORDER BY starts_at
+    ''', (start, end, cutoff))
+    ids = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return ids
+
+
+def save_showing_details(db_name, showing_id, details):
+    """Store the prices and order limits for one showing."""
+    standard = pick_standard_price(details["prices"])
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE showings SET
+            list_price = ?, charged_price = ?,
+            min_per_order = ?, max_per_order = ?,
+            show_available_qty = ?, sold_out_text = ?,
+            prices_json = ?, details_updated_at = ?
+        WHERE showing_id = ?
+    ''', (standard.get("list") if standard else None,
+          standard.get("charged") if standard else None,
+          details["min_per_order"], details["max_per_order"],
+          None if details["show_available_qty"] is None
+          else int(bool(details["show_available_qty"])),
+          details["sold_out_text"],
+          json.dumps(details["prices"]) if details["prices"] else None,
+          datetime.now().strftime("%Y-%m-%d %H:%M:%S"), showing_id))
+    conn.commit()
+    conn.close()
 
 
 def ensure_schema(db_name="movie_showtimes.db"):
@@ -229,6 +383,28 @@ def ensure_schema(db_name="movie_showtimes.db"):
         if column not in availability_columns:
             cursor.execute(f"ALTER TABLE availability ADD COLUMN {column} INTEGER")
             print(f"Added availability.{column}")
+
+    # Facts about a showing that barely move: prices, order limits, seating
+    # mode, sale state. One row per showing, not a time series.
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS showings (
+            showing_id TEXT PRIMARY KEY,
+            title TEXT,
+            venue TEXT,
+            starts_at TEXT,
+            seat_mode TEXT,
+            sales_state INTEGER,
+            sales_message TEXT,
+            list_price REAL,
+            charged_price REAL,
+            min_per_order INTEGER,
+            max_per_order INTEGER,
+            show_available_qty INTEGER,
+            sold_out_text TEXT,
+            prices_json TEXT,
+            details_updated_at TIMESTAMP
+        )
+    ''')
 
     conn.commit()
     conn.close()
@@ -351,16 +527,47 @@ def update_availability(db_name, showtimes=None, lookahead_days=LOOKAHEAD_DAYS,
                   f"({snapshot['venue']}): no inventory reported")
 
     save_snapshots(db_name, snapshots)
+    # Basics for every showing the API returned, including the concerts the
+    # film pages don't list - the power dashboard shows those too
+    save_showings(db_name, showings)
+
+    priced = refresh_showing_details(db_name, creds, lookahead_days,
+                                     session=session)
+
     reserved = sum(1 for s in snapshots if s["status"] == "reserved")
     print(f"Linked {linked} showtimes; availability recorded for "
           f"{len(snapshots)} showings ({reserved} reserved seating, "
           f"{len(snapshots) - reserved} general admission)")
-    return {"linked": linked, "checked": len(snapshots), "reserved": reserved}
+    return {"linked": linked, "checked": len(snapshots), "reserved": reserved,
+            "priced": priced}
+
+
+def refresh_showing_details(db_name, creds, lookahead_days=LOOKAHEAD_DAYS,
+                            session=None, limit=MAX_DETAIL_FETCHES):
+    """
+    Fetch prices and order limits for showings that lack them or whose
+    figures have gone stale. Two API calls each, so this is deliberately
+    incremental: a steady-state run only picks up newly announced showings.
+    """
+    pending = showings_needing_details(db_name, lookahead_days)[:limit]
+    if not pending:
+        return 0
+
+    print(f"Reading prices for {len(pending)} showings")
+    done = 0
+    for showing_id in pending:
+        details = fetch_showing_details(creds, showing_id, session=session)
+        if details["prices"] or details["max_per_order"] is not None:
+            save_showing_details(db_name, showing_id, details)
+            done += 1
+        time.sleep(DETAIL_DELAY_SECONDS)
+
+    print(f"Prices recorded for {done} showings")
+    return done
 
 
 if __name__ == "__main__":
     import argparse
-    import json
     import sys
 
     parser = argparse.ArgumentParser(

@@ -67,6 +67,7 @@ python site_generator.py /path/to/output.html
 
 - `movie_scraper.py` - Main scraper that fetches showtimes from Carolina Theatre website
 - `availability.py` - Reads how many seats each upcoming showing has left
+- `power_generator.py` - Builds the power dashboard (`power.html` + `power.json`)
 - `site_generator.py` - Generates HTML website from the database
 - `requirements.txt` - Python dependencies
 - `movie_showtimes.db` - SQLite database (created after first run)
@@ -122,6 +123,33 @@ works as normal.
 python availability.py --list              # every upcoming showing
 python availability.py --showing 1034337   # one showing, raw API response
 python availability.py --bulk              # record into the database
+```
+
+## Power Dashboard
+
+`power.html` is a separate page for people who want the numbers rather than
+a showtime. It lists every showing in the next 14 days with:
+
+- inventory: sold, left, held, total, and a fill bar
+- pricing: list price, charged price and the fee between them
+- seating mode (GA or reserved), order limits, and whether the theatre
+  hides its remaining quantity on the public site
+- freshness (when it was last checked) and how many tickets sold in the
+  last 6 and 24 hours, once there is enough snapshot history to say
+
+Filters for date, room and seating mode, and sorting by start time, fill,
+sold, seats left, price or 24h velocity.
+
+The same data is written next to it as `power.json`, so it can be consumed
+without scraping the page. Held seats are kept back by the theatre: neither
+sold nor for sale, which is why sold + left rarely equals capacity.
+
+Velocity shows a dash until two snapshots exist far enough apart - it is
+never inferred from a single reading.
+
+```bash
+python power_generator.py -o .        # power.html + power.json here
+python power_generator.py --days 30   # a longer window
 ```
 
 ## Database Schema

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Power Dashboard - Carolina Showtimes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Power Dashboard</h1>
+
+    <div class="tabs">
+      <a href="index.html" class="tab">Movie Schedule</a>
+      <a href="daily-cinema.html" class="tab">The Daily Cinema Club</a>
+      <a href="about.html" class="tab">Why This Exists</a>
+      <div class="tab active">Power</div>
+    </div>
+
+    <p class="power-intro">
+      Every showing in the next {{WINDOW_DAYS}} days, straight from the box
+      office: what's sold, what's left, what a seat really costs, and how
+      fast it's moving. Read as
+      <a href="power.json">power.json</a> if you'd rather have the raw data.
+    </p>
+
+    <div class="filter">
+      <div class="filter-group">
+        <label for="dateFilter">Date:</label>
+        <select id="dateFilter" onchange="applyPowerFilters()">
+          <option value="all">All {{WINDOW_DAYS}} days</option>
+          <option value="today">Today</option>
+          <option value="week">Next 7 days</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="roomFilter">Room:</label>
+        <select id="roomFilter" onchange="applyPowerFilters()">
+          <option value="all">All rooms</option>
+{{VENUE_OPTIONS}}
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="modeFilter">Seating:</label>
+        <select id="modeFilter" onchange="applyPowerFilters()">
+          <option value="all">GA + reserved</option>
+          <option value="GA">GA only</option>
+          <option value="RESERVED">Reserved only</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="sortField">Sort:</label>
+        <select id="sortField" onchange="applyPowerFilters()">
+          <option value="starts">Start time</option>
+          <option value="filled">% filled</option>
+          <option value="sold">Tickets sold</option>
+          <option value="left">Seats left</option>
+          <option value="price">Charged price</option>
+          <option value="velocity">Sold in 24h</option>
+        </select>
+      </div>
+    </div>
+
+{{HUD}}
+
+    <section class="board" id="board">
+{{BOARD}}
+    </section>
+
+    <p class="board-note" id="boardNote"></p>
+
+{{INSIGHTS}}
+
+    <footer>
+      <p>{{SHOWING_COUNT}} showings · generated {{GENERATED_AT}} ·
+      inventory and prices from the Carolina Theatre box office.<br>
+      Sold counts are real sales; held seats are kept back by the theatre and
+      are neither sold nor for sale.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Rows carry their own numbers as data attributes, so filtering and
+    // sorting are just DOM operations - no refetching, no second copy of
+    // the data in JavaScript.
+    function applyPowerFilters() {
+      const board = document.getElementById("board");
+      const rows = Array.from(board.querySelectorAll(".pshow"));
+      const date = document.getElementById("dateFilter").value;
+      const room = document.getElementById("roomFilter").value;
+      const mode = document.getElementById("modeFilter").value;
+      const sortField = document.getElementById("sortField").value;
+
+      const now = new Date();
+      const todayKey = now.getFullYear() + "-" +
+        String(now.getMonth() + 1).padStart(2, "0") + "-" +
+        String(now.getDate()).padStart(2, "0");
+
+      function matchesDate(row) {
+        const starts = row.getAttribute("data-starts") || "";
+        if (date === "all") return true;
+        if (date === "today") return starts.startsWith(todayKey);
+        if (date === "week") {
+          const when = new Date(starts.replace(" ", "T"));
+          return (when - now) / 86400000 <= 7;
+        }
+        return true;
+      }
+
+      let shown = 0;
+      rows.forEach(function(row) {
+        const ok = matchesDate(row) &&
+          (room === "all" || row.getAttribute("data-venue") === room) &&
+          (mode === "all" || row.getAttribute("data-mode") === mode);
+        row.classList.toggle("hidden", !ok);
+        if (ok) shown++;
+      });
+
+      // Start time ascending; every other sort is "most interesting first".
+      const numeric = {filled: 1, sold: 1, left: 1, price: 1, velocity: 1};
+      rows.sort(function(a, b) {
+        if (sortField === "starts") {
+          return (a.getAttribute("data-starts") || "").localeCompare(
+                  b.getAttribute("data-starts") || "");
+        }
+        if (numeric[sortField]) {
+          return parseFloat(b.getAttribute("data-" + sortField)) -
+                 parseFloat(a.getAttribute("data-" + sortField));
+        }
+        return 0;
+      });
+      rows.forEach(row => board.appendChild(row));
+
+      const note = document.getElementById("boardNote");
+      note.textContent = shown === rows.length
+        ? shown + " showings"
+        : shown + " of " + rows.length + " showings match";
+    }
+
+    document.addEventListener("DOMContentLoaded", applyPowerFilters);
+  </script>
+</body>
+</html>

@@ -46,6 +46,10 @@ if [ $? -eq 0 ]; then
         python3 json_generator.py /var/www/html/showtimes.json || true
         chmod 644 /var/www/html/showtimes.json 2>/dev/null || true
 
+        # Power dashboard: page plus its raw JSON. Non-fatal, like the
+        # JSON export - the schedule is the thing that must not break.
+        python3 power_generator.py -o /var/www/html || true
+
     else
         echo "$(date): ERROR: Website generation failed"
         exit 1
