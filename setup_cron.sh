@@ -46,7 +46,9 @@ chown "$APP_USER:$APP_USER" "$TEMP_CRON"
 sed -i '/carolina-theatre-scraper/d' "$TEMP_CRON" 2>/dev/null || true
 
 # Add new cron job
-echo "$CRON_SCHEDULE $APP_DIR/run_scraper.sh # carolina-theatre-scraper" >> "$TEMP_CRON"
+# Output goes to /var/log/carolina-scraper/scraper.log; discard it here so
+# cron doesn't mail every run to the local mailbox
+echo "$CRON_SCHEDULE $APP_DIR/run_scraper.sh >/dev/null 2>&1 # carolina-theatre-scraper" >> "$TEMP_CRON"
 
 # Install the cron job
 sudo -u "$APP_USER" crontab "$TEMP_CRON"

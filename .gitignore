@@ -27,3 +27,6 @@ index.html*
 .bash_history
 .lesshst
 carolina-theatre-astro/
+
+# Generated JSON export
+showtimes.json
