@@ -22,11 +22,15 @@ rest of the scraper carries on as normal.
 
 import os
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 
 API_BASE_DEFAULT = "https://prod3.agileticketing.net/api/sales.svc/json"
+# Showtimes are stored in theatre-local time, but the server runs on UTC.
+# Using a naive now() there would treat the next few hours of showings as
+# already past and skip them. EST vs EDT should be close enough.
+THEATRE_TZ = timezone(timedelta(hours=-4))
 # Type 1 is a showing (a single screening), as opposed to a show/package
 ITEM_TYPE_SHOWING = 1
 # Only record showings starting inside this window; past ones can't be
@@ -41,6 +45,12 @@ CREDENTIAL_FILES = (
     "/etc/carolina-scraper/api.env",
     os.path.expanduser("~/.config/carolina-scraper/api.env"),
 )
+
+
+def theatre_now():
+    """Current time where the theatre is, as a naive datetime to compare
+    against the naive values stored in the database."""
+    return datetime.now(THEATRE_TZ).replace(tzinfo=None)
 
 
 def load_credentials(env=None):
@@ -143,7 +153,7 @@ def fetch_showings(creds, lookahead_days=LOOKAHEAD_DAYS, session=None):
     Every showing in the window, with its inventory. One API call.
     Returns a list of dicts.
     """
-    now = datetime.now()
+    now = theatre_now()
     payload = api_get(creds, "ItemList", {
         "type": ITEM_TYPE_SHOWING,
         "startDate": now.strftime("%Y-%m-%d"),
@@ -226,7 +236,7 @@ def ensure_schema(db_name="movie_showtimes.db"):
 
 def window_bounds(lookahead_days=LOOKAHEAD_DAYS):
     """The period we care about: from now to the lookahead cutoff."""
-    now = datetime.now()
+    now = theatre_now()
     cutoff = now + timedelta(days=lookahead_days)
     return (now.strftime("%Y-%m-%d %H:%M"), cutoff.strftime("%Y-%m-%d %H:%M"))
 
@@ -279,7 +289,7 @@ def save_snapshots(db_name, snapshots):
     """Store one availability reading per showing."""
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-    checked_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    checked_at = theatre_now().strftime("%Y-%m-%d %H:%M:%S")
 
     for snapshot in snapshots:
         cursor.execute('''
