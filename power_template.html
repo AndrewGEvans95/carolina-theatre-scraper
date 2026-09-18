@@ -19,9 +19,7 @@
 
     <p class="power-intro">
       Every showing in the next {{WINDOW_DAYS}} days, straight from the box
-      office: what's sold, what's left, what a seat really costs, and how
-      fast it's moving. Read as
-      <a href="power.json">power.json</a> if you'd rather have the raw data.
+      office. Raw data: <a href="power.json">power.json</a>.
     </p>
 
     <div class="filter">
@@ -63,6 +61,8 @@
 
 {{HUD}}
 
+    <p class="house-rules">Same for every showing: {{HOUSE_RULES}}.</p>
+
     <section class="board" id="board">
 {{BOARD}}
     </section>
@@ -85,7 +85,9 @@
     // the data in JavaScript.
     function applyPowerFilters() {
       const board = document.getElementById("board");
-      const rows = Array.from(board.querySelectorAll(".pshow"));
+      const body = document.getElementById("boardRows");
+      if (!body) return;
+      const rows = Array.from(body.querySelectorAll(".prow"));
       const date = document.getElementById("dateFilter").value;
       const room = document.getElementById("roomFilter").value;
       const mode = document.getElementById("modeFilter").value;
@@ -129,7 +131,7 @@
         }
         return 0;
       });
-      rows.forEach(row => board.appendChild(row));
+      rows.forEach(row => body.appendChild(row));
 
       const note = document.getElementById("boardNote");
       note.textContent = shown === rows.length
