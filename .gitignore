@@ -33,3 +33,6 @@ showtimes.json
 
 # Browser captures used for research (contain session cookies)
 har_files/
+
+# API credentials - never commit
+.env

@@ -70,10 +70,11 @@ def get_showtimes_from_database(db_name="movie_showtimes.db"):
         if has_availability:
             cursor.execute("""
                 SELECT s.title, s.date, s.time, s.formatted_datetime, s.cinema, s.link,
-                       a.status, a.seats_total, a.seats_available
+                       a.status, a.seats_total, a.seats_available, a.seats_sold
                 FROM showtimes s
                 LEFT JOIN (
                     SELECT showing_id, status, seats_total, seats_available,
+                           seats_sold,
                            ROW_NUMBER() OVER (
                                PARTITION BY showing_id ORDER BY checked_at DESC
                            ) AS recency
@@ -85,7 +86,7 @@ def get_showtimes_from_database(db_name="movie_showtimes.db"):
         else:
             cursor.execute("""
                 SELECT title, date, time, formatted_datetime, cinema, link,
-                       NULL, NULL, NULL
+                       NULL, NULL, NULL, NULL
                 FROM showtimes
                 WHERE formatted_datetime IS NOT NULL
                 ORDER BY formatted_datetime
@@ -98,7 +99,7 @@ def get_showtimes_from_database(db_name="movie_showtimes.db"):
         showtimes = []
         for row in results:
             (title, original_date, original_time, formatted_datetime, cinema, link,
-             seats_status, seats_total, seats_available) = row
+             seats_status, seats_total, seats_available, seats_sold) = row
 
             # Use original date/time if available, otherwise derive from formatted_datetime
             display_date = original_date if original_date else format_date_for_display(formatted_datetime)
@@ -113,7 +114,8 @@ def get_showtimes_from_database(db_name="movie_showtimes.db"):
                 "Link": link,
                 "Seats Status": seats_status,
                 "Seats Total": seats_total,
-                "Seats Available": seats_available
+                "Seats Available": seats_available,
+                "Seats Sold": seats_sold
             })
         
         return showtimes
@@ -145,20 +147,22 @@ def reindent(text, length):
 def seats_badge(movie):
     """
     Build the "seats left" badge for a showtime, or an empty string when the
-    showing has no seat count.
+    showing has no inventory figures.
 
-    Only showings sold with reserved seating report seat counts; general
-    admission showings have nothing to report. The figure is seats still for
-    sale, so the remainder covers tickets sold plus seats the theatre holds
-    back.
+    Covers reserved seating and general admission alike, since the ticketing
+    API reports both. The badge shows seats still for sale; the tooltip adds
+    how many have actually sold, which is not simply the remainder - the
+    theatre also holds seats back.
     """
     total = movie.get("seats_total")
     available = movie.get("seats_available")
-    if movie.get("seats_status") != "reserved" or not total or available is None:
+    if not total or available is None:
         return ""
 
     remaining = round(available / total * 100)
-    sold = 100 - remaining
+    sold_count = movie.get("seats_sold")
+    sold = (round(sold_count / total * 100) if sold_count is not None
+            else 100 - remaining)
 
     # Fewer seats left means a more urgent colour
     if remaining <= 15:
@@ -168,7 +172,11 @@ def seats_badge(movie):
     else:
         level = "high"
 
-    tooltip = f"{available} of {total} seats still available - {sold}% sold"
+    if sold_count is not None:
+        tooltip = (f"{available} of {total} seats still available - "
+                   f"{sold_count} sold ({sold}%)")
+    else:
+        tooltip = f"{available} of {total} seats still available - {sold}% sold"
     return (f"<span class='movie-seats seats-{level}' title='{tooltip}' "
             f"data-seats-remaining='{remaining}' data-seats-sold='{sold}'>"
             f"{remaining}% left</span>")
@@ -260,7 +268,8 @@ def generate_html(db_name="movie_showtimes.db",
             "formatted_datetime": formatted_datetime,  # Keep for sorting
             "seats_status": row.get("Seats Status"),
             "seats_total": row.get("Seats Total"),
-            "seats_available": row.get("Seats Available")
+            "seats_available": row.get("Seats Available"),
+            "seats_sold": row.get("Seats Sold")
         })
 
     # Sort each day's movies by formatted datetime instead of parsed time

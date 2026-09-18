@@ -24,6 +24,7 @@ Only `main` is deployed. Don't edit files in `/opt` directly — the next pull w
 - **Pipeline:** `movie_scraper.py` (headless Chrome) → `movie_showtimes.db` → `site_generator.py -o /var/www/html/index.html`
 - **Web server:** Apache 2.4 serves `/var/www/html`; HTTPS via Let's Encrypt (certbot)
 - **Database:** `/opt/carolina-theatre-scraper/movie_showtimes.db` — not in git; back it up before risky changes
+- **API credentials:** `/etc/carolina-scraper/api.env` — the Agile Ticketing keys, root-owned and readable by the `carolina-scraper` group (`chmod 640`). Not in git; `deploy.sh` never touches it. Without it the availability step is skipped and the rest of the run is unaffected.
 - **Logs:** `/var/log/carolina-scraper/`
 
 ## Management
