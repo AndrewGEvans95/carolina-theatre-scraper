@@ -60,23 +60,46 @@ def get_showtimes_from_database(db_name="movie_showtimes.db"):
     try:
         conn = sqlite3.connect(db_name)
         cursor = conn.cursor()
-        
-        # Query all showtimes, ordered by formatted datetime for proper chronological order
-        cursor.execute("""
-            SELECT title, date, time, formatted_datetime, cinema, link 
-            FROM showtimes 
-            WHERE formatted_datetime IS NOT NULL 
-            ORDER BY formatted_datetime
-        """)
-        
+
+        # Attach the most recent seat count for each showing, when the
+        # scraper has recorded any (older databases have no availability)
+        has_availability = cursor.execute("""
+            SELECT 1 FROM sqlite_master WHERE type='table' AND name='availability'
+        """).fetchone() is not None
+
+        if has_availability:
+            cursor.execute("""
+                SELECT s.title, s.date, s.time, s.formatted_datetime, s.cinema, s.link,
+                       a.status, a.seats_total, a.seats_available
+                FROM showtimes s
+                LEFT JOIN (
+                    SELECT showing_id, status, seats_total, seats_available,
+                           ROW_NUMBER() OVER (
+                               PARTITION BY showing_id ORDER BY checked_at DESC
+                           ) AS recency
+                    FROM availability
+                ) a ON a.showing_id = s.showing_id AND a.recency = 1
+                WHERE s.formatted_datetime IS NOT NULL
+                ORDER BY s.formatted_datetime
+            """)
+        else:
+            cursor.execute("""
+                SELECT title, date, time, formatted_datetime, cinema, link,
+                       NULL, NULL, NULL
+                FROM showtimes
+                WHERE formatted_datetime IS NOT NULL
+                ORDER BY formatted_datetime
+            """)
+
         results = cursor.fetchall()
         conn.close()
-        
+
         # Convert to list of dictionaries
         showtimes = []
         for row in results:
-            title, original_date, original_time, formatted_datetime, cinema, link = row
-            
+            (title, original_date, original_time, formatted_datetime, cinema, link,
+             seats_status, seats_total, seats_available) = row
+
             # Use original date/time if available, otherwise derive from formatted_datetime
             display_date = original_date if original_date else format_date_for_display(formatted_datetime)
             display_time = original_time if original_time else format_time_for_display(formatted_datetime)
@@ -87,7 +110,10 @@ def get_showtimes_from_database(db_name="movie_showtimes.db"):
                 "Time": display_time,
                 "Formatted DateTime": formatted_datetime,
                 "Cinema": cinema,
-                "Link": link
+                "Link": link,
+                "Seats Status": seats_status,
+                "Seats Total": seats_total,
+                "Seats Available": seats_available
             })
         
         return showtimes
@@ -115,6 +141,37 @@ def load_template(template_file="template.html"):
 
 def reindent(text, length):
     return textwrap.indent(textwrap.dedent(text), " " * length)
+
+def seats_badge(movie):
+    """
+    Build the "seats left" badge for a showtime, or an empty string when the
+    showing has no seat count.
+
+    Only showings sold with reserved seating report seat counts; general
+    admission showings have nothing to report. The figure is seats still for
+    sale, so the remainder covers tickets sold plus seats the theatre holds
+    back.
+    """
+    total = movie.get("seats_total")
+    available = movie.get("seats_available")
+    if movie.get("seats_status") != "reserved" or not total or available is None:
+        return ""
+
+    remaining = round(available / total * 100)
+    sold = 100 - remaining
+
+    # Fewer seats left means a more urgent colour
+    if remaining <= 15:
+        level = "low"
+    elif remaining <= 50:
+        level = "medium"
+    else:
+        level = "high"
+
+    tooltip = f"{available} of {total} seats still available - {sold}% sold"
+    return (f"<span class='movie-seats seats-{level}' title='{tooltip}' "
+            f"data-seats-remaining='{remaining}' data-seats-sold='{sold}'>"
+            f"{remaining}% left</span>")
 
 def generate_html(db_name="movie_showtimes.db", 
                   output_html_file=None, 
@@ -200,7 +257,10 @@ def generate_html(db_name="movie_showtimes.db",
             "time": time_str,
             "cinema": cinema,
             "link": link,
-            "formatted_datetime": formatted_datetime  # Keep for sorting
+            "formatted_datetime": formatted_datetime,  # Keep for sorting
+            "seats_status": row.get("Seats Status"),
+            "seats_total": row.get("Seats Total"),
+            "seats_available": row.get("Seats Available")
         })
 
     # Sort each day's movies by formatted datetime instead of parsed time
@@ -264,6 +324,7 @@ def generate_html(db_name="movie_showtimes.db",
                 <div class='movie-info'>
                   <span class='movie-time'>{movie['time']}</span>
                   <span class='movie-cinema'>{movie['cinema']}</span>
+                  {seats_badge(movie)}
                   <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{date}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>
                   <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>Copy Link</button>
                 </div>
@@ -308,6 +369,7 @@ def generate_html(db_name="movie_showtimes.db",
                 <div class='movie-info'>
                   <span class='movie-time'>{movie['time']} ({day_str})</span>
                   <span class='movie-cinema'>{movie['cinema']}</span>
+                  {seats_badge(movie)}
                   <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{day_str}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>
                   <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>Copy Link</button>
                 </div>
