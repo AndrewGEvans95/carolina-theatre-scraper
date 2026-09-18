@@ -769,181 +769,206 @@ footer {
 
 /* ═══════════════════════════════════════════════════
    POWER DASHBOARD (power.html)
-   Denser than the schedule but the same kit: square
-   borders, Press Start 2P, the same palette. Numbers
-   lead; labels stay small and quiet.
+   A table, not sixty cards: numbers belong in aligned
+   columns so a column can be read down the page. Same
+   palette and font as the schedule; alignment and
+   whitespace do the work instead of borders.
 ═══════════════════════════════════════════════════ */
 .power-intro {
   text-align: left;
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.8;
   color: #7dd3fc;
-  margin: 0 0 32px 0;
+  margin: 0 0 24px 0;
 }
 
 .power-intro a { color: #f39c12; text-decoration: underline; }
 
+/* Facts identical on every row live here, once */
+.house-rules {
+  text-align: left;
+  font-size: 8px;
+  color: #95a5a6;
+  margin: 0 0 12px 0;
+  line-height: 1.8;
+}
+
 /* ── HUD tiles ── */
 .hud {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
-  margin-bottom: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
 .ptile {
   background: #0f3460;
-  border: 2px solid #3498db;
-  padding: 20px 16px;
+  border-left: 3px solid #3498db;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-start;
 }
 
-.ptile-label { font-size: 9px; color: #3498db; }
-
-.ptile-value { font-size: 20px; color: #f39c12; }
+.ptile-label { font-size: 8px; color: #3498db; }
+.ptile-value { font-size: 18px; color: #f39c12; }
 
 .hud-note {
   text-align: left;
-  font-size: 9px;
+  font-size: 8px;
   color: #95a5a6;
   margin: 0 0 32px 0;
 }
 
-/* ── Board ── */
-.board { text-align: left; }
+/* ── The board ── */
+.board { text-align: left; overflow-x: auto; }
 
-.pshow {
-  background: #0f3460;
-  border: 2px solid #2980b9;
-  padding: 18px;
-  margin-bottom: 16px;
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
 }
 
-.pshow-head {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.pshow-when {
-  font-size: 12px;
-  color: #f39c12;
-  white-space: nowrap;
-}
-
-.pshow-title {
-  font-family: 'Press Start 2P', cursive;
-  font-weight: normal;
-  font-size: 13px;
-  color: #7dd3fc;
-  margin: 0;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.pshow-title a { color: #7dd3fc; }
-.pshow-title a:hover { color: #38bdf8; text-decoration: underline; }
-
-.pshow-venue,
-.pshow-mode {
+.board-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #16213e;
+  color: #3498db;
   font-size: 8px;
-  padding: 4px 8px;
-  border: 1px solid #3498db;
-  color: #ecf0f1;
-  background: #2c3e50;
+  font-weight: normal;
+  text-align: left;
+  padding: 9px 6px;
+  border-bottom: 2px solid #3498db;
   white-space: nowrap;
 }
 
-.pshow-venue[data-venue="Cinema One"] { border-color: #3498db; color: #a9d6f5; }
-.pshow-venue[data-venue="Cinema Two"] { border-color: #27ae60; color: #a8e6cf; }
-.pshow-venue[data-venue="Cinema Three"] { border-color: #9b59b6; color: #e0c3f5; }
-.pshow-venue[data-venue="Fletcher Hall"] { border-color: #f39c12; color: #ffe0b2; }
+.board-table td {
+  padding: 11px 6px;
+  border-bottom: 1px solid #1e3a5f;
+  color: #ecf0f1;
+  vertical-align: middle;
+}
 
-.pshow-mode-reserved { border-color: #e94560; color: #ff9aa9; }
-.pshow-mode-ga { border-color: #7f8c8d; color: #cfd8dc; }
+.prow:hover td { background: #0f3460; }
 
-/* Status bar, not a chart widget: square, one fill, label over the top */
-.pshow-bar {
-  position: relative;
-  height: 26px;
-  border: 1px solid #3498db;
-  background: #1b2a3a;
+/* A quiet left edge marks the busy showings, so the eye finds them
+   while scanning without another colour in the row */
+.prow[data-level="high"] td:first-child { box-shadow: inset 3px 0 0 #e67e22; }
+.prow[data-level="full"] td:first-child { box-shadow: inset 3px 0 0 #e74c3c; }
+
+.c-when { color: #f39c12; white-space: nowrap; width: 96px; font-size: 9px; }
+
+/* One line per title: the column can't be wide enough for the longest
+   name, and ragged two-line rows destroy the scan rhythm. Full text is
+   in the link's tooltip. */
+.c-film {
+  font-size: 11px;
+  max-width: 280px;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.c-film a { color: #7dd3fc; }
+.c-film a:hover { color: #38bdf8; text-decoration: underline; }
+
+.rowflag {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 7px;
+  color: #ff9aa9;
+  border: 1px solid #e94560;
+  padding: 2px 5px;
+}
+
+.c-room { font-size: 8px; white-space: nowrap; color: #a9d6f5; }
+.c-room[data-venue="Cinema Two"] { color: #a8e6cf; }
+.c-room[data-venue="Cinema Three"] { color: #e0c3f5; }
+.c-room[data-venue="Fletcher Hall"] { color: #ffe0b2; }
+
+/* Seating mode rides along with the room rather than taking a column of
+   its own - it is a property of how this showing is sold, and the table
+   needs the width for the numbers */
+.mode {
+  margin-left: 6px;
+  font-size: 7px;
+  white-space: nowrap;
+}
+
+.mode-reserved { color: #ff9aa9; }
+.mode-ga { color: #7f8c8d; }
+
+/* Compact fill bar: wide enough to compare at a glance, not so wide it
+   turns a 6% showing into an empty canvas */
+.c-fill { width: 116px; }
+
+/* Bar and figure side by side: legible at any fill, unlike a label
+   floating on top of a mostly-empty track */
+.fill {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
+  gap: 8px;
+  cursor: help;
 }
 
-.pshow-bar-fill {
+.fill-track {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 14px;
+  background: #1b2a3a;
+  border: 1px solid #2c3e50;
+  flex: 0 0 auto;
+}
+
+.fill-bar {
   position: absolute;
   top: 0; left: 0;
   height: 100%;
-  background: #e94560;
-  z-index: 0;
+  background: #27ae60;
 }
 
-.pshow-bar[data-level="low"] .pshow-bar-fill { background: #27ae60; }
-.pshow-bar[data-level="mid"] .pshow-bar-fill { background: #f1c40f; }
-.pshow-bar[data-level="high"] .pshow-bar-fill { background: #e67e22; }
-.pshow-bar[data-level="full"] .pshow-bar-fill { background: #e74c3c; }
-.pshow-bar[data-level="unknown"] .pshow-bar-fill { background: #2c3e50; }
+.fill[data-level="mid"] .fill-bar { background: #f1c40f; }
+.fill[data-level="high"] .fill-bar { background: #e67e22; }
+.fill[data-level="full"] .fill-bar { background: #e74c3c; }
 
-.pshow-bar-label {
-  position: relative;
-  z-index: 1;
+.fill-pct { font-size: 9px; color: #ecf0f1; }
+
+.nodata { font-size: 8px; color: #7f8c8d; }
+
+.c-seats, .c-left, .c-move { text-align: right; white-space: nowrap; }
+.c-seats { width: 80px; }
+.c-left { width: 74px; }
+.c-move { width: 46px; color: #a8ffee; }
+
+.c-seats strong, .c-left strong { font-weight: normal; }
+.c-seats .of { color: #7f8c8d; font-size: 9px; }
+
+.held {
+  display: block;
+  font-size: 7px;
+  color: #f39c12;
+  margin-top: 4px;
+}
+
+/* List price is context; what you actually pay is the number that matters */
+.c-list {
+  text-align: right;
+  white-space: nowrap;
+  width: 62px;
+  color: #7f8c8d;
   font-size: 9px;
-  color: #ecf0f1;
-  text-shadow: 0 0 3px #000, 0 0 3px #000;
 }
 
-/* ── Stat grid ── */
-.pshow-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
-  gap: 12px;
-  margin: 0 0 12px 0;
-}
-
-.pstat {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border-left: 2px solid #2c3e50;
-  padding-left: 10px;
-}
-
-.pstat dt {
-  font-size: 8px;
-  color: #3498db;
-}
-
-.pstat dd {
-  margin: 0;
-  font-size: 13px;
-  color: #ecf0f1;
-}
-
-/* List price is context; the charged price is what you actually pay */
-.pstat-quiet dd { color: #95a5a6; font-size: 11px; }
-.pstat-strong dd { color: #f39c12; }
-
-.pshow-flags {
-  font-size: 8px;
-  color: #95a5a6;
-  line-height: 1.8;
-}
+.c-paid { text-align: right; white-space: nowrap; width: 66px; }
+.c-paid strong { font-weight: normal; color: #f39c12; }
 
 .board-note {
   text-align: left;
-  font-size: 9px;
+  font-size: 8px;
   color: #95a5a6;
-  margin: 0 0 40px 0;
+  margin: 12px 0 40px 0;
 }
 
 .pempty {
@@ -957,23 +982,23 @@ footer {
 /* ── Insights ── */
 .insights {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
   text-align: left;
 }
 
 .pinsight {
   background: #0f3460;
-  border: 2px solid #3498db;
-  padding: 20px;
+  border-left: 3px solid #3498db;
+  padding: 16px 18px;
 }
 
 .pinsight h3 {
   font-family: 'Press Start 2P', cursive;
   font-weight: normal;
-  font-size: 11px;
+  font-size: 9px;
   color: #3498db;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
 }
 
 .pinsight ul { list-style: none; margin: 0; padding: 0; }
@@ -983,8 +1008,8 @@ footer {
   justify-content: space-between;
   align-items: baseline;
   gap: 12px;
-  padding: 10px 0;
-  border-top: 1px solid #2c3e50;
+  padding: 8px 0;
+  border-top: 1px solid #1e3a5f;
   font-size: 9px;
 }
 
@@ -993,40 +1018,81 @@ footer {
 .pinsight-what {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   color: #7dd3fc;
   min-width: 0;
 }
 
-.pinsight-when { color: #95a5a6; font-size: 8px; }
-
+.pinsight-when { color: #95a5a6; font-size: 7px; }
 .pinsight-value { color: #f39c12; white-space: nowrap; }
 
+/* ═══════════════════════════════════════════════════
+   POWER DASHBOARD - MOBILE
+   The table becomes one card per showing: the header row
+   is hidden and each cell states its own label, so no
+   horizontal scrolling and nothing gets clipped.
+═══════════════════════════════════════════════════ */
 @media (max-width: 767px) {
-  .power-intro { font-size: 9px; line-height: 1.7; margin-bottom: 16px; }
+  .power-intro { font-size: 9px; margin-bottom: 12px; }
+  .house-rules { font-size: 7px; }
 
   .hud { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .ptile { padding: 12px 10px; gap: 8px; }
+  .ptile { padding: 10px 12px; gap: 6px; }
   .ptile-label { font-size: 7px; }
-  .ptile-value { font-size: 13px; }
+  .ptile-value { font-size: 14px; }
   .hud-note { font-size: 7px; margin-bottom: 16px; }
 
-  .pshow { padding: 12px; margin-bottom: 10px; }
-  .pshow-head { gap: 8px; margin-bottom: 10px; }
-  .pshow-when { font-size: 10px; }
-  .pshow-title { font-size: 10px; line-height: 1.6; flex-basis: 100%; }
-  .pshow-venue, .pshow-mode { font-size: 7px; padding: 3px 6px; }
+  .board { overflow-x: visible; }
+  .board-table, .board-table tbody { display: block; width: 100%; }
+  .board-table thead { display: none; }
 
-  .pshow-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .pstat dt { font-size: 7px; }
-  .pstat dd { font-size: 11px; }
-  .pstat-quiet dd { font-size: 10px; }
+  .prow {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 10px;
+    background: #0f3460;
+    border: 1px solid #2980b9;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
 
-  .pshow-bar { height: 22px; }
-  .pshow-bar-label { font-size: 8px; }
-  .pshow-flags { font-size: 7px; }
+  .prow td {
+    display: block;
+    padding: 0;
+    border: none;
+    font-size: 10px;
+  }
 
-  .insights { grid-template-columns: 1fr; gap: 12px; }
+  .prow td::before {
+    content: attr(data-label) " ";
+    color: #3498db;
+    font-size: 7px;
+    margin-right: 6px;
+  }
+
+  /* Time and title lead, each on its own full-width line */
+  .prow .c-when,
+  .prow .c-film {
+    grid-column: 1 / -1;
+  }
+  .prow .c-when { font-size: 11px; }
+  .prow .c-film { font-size: 10px; line-height: 1.6; }
+  .prow .c-when::before,
+  .prow .c-film::before { content: ""; margin: 0; }
+
+  .prow .c-fill { grid-column: 1 / -1; }
+  .prow .c-fill::before { content: ""; }
+  .prow .c-room { font-size: 8px; }
+  .prow .c-seats, .prow .c-left, .prow .c-list, .prow .c-paid, .prow .c-move {
+    text-align: left;
+    width: auto;
+  }
+  .prow[data-level="high"] td:first-child,
+  .prow[data-level="full"] td:first-child { box-shadow: none; }
+  .prow[data-level="high"] { border-left: 3px solid #e67e22; }
+  .prow[data-level="full"] { border-left: 3px solid #e74c3c; }
+
+  .insights { grid-template-columns: 1fr; gap: 10px; }
   .pinsight { padding: 12px; }
   .pinsight h3 { font-size: 9px; margin-bottom: 10px; }
   .pinsight li { font-size: 8px; }

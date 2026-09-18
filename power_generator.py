@@ -246,86 +246,125 @@ def insights(showings):
     ]
 
 
-def format_when(starts_at):
-    """"Fri, Sep 19 · 7:00pm" from a stored timestamp."""
+def format_when(starts_at, compact=False):
+    """
+    "Fri, Sep 19 · 7:00pm", or "Fri 19 · 7:00pm" when compact - the table
+    needs the date but can't afford the width of the long form.
+    """
     try:
         when = datetime.strptime(starts_at, "%Y-%m-%d %H:%M")
     except (ValueError, TypeError):
         return esc(starts_at)
-    day = when.strftime("%a, %b %d").replace(" 0", " ")
+    if compact:
+        # Numeric in the table: it reads fine in a data column and buys
+        # width for the film titles
+        day = f"{when.month}/{when.day}"
+    else:
+        day = when.strftime("%a, %b %d").replace(" 0", " ")
     clock = when.strftime("%I:%M%p").lower().lstrip("0")
     return f"{day} · {clock}"
 
 
-def stat(label, value, extra=""):
-    classes = f"pstat {extra}".strip()
-    return (f"<div class=\"{classes}\"><dt>{label}</dt>"
-            f"<dd>{value}</dd></div>")
+def house_rules(showings):
+    """
+    The facts that are the same for every showing.
+
+    Order limits, the hidden-quantity policy and the sale state are
+    identical across the listing, so stating them once beats repeating them
+    on all sixty rows. Anything that varies stays in the table.
+    """
+    rules = []
+
+    caps = {s["max_per_order"] for s in showings if s["max_per_order"]}
+    if len(caps) == 1:
+        rules.append(f"max {caps.pop()} tickets per order")
+
+    hidden = [s["show_available_qty_on_web"] for s in showings
+              if s["show_available_qty_on_web"] is not None]
+    if hidden and all(h is False for h in hidden):
+        rules.append("the theatre hides remaining counts on its own site")
+
+    not_on_sale = [s for s in showings if s["on_sale"] is False]
+    if showings and not not_on_sale:
+        rules.append("all on sale")
+
+    checked = sorted({s["checked_at"][:16] for s in showings if s["checked_at"]})
+    if len(checked) == 1:
+        rules.append(f"checked {checked[0][11:16]}")
+
+    return " · ".join(rules)
 
 
-def render_show(showing):
-    """One board entry: everything about a showing, no drill-down needed."""
+def render_row(showing):
+    """
+    One table row. Numbers sit in aligned columns so a column can be read
+    down the page; only fields that actually differ between showings are
+    here, the constant ones are stated once above the table.
+    """
     pct_filled = showing["pct_filled"]
     # Band from the same rounded figure the label shows, so a bar reading
-    # "70% FULL" isn't coloured as if it were 69%
+    # "70%" isn't coloured as if it were 69%
     shown_pct = round(pct_filled) if pct_filled is not None else None
     level = fill_level(shown_pct)
-    bar_width = pct_filled if pct_filled is not None else 0
-    bar_label = (f"{shown_pct}% FULL" if shown_pct is not None
-                 else "NO INVENTORY DATA")
 
     title = esc(showing["title"])
     if showing["ticket_url"]:
         title = (f"<a href=\"{esc(showing['ticket_url'])}\" target=\"_blank\" "
-                 f"rel=\"noopener\">{title}</a>")
+                 f"rel=\"noopener\" title=\"{esc(showing['title'])}\">{title}</a>")
 
-    flags = []
-    if showing["max_per_order"]:
-        flags.append(f"MAX {showing['max_per_order']}/ORDER")
-    if showing["show_available_qty_on_web"] is False:
-        flags.append("QTY HIDDEN ON WEB")
-    if showing["on_sale"] is False:
-        flags.append(esc(SALES_STATES.get(showing["sales_state"], "NOT ON SALE")))
-    if showing["checked_at"]:
-        flags.append(f"CHECKED {esc(showing['checked_at'][11:16])}")
+    if shown_pct is None:
+        fill_cell = '<span class="nodata">no data</span>'
+    else:
+        fill_cell = (f'<span class="fill" data-level="{level}" '
+                     f'title="{shown_pct}% of capacity sold">'
+                     f'<span class="fill-track">'
+                     f'<span class="fill-bar" style="width:{pct_filled}%"></span>'
+                     f'</span>'
+                     f'<span class="fill-pct">{shown_pct}%</span></span>')
 
-    stats = "".join([
-        stat("SOLD", showing["seats_sold"] if showing["seats_sold"] is not None else "—"),
-        stat("LEFT", showing["seats_available"] if showing["seats_available"] is not None else "—"),
-        stat("HELD", showing["seats_hold"] if showing["seats_hold"] is not None else "—"),
-        stat("TOTAL", showing["seats_total"] if showing["seats_total"] is not None else "—"),
-        stat("LIST", money(showing["list_price"]), "pstat-quiet"),
-        stat("CHARGED", money(showing["charged_price"]), "pstat-strong"),
-        stat("FEE", f"+{money(showing['fee'])[1:]}" if showing["fee"] is not None else "—"),
-        stat("+6H", signed(showing["sold_delta_6h"])),
-        stat("+24H", signed(showing["sold_delta_24h"])),
-    ])
+    sold = showing["seats_sold"]
+    total = showing["seats_total"]
+    seats = (f'<strong>{sold}</strong><span class="of">/{total}</span>'
+             if sold is not None and total else "—")
+
+    # Held seats are almost always zero; call them out only when they aren't
+    held = showing["seats_hold"]
+    left = showing["seats_available"]
+    left_cell = "—" if left is None else str(left)
+    if held:
+        left_cell += f'<span class="held" title="{held} seats held back by the theatre">+{held} held</span>'
+
+    list_cell = ("—" if showing["list_price"] is None
+                 else f'{showing["list_price"]:.2f}')
+    paid_cell = ("—" if showing["charged_price"] is None
+                 else f'<strong>{showing["charged_price"]:.2f}</strong>')
 
     mode = "RESERVED" if showing["has_reserved_seating"] else "GA"
+    flags = ""
+    if showing["on_sale"] is False:
+        flags = (f'<span class="rowflag">'
+                 f'{esc(SALES_STATES.get(showing["sales_state"], "NOT ON SALE"))}</span>')
 
     return f"""
-        <article class="pshow" data-venue="{esc(showing['venue'])}" data-mode="{mode}"
-                 data-starts="{esc(showing['starts_at'])}"
-                 data-filled="{pct_filled if pct_filled is not None else -1}"
-                 data-sold="{showing['seats_sold'] if showing['seats_sold'] is not None else -1}"
-                 data-left="{showing['seats_available'] if showing['seats_available'] is not None else -1}"
-                 data-price="{showing['charged_price'] if showing['charged_price'] is not None else -1}"
-                 data-velocity="{showing['sold_delta_24h'] if showing['sold_delta_24h'] is not None else -1}"
-                 data-onsale="{'1' if showing['on_sale'] is not False else '0'}">
-          <div class="pshow-head">
-            <span class="pshow-when">{format_when(showing['starts_at'])}</span>
-            <h3 class="pshow-title">{title}</h3>
-            <span class="pshow-venue" data-venue="{esc(showing['venue'])}">{esc(showing['venue'])}</span>
-            <span class="pshow-mode pshow-mode-{mode.lower()}">{mode}</span>
-          </div>
-          <div class="pshow-bar" data-level="{level}" title="{bar_label}">
-            <div class="pshow-bar-fill" style="width:{bar_width}%"></div>
-            <span class="pshow-bar-label">{bar_label}</span>
-          </div>
-          <dl class="pshow-stats">{stats}</dl>
-          <div class="pshow-flags">{' · '.join(flags)}</div>
-        </article>
-        """
+          <tr class="prow" data-venue="{esc(showing['venue'])}" data-mode="{mode}"
+              data-starts="{esc(showing['starts_at'])}"
+              data-filled="{pct_filled if pct_filled is not None else -1}"
+              data-sold="{sold if sold is not None else -1}"
+              data-left="{left if left is not None else -1}"
+              data-price="{showing['charged_price'] if showing['charged_price'] is not None else -1}"
+              data-velocity="{showing['sold_delta_24h'] if showing['sold_delta_24h'] is not None else -1}"
+              data-level="{level}">
+            <td class="c-when">{format_when(showing['starts_at'], compact=True)}</td>
+            <td class="c-film">{title}{flags}</td>
+            <td class="c-room" data-label="Room" data-venue="{esc(showing['venue'])}">{esc(showing['venue'])}<span class="mode mode-{mode.lower()}">{'RES' if mode == 'RESERVED' else 'GA'}</span></td>
+            <td class="c-fill">{fill_cell}</td>
+            <td class="c-seats" data-label="Sold">{seats}</td>
+            <td class="c-left" data-label="Left">{left_cell}</td>
+            <td class="c-list" data-label="List">{list_cell}</td>
+            <td class="c-paid" data-label="Paid">{paid_cell}</td>
+            <td class="c-move" data-label="6h">{signed(showing['sold_delta_6h'])}</td>
+            <td class="c-move" data-label="24h">{signed(showing['sold_delta_24h'])}</td>
+          </tr>"""
 
 
 def render_hud(summary):
@@ -381,7 +420,25 @@ def render_html(showings, template_path, lookahead_days):
 
     summary = totals(showings)
     if showings:
-        board = "".join(render_show(s) for s in showings)
+        board = f"""
+        <table class="board-table">
+          <thead>
+            <tr>
+              <th class="c-when">Time</th>
+              <th class="c-film">Film</th>
+              <th class="c-room">Room</th>
+              <th class="c-fill">Full</th>
+              <th class="c-seats">Sold</th>
+              <th class="c-left">Left</th>
+              <th class="c-list">List</th>
+              <th class="c-paid">Paid</th>
+              <th class="c-move" title="Tickets sold in the last 6 hours">6h</th>
+              <th class="c-move" title="Tickets sold in the last 24 hours">24h</th>
+            </tr>
+          </thead>
+          <tbody id="boardRows">{''.join(render_row(s) for s in showings)}
+          </tbody>
+        </table>"""
     else:
         board = ('<div class="pempty">NO DATA · RUN PIPELINE</div>')
 
@@ -396,6 +453,7 @@ def render_html(showings, template_path, lookahead_days):
             .replace("{{BOARD}}", board)
             .replace("{{INSIGHTS}}", render_insights(showings))
             .replace("{{VENUE_OPTIONS}}", venue_options)
+            .replace("{{HOUSE_RULES}}", esc(house_rules(showings)))
             .replace("{{WINDOW_DAYS}}", str(lookahead_days))
             .replace("{{GENERATED_AT}}", esc(generated))
             .replace("{{SHOWING_COUNT}}", str(len(showings))))
