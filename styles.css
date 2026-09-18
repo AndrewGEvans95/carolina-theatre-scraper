@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+/* ═══════════════════════════════════════════════════
+   Carolina Showtimes
+   Layout follows one idea: a showtime is "a time, a film,
+   and where" — so the time anchors a fixed left column,
+   the title reads as text rather than a boxed chip, and
+   everything else (room, how full, actions) is quieter.
+═══════════════════════════════════════════════════ */
+
 body {
   font-family: 'Press Start 2P', cursive, Arial, sans-serif;
   background: #1a1a2e;
@@ -12,11 +20,9 @@ body {
   box-sizing: border-box;
   overflow-x: hidden;
   line-height: 1.618;
-  /* Retro video game palette: dark purple background, red text */
-  /* Removed glow effects for better readability */
 }
 
-a { 
+a {
   text-decoration: none;
   color: inherit;
 }
@@ -28,69 +34,53 @@ a {
   background: #16213e;
   padding: 40px;
   border: 3px solid #e94560;
-  border-radius: 0;
   box-sizing: border-box;
   overflow-x: hidden;
-  /* Retro video game styling: solid borders, no glow effects */
-  /* Golden ratio proportions: container width to padding ratio */
 }
 
+/* ── Tabs ── */
 .tabs {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 24px;
   margin-bottom: 48px;
-  /* Hick's Law: clear separation between navigation options */
-  /* Golden ratio spacing: 24px gap, 48px margin */
 }
 
 .tab {
   padding: 16px 32px;
   background: #2c3e50;
   border: 2px solid #3498db;
-  border-radius: 0;
   color: #ecf0f1;
   font-family: 'Press Start 2P', cursive;
-  font-size: 14px;
-  font-weight: normal;
+  font-size: 11px;
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
   text-align: center;
-  word-wrap: break-word;
-  hyphens: auto;
   overflow-wrap: break-word;
-  /* Fitt's Law: larger, easier-to-click navigation */
-  /* Video game styling: solid borders, no rounded corners */
+  hyphens: auto;
 }
 
-.tab:hover, .tab:focus {
+.tab:hover,
+.tab:focus,
+.tab.active {
   background: #3498db;
   color: #1a1a2e;
   border-color: #2980b9;
   outline: none;
 }
 
-.tab-content {
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
-}
-
+/* ── Headings ── */
 h1 {
   color: #f39c12;
   font-family: 'Press Start 2P', cursive;
   font-weight: normal;
   font-size: 28px;
   margin-bottom: 40px;
-  /* Primary hierarchy - arcade yellow for titles */
 }
 
 h2 {
@@ -99,196 +89,242 @@ h2 {
   font-weight: normal;
   font-size: 20px;
   margin: 32px 0 24px 0;
-  /* Secondary hierarchy - consistent arcade yellow */
 }
 
-h3 {
+/* "Today" / "Tomorrow" leads the date, so the eye lands on it first */
+h2 .day-relative {
+  color: #a8ffee;
+}
+
+h2 .day-sep {
+  opacity: 0.5;
+}
+
+/* ── Filter bar ── */
+.filter {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #2c3e50;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter label {
+  font-size: 11px;
+  margin-bottom: 8px;
   color: #3498db;
-  font-family: 'Press Start 2P', cursive;
-  font-weight: normal;
-  font-size: 16px;
-  margin: 24px 0 16px 0;
-  /* Tertiary hierarchy - arcade blue */
+  display: block;
 }
 
-.day {
+.filter select {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-family: 'Press Start 2P', cursive;
+  background: #34495e;
+  color: #ecf0f1;
+  border: 2px solid #3498db;
+  border-radius: 4px;
+}
+
+/* ── Day / by-movie sections ── */
+.day,
+.movie-group {
   background: #0f3460;
   border: 2px solid #3498db;
   padding: 32px;
   margin: 32px 0;
   text-align: left;
-  /* Gestalt proximity - generous spacing between day groups */
-  /* Golden ratio spacing: 32px creates 1.618 ratio with 20px elements */
-  /* Video game styling: solid borders, darker blue background */
 }
 
-.movie {
-  padding: 20px;
-  font-size: 14px;
-  color: #ecf0f1;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e94560;
+.movie-group h3 {
+  color: #3498db;
   font-family: 'Press Start 2P', cursive;
   font-weight: normal;
-  gap: 20px;
+  font-size: 16px;
+  margin: 0 0 20px 0;
+}
+
+/* In the by-film view the heading is the title, so each row states its
+   day in the meta line instead */
+.movie-date {
+  flex: 0 0 auto;
+  font-size: 9px;
+  color: #f7c77a;
+  background: #2c3e50;
+  border: 1px solid #b9770e;
+  padding: 4px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* ── Showtime row ──
+   Three zones: time anchor (left) · title + meta (centre) · actions (right).
+   The time column is a fixed width so times line up down the page. */
+.movie {
+  padding: 14px 18px;
+  color: #ecf0f1;
+  display: flex;
+  align-items: center;
+  gap: 18px;
   margin-bottom: 12px;
   background: #1e3a8a;
   border-radius: 4px;
   border: 1px solid #2980b9;
   transition: border 500ms ease-out;
-  /* Fitt's Law: larger click targets with generous padding */
-  /* Golden ratio spacing: 20px padding, 12px margin */
-  /* Video game styling: solid borders, blue background, white text */
-  /* Enhanced mobile-friendly styling with subtle borders */
+  font-family: 'Press Start 2P', cursive;
 }
 
 .movie.highlight {
   border-color: #a8ffee;
 }
 
-.movie-title {
+.movie-time {
+  flex: 0 0 auto;
+  width: 92px;
+  text-align: right;
+  font-size: 16px;
   font-weight: bold;
-  font-size: 18px;
-  flex: 0 1 auto;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-width: 0;
-  max-width: 60%;
-  color: #7dd3fc;
-  /* Visual hierarchy: largest, boldest text for movie titles */
-  /* Soft sky blue for better contrast with date headers */
-  /* Removed harsh glow for better readability */
+  color: #f39c12;
+  white-space: nowrap;
 }
 
-.movie-title a {
-  color: #7dd3fc;
-  text-decoration: none;
+.movie-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.movie-title {
   font-weight: bold;
-  transition: color 0.2s ease;
+  font-size: 15px;
+  color: #7dd3fc;
+  min-width: 0;
+}
+
+.movie-title a,
+.movie-title span.title-text {
+  color: #7dd3fc;
+  display: inline-block;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 8px 12px;
-  border-radius: 4px;
-  background: rgba(125, 211, 252, 0.1);
-  border: 1px solid rgba(125, 211, 252, 0.3);
-  /* Fitt's Law: larger, easier-to-click target */
-  /* Visual hierarchy: bold weight for primary action */
-  /* Soft styling with subtle background and border */
+  vertical-align: bottom;
+}
+
+.movie-title a {
+  transition: color 0.2s ease;
 }
 
 .movie-title a:hover {
   color: #38bdf8;
-  background: rgba(125, 211, 252, 0.2);
-  border-color: #7dd3fc;
-  /* Brighter blue on hover without harsh effects */
+  text-decoration: underline;
 }
 
-.share-btn {
-  background: #2c3e50;
-  color: #e4eded;
-  opacity: 0.9;
-  border: 2px solid #7f8c8d;
-  border-radius: 4px;
-  font-family: 'Press Start 2P', cursive;
-  cursor: pointer;
-  padding: 8px 12px;
-  transition: all 0.2s ease;
+.movie-meta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 32px;
-  min-width: 32px;
-  flex-shrink: 0;
-  /* Standardized dimensions matching other buttons */
-  /* Maintains subtle styling while aligning properly */
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.share-btn:hover {
-  background: #bdc3c7;
-  border-color: #95a5a6;
-  opacity: 0.9;
-}
-
-.share-btn.copied {
-  background: #27ae60;
-  color: #ecf0f1;
-  border-color: #229954;
-  opacity: 1;
-}
-
-.share-btn.error {
-  background: #e74c3c;
-  color: #ecf0f1;
-  border-color: #c0392b;
-  opacity: 1;
-}
-
-.movie-info {
+.movie-actions {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 0 0 auto;
-  flex-wrap: nowrap;
+  margin-left: auto;
 }
 
-.movie-time, .movie-cinema, .movie-seats {
+/* ── Room tag ──
+   Colour-coded per room so regulars can spot their screen at a glance. */
+.movie-cinema {
   flex: 0 0 auto;
   text-align: center;
-  font-size: 12px;
+  font-size: 9px;
   color: #ecf0f1;
   background: #2c3e50;
-  border: 2px solid #3498db;
-  padding: 8px 12px;
-  border-radius: 4px;
+  border: 1px solid #3498db;
+  padding: 4px 8px;
+  border-radius: 3px;
   white-space: nowrap;
-  height: 32px;
-  min-width: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Standardized dimensions for consistent alignment */
-  /* Video game styling: solid borders, blue accent */
 }
 
-.movie-seats {
+.movie-cinema[data-venue="Cinema One"] {
+  border-color: #3498db;
+  color: #a9d6f5;
+}
+
+.movie-cinema[data-venue="Cinema Two"] {
+  border-color: #27ae60;
+  color: #a8e6cf;
+}
+
+.movie-cinema[data-venue="Cinema Three"] {
+  border-color: #9b59b6;
+  color: #e0c3f5;
+}
+
+.movie-cinema[data-venue="Fletcher Hall"] {
+  border-color: #f39c12;
+  color: #ffe0b2;
+}
+
+/* ── How full it is ──
+   A bar reads faster than a number, and the fill doubles as a
+   sparkline for the whole day when you scan the column. */
+.sold-bar {
+  position: relative;
   flex: 0 0 auto;
-  text-align: center;
-  font-size: 12px;
-  color: #ecf0f1;
-  background: #2c3e50;
-  border: 2px solid #7f8c8d;
-  padding: 8px 12px;
-  border-radius: 4px;
-  white-space: nowrap;
-  height: 32px;
-  min-width: 80px;
+  width: 104px;
+  height: 22px;
+  border: 1px solid #3498db;
+  border-radius: 3px;
+  background: #1b2a3a;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: help;
-  /* Seats still for sale; colour gets more urgent as they run out */
 }
 
-.movie-seats.seats-high {
-  border-color: #2ecc71;
-  color: #2ecc71;
+.sold-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #27ae60;
+  transition: width 0.4s ease;
+  z-index: 0;
 }
 
-.movie-seats.seats-medium {
-  border-color: #f39c12;
-  color: #f39c12;
+.sold-bar[data-level="mid"] .sold-fill  { background: #f1c40f; }
+.sold-bar[data-level="high"] .sold-fill { background: #e67e22; }
+.sold-bar[data-level="full"] .sold-fill { background: #e74c3c; }
+
+.sold-label {
+  position: relative;
+  z-index: 1;
+  font-size: 8px;
+  color: #ecf0f1;
+  white-space: nowrap;
+  text-shadow: 0 0 3px #000, 0 0 3px #000;
 }
 
-.movie-seats.seats-low {
-  border-color: #e74c3c;
-  color: #e74c3c;
-}
-
+/* ── Other Times button ── */
 .other-times-btn {
   flex: 0 0 auto;
   white-space: nowrap;
@@ -306,8 +342,6 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Standardized dimensions for consistent alignment */
-  /* Video game styling: purple accent for secondary actions */
 }
 
 .other-times-btn:hover {
@@ -315,114 +349,167 @@ h3 {
   border-color: #8e44ad;
 }
 
-.filter {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 32px;
-  padding: 24px;
+/* ── Share button: icon only, so it never competes with the title ── */
+.share-btn {
   background: #2c3e50;
-  border: 2px solid #3498db;
-  border-radius: 8px;
-  /* Rule of thirds: divide filter area into logical sections */
-  /* Gestalt grouping: related filter controls grouped together */
-}
-
-.filter select {
-  width: 100%;
-  height: 32px;
-  padding: 0 8px;
-  font-size: 11px;
-  font-family: 'Press Start 2P', cursive;
-  background: #34495e;
-  color: #ecf0f1;
-  border: 2px solid #3498db;
+  color: #e4eded;
+  opacity: 0.9;
+  border: 2px solid #7f8c8d;
   border-radius: 4px;
+  font-family: 'Press Start 2P', cursive;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  min-width: 32px;
+  width: 36px;
+  flex-shrink: 0;
+  font-size: 0;
 }
 
-.filter label {
-  font-size: 11px;
-  margin-bottom: 8px;
-  color: #3498db;
-  display: block;
+.share-btn::before { content: '⎘'; font-size: 20px; }
+.share-btn.copied::before { content: '✓'; }
+.share-btn.error::before { content: '✗'; }
+
+.share-btn:hover { background: #bdc3c7; border-color: #95a5a6; }
+.share-btn.copied { background: #27ae60; color: #ecf0f1; border-color: #229954; opacity: 1; }
+.share-btn.error { background: #e74c3c; color: #ecf0f1; border-color: #c0392b; opacity: 1; }
+
+/* ── Other Times dialog ── */
+.dialog-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1999;
 }
 
-.filter-group {
+.other-times-dialog {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-pre {
-  text-align: center;
-  background: #222;
-  padding: 10px;
-  border: 2px solid #ff0080;
-  border-radius: 0;
-  overflow-x: auto;
+  position: fixed;
+  max-height: min(80vh, 600px);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #181830;
+  border: 3px solid #00fff7;
+  padding: 28px 32px 20px 32px;
   color: #39ff14;
   font-family: 'Press Start 2P', cursive;
-  font-weight: normal;
+  font-size: 13px;
+  text-align: center;
+  box-shadow: 0 0 32px #00fff7, 0 0 8px #ff0080 inset;
+  z-index: 2000;
+  min-width: 340px;
+  max-width: 90vw;
+  border-radius: 8px;
 }
 
+.other-times-dialog-title {
+  color: #ff0080;
+  font-size: 14px;
+  margin-bottom: 16px;
+  text-shadow: 0 0 4px #00fff7;
+  word-break: break-word;
+}
+
+.other-times-list {
+  overflow-y: auto;
+  flex: 1;
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+.other-times-link {
+  display: block;
+  color: #00fff7;
+  background: #222;
+  border: 1px solid #ff0080;
+  border-radius: 4px;
+  margin: 6px 0;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-family: 'Press Start 2P', cursive;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: 0 0 6px #00fff7;
+  cursor: pointer;
+}
+
+.other-times-link:hover {
+  background: #ff0080;
+  color: #fff;
+  border: 1px solid #00fff7;
+}
+
+.closeBtn,
+.other-times-dialog button {
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: #ff0080;
+  color: #fff;
+  border: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 8px #00fff7;
+  flex-shrink: 0;
+}
+
+.closeBtn:hover,
+.other-times-dialog button:hover { background: #39ff14; color: #000; }
+
+/* ── Footer ── */
 footer {
   margin-top: 64px;
-  font-style: italic;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   opacity: 0.7;
   color: #95a5a6;
   padding: 32px;
-  /* Golden ratio spacing: 64px top margin, 32px padding */
-  /* Visual hierarchy: smallest, most subtle text */
-  /* Video game styling: subtle gray text */
+  line-height: 2;
 }
 
-/* Content organization styles */
+.hidden { display: none !important; }
+
+/* ═══════════════════════════════════════════════════
+   Other pages (about, daily cinema club, truth)
+═══════════════════════════════════════════════════ */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
 .content-section {
   max-width: 800px;
   margin: 0 auto;
   padding: 32px;
   text-align: left;
-  /* Rule of thirds: content centered in available space */
 }
 
 .text-content {
   line-height: 1.618;
   font-size: 14px;
-  /* Golden ratio line height for optimal readability */
 }
 
-.text-content p {
-  margin-bottom: 24px;
-  /* Generous spacing between paragraphs */
-}
+.text-content p { margin-bottom: 24px; }
 
-.text-content a {
-  color: #3498db;
-  text-decoration: none;
-}
+.text-content a { color: #3498db; }
 
-.text-content a:hover {
-  color: #2980b9;
-  text-decoration: underline;
-}
+.text-content a:hover { color: #2980b9; text-decoration: underline; }
 
 .upcoming-section {
   margin-top: 32px;
   padding-top: 24px;
   border-top: 1px solid #3498db;
-  /* Gestalt separation: visual grouping of related content */
 }
 
-/* Glitch button and dialog styles */
 .glitch-button {
   margin: 40px auto;
   padding: 16px 32px;
   background: #e94560;
   color: #ecf0f1;
   border: 2px solid #c0392b;
-  border-radius: 0;
   font-family: 'Press Start 2P', cursive;
   font-size: 14px;
   cursor: pointer;
@@ -431,20 +518,14 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Simplified: single call-to-action per Hick's Law */
-  /* Video game styling: solid borders, red color scheme */
 }
 
-.glitch-button:hover {
-  background: #c0392b;
-  border-color: #a93226;
-}
+.glitch-button:hover { background: #c0392b; border-color: #a93226; }
 
 .dialog {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   background: #111;
   border: 2px solid #ff0080;
@@ -463,21 +544,15 @@ footer {
   background: #ff0080;
   color: #fff;
   border: none;
-  border-radius: 0;
   font-family: 'Press Start 2P', cursive;
   font-size: 12px;
   cursor: pointer;
   box-shadow: 0 0 8px #00fff7;
 }
 
-.dialog button:hover {
-  background: #39ff14;
-  color: #000;
-}
+.dialog button:hover { background: #39ff14; color: #000; }
 
-.glitch {
-  animation: glitch 0.3s infinite;
-}
+.glitch { animation: glitch 0.3s infinite; }
 
 @keyframes glitch {
   0% { transform: translate(0); }
@@ -488,120 +563,9 @@ footer {
   100% { transform: translate(0); }
 }
 
-/* Movie grouping styles */
-.movie-group {
-  background: #0f3460;
-  border: 2px solid #3498db;
-  padding: 32px;
-  margin: 32px 0;
-  text-align: left;
-  /* Gestalt similarity: consistent spacing with .day elements */
-  /* Golden ratio spacing matches other container elements */
-  /* Video game styling: solid borders, darker blue background */
-}
-
-.movie-group h3 {
-  color: #3498db;
-  font-family: 'Press Start 2P', cursive;
-  font-weight: normal;
-  /* Video game styling: consistent blue theme */
-}
-
-.hidden {
-  display: none !important;
-}
-
-.other-times-dialog {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  height: min(80vh, 600px);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #181830;
-  border: 3px solid #00fff7;
-  padding: 28px 32px 20px 32px;
-  color: #39ff14;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 15px;
-  text-align: center;
-  box-shadow: 0 0 32px #00fff7, 0 0 8px #ff0080 inset;
-  z-index: 2000;
-  min-width: 340px;
-  border-radius: 8px;
-}
-
-.other-times-dialog-title {
-  color: #ff0080;
-  font-size: 16px;
-  margin-bottom: 12px;
-  text-shadow: 0 0 4px #00fff7;
-}
-
-.other-times-list {
-  margin-bottom: 16px;
-  text-align: left;
-  overflow: scroll;
-}
-
-.other-times-link {
-  display: block;
-  color: #00fff7;
-  background: #222;
-  border: 1px solid #ff0080;
-  border-radius: 4px;
-  margin: 6px 0;
-  padding: 8px 10px;
-  text-decoration: none;
-  font-size: 14px;
-  font-family: 'Press Start 2P', cursive;
-  transition: background 0.2s, color 0.2s, border 0.2s;
-  box-shadow: 0 0 6px #00fff7;
-}
-
-.other-times-link:hover {
-  background: #ff0080;
-  color: #fff;
-  border: 1px solid #00fff7;
-}
-
-.other-times-dialog button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background: #ff0080;
-  color: #fff;
-  border: none;
-  border-radius: 0;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 12px;
-  cursor: pointer;
-  box-shadow: 0 0 8px #00fff7;
-  transition: background 0.2s, color 0.2s;
-}
-
-.other-times-dialog button:hover {
-  background: #39ff14;
-  color: #000;
-}
-
-.closeBtn {
-  margin-top: 12px;
-  padding: 8px 16px;
-  background: #ff0080;
-  color: #fff;
-  border: none;
-  border-radius: 0;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 12px;
-  cursor: pointer;
-  box-shadow: 0 0 8px #00fff7;
-}
-
 .copy-error-message {
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   background: #111;
   border: 2px solid #ff0080;
@@ -616,474 +580,189 @@ footer {
   word-break: break-all;
 }
 
-
-
-/* Mobile responsive styles - Enhanced */
+/* ═══════════════════════════════════════════════════
+   MOBILE (≤ 767px)
+   The row becomes one vertical stack: time, title, then room
+   and fullness, then the actions on their own right-aligned
+   line. Every element is full width, so nothing gets squeezed
+   until it clips — Press Start 2P is a very wide face.
+═══════════════════════════════════════════════════ */
 @media (max-width: 767px) {
   body {
-    padding: 8px;
-    font-size: 12px;
+    padding: 4px;
     line-height: 1.4;
   }
-  
+
   .container {
     width: 100%;
-    padding: 16px;
+    padding: 12px;
     margin: 0;
     border-width: 2px;
-    overflow-x: hidden;
-    box-sizing: border-box;
-    /* Better mobile padding and prevent horizontal scroll */
   }
-  
+
   h1 {
-    font-size: 20px;
-    margin: 16px 0;
-    word-wrap: break-word;
-    line-height: 1.3;
+    font-size: 14px;
+    margin: 12px 0 20px;
+    line-height: 1.5;
+    word-break: break-word;
   }
-  
+
   h2 {
-    font-size: 16px;
-    margin: 12px 0 16px 0;
-    word-wrap: break-word;
-    line-height: 1.3;
+    font-size: 11px;
+    margin: 16px 0 12px;
+    line-height: 1.4;
+    word-break: break-word;
   }
-  
+
   .tabs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+  }
+
+  .tab {
+    padding: 10px 6px;
+    font-size: 8px;
+    min-height: 44px;
+    line-height: 1.4;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  .filter {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .filter label { font-size: 9px; margin-bottom: 4px; }
+
+  .filter select { font-size: 10px; height: 36px; padding: 0 6px; }
+
+  .day,
+  .movie-group {
+    padding: 12px;
+    margin: 12px 0;
+  }
+
+  .movie-group h3 { font-size: 11px; line-height: 1.5; }
+
+  .movie {
+    display: flex;
     flex-direction: column;
     align-items: stretch;
+    gap: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 2px solid #2980b9;
   }
-  
-  .tab {
-    padding: 14px 12px;
+
+  .movie-time {
+    flex: none;
+    width: auto;
     font-size: 11px;
+    text-align: left;
+  }
+
+  .movie-main {
     flex: none;
     width: 100%;
-    text-align: center;
-    white-space: normal;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1.3;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    box-sizing: border-box;
-    /* Stack tabs vertically on mobile for better touch targets */
-    /* Enhanced text wrapping and sizing for mobile */
-  }
-  
-  .movie {
-    padding: 18px;
-    gap: 12px;
-    font-size: 12px;
-    flex-direction: column;
-    align-items: stretch;
-    box-sizing: border-box;
-    width: 100%;
-    margin-bottom: 16px;
-    border-radius: 8px;
-    border: 2px solid #2980b9;
-    background: #1e3a8a;
-    /* Stack movie elements vertically for better mobile layout */
-    /* Enhanced mobile styling with better spacing and borders */
-  }
-  
-  .movie-title {
-    max-width: 100%;
-    font-size: 15px;
     min-width: 0;
-    margin-bottom: 12px;
-    text-align: center;
-    /* Larger, more prominent movie titles on mobile */
-    /* Centered alignment for better mobile presentation */
+    gap: 6px;
   }
-  
-  .movie-title a {
-    font-size: 15px;
-    max-width: 100%;
-    padding: 14px 12px;
-    display: block;
-    text-align: center;
+
+  .movie-title { font-size: 11px; }
+
+  .movie-title a,
+  .movie-title span.title-text {
     white-space: normal;
     overflow: visible;
     text-overflow: unset;
-    word-wrap: break-word;
-    line-height: 1.4;
-    /* Full-width touch target with better text wrapping */
+    word-break: break-word;
+    line-height: 1.5;
+    display: inline;
   }
-  
-  .movie-info {
-    width: 100%;
+
+  .movie-meta {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 12px;
-    /* Simple vertical stack for mobile */
-  }
-  
-  .movie-info > .movie-time,
-  .movie-info > .movie-cinema,
-  .movie-info > .movie-seats {
-    order: 1;
-  }
-  
-  .movie-info > .other-times-btn {
-    order: 2;
-  }
-  
-  .movie-info > .share-btn {
-    order: 3;
-  }
-  
-  
-  .movie-time, .movie-cinema, .movie-seats {
-    font-size: 13px;
-    padding: 14px 16px;
-    height: auto;
-    min-height: 48px;
-    min-width: auto;
-    width: 100%;
-    max-width: 100%;
-    text-align: center;
-    white-space: normal;
-    box-sizing: border-box;
-    border-radius: 6px;
-    font-weight: bold;
-    /* Full width, larger text, proper spacing */
-  }
-  
-  .share-btn {
-    /* Full width button with larger text */
-    padding: 14px 16px;
-    min-width: auto;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    min-height: 48px;
-    white-space: normal;
-    box-sizing: border-box;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 13px;
-  }
-
-  .other-times-btn {
-    font-size: 13px;
-    padding: 14px 16px;
-    height: auto;
-    min-height: 48px;
-    min-width: auto;
-    width: 100%;
-    max-width: 100%;
-    white-space: normal;
-    box-sizing: border-box;
-    border-radius: 6px;
-    font-weight: bold;
-    /* Full width button with larger text */
-  }
-  
-  .day, .movie-group {
-    padding: 8px;
-    margin: 8px 0;
-  }
-  
-  .filter {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-    padding: 20px;
-    background: #2c3e50;
-    border: 2px solid #3498db;
-    border-radius: 4px;
-    /* Stack filters vertically on mobile */
-  }
-  
-  .filter select {
-    width: 100%;
-    padding: 12px;
-    font-size: 12px;
-    font-family: 'Press Start 2P', cursive;
-    background: #34495e;
-    color: #ecf0f1;
-    border: 2px solid #3498db;
-    border-radius: 4px;
-    min-height: 44px;
-    /* Larger touch target for form elements */
-  }
-  
-  .filter label {
-    font-size: 12px;
-    margin-bottom: 8px;
-    color: #3498db;
-    display: block;
-    font-weight: bold;
-  }
-  
-  .filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .other-times-dialog {
-    width: 90%;
-    max-width: none;
-    padding: 12px;
-    font-size: 11px;
-    margin: 0 5%;
-  }
-  
-  .other-times-dialog-title {
-    font-size: 12px;
-    margin-bottom: 8px;
-    word-wrap: break-word;
-  }
-  
-  .other-times-link {
-    font-size: 11px;
-    padding: 6px;
-    margin: 3px 0;
-    word-wrap: break-word;
-  }
-  
-  .other-times-dialog button {
-    width: 100%;
-    margin-top: 8px;
-    padding: 8px;
-    font-size: 11px;
-  }
-  
-  .glitch-button {
-    width: 100%;
-    margin: 12px 0;
-    padding: 10px;
-    font-size: 11px;
-  }
-  
-  pre {
-    font-size: 7px;
-    padding: 6px;
-    margin: 6px 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  footer {
-    font-size: 9px;
-    margin-top: 12px;
-    padding: 0 4px;
-    word-wrap: break-word;
-  }
-  
-  .content-section {
-    padding: 20px;
-  }
-  
-  .text-content {
-    font-size: 12px;
-  }
-  
-  .copy-error-message {
-    font-size: 10px !important;
-    padding: 12px !important;
-  }
-  
-  .copy-error-message button {
-    font-size: 10px !important;
-    padding: 6px 12px !important;
-  }
-}
-
-/* Tablet responsive styles */
-@media (max-width: 1024px) and (min-width: 768px) {
-  .container {
-    width: 95%;
-    padding: 24px;
-  }
-  
-  .tabs {
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-  
-  .tab {
-    padding: 14px 20px;
-    font-size: 12px;
-    text-align: center;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    line-height: 1.3;
-    box-sizing: border-box;
-    /* Enhanced tablet navigation */
-  }
-  
-  .movie {
-    padding: 18px;
-    gap: 12px;
-    border-radius: 6px;
-    border: 2px solid #2980b9;
-    margin-bottom: 12px;
-    /* Enhanced tablet styling */
-  }
-  
-  .movie-title {
-    font-size: 17px;
-    margin-bottom: 8px;
-    /* Enhanced tablet movie title sizing */
-  }
-  
-  .movie-time, .movie-cinema, .movie-seats {
-    font-size: 11px;
-    padding: 8px 10px;
-    height: 36px;
-    min-width: 75px;
-  }
-  
-  .other-times-btn {
-    font-size: 9px;
-    padding: 8px 10px;
-    height: 36px;
-    min-width: 110px;
-  }
-  
-  .filter {
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    padding: 20px;
-  }
-}
-
-@media (min-width: 768px) {
-
-  .share-btn {
-    font-size: 0; /* hide the text and replace with icon*/
-    width: 36px;
-    height: 36px;
-  }
-
-  .share-btn::before {
-    content: '⎘';
-    font-size: 20px;
-  }
-
-  .share-btn.copied::before {
-    content: "✓";
-  }
-
-  .share-btn.error::before {
-    content: "❌";
-  }
-}
-
-/* Large mobile / small tablet */
-@media (max-width: 480px) {
-  body {
-    padding: 4px;
-  }
-  
-  .container {
-    padding: 12px;
-  }
-  
-  h1 {
-    font-size: 18px;
-    margin: 12px 0;
-  }
-  
-  .tabs {
+    align-items: stretch;
     gap: 6px;
-    margin-bottom: 16px;
+    min-width: 0;
   }
-  
-  .tab {
-    padding: 16px 8px;
-    font-size: 9px;
-    min-height: 52px;
-    line-height: 1.4;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    box-sizing: border-box;
-    /* Enhanced mobile navigation sizing with better spacing */
+
+  .movie-cinema,
+  .movie-date {
+    align-self: flex-start;
+    font-size: 8px;
+    padding: 3px 6px;
   }
-  
-  .movie {
-    padding: 16px;
-    border-radius: 8px;
-    margin-bottom: 18px;
-    border: 2px solid #2980b9;
-    /* Enhanced small mobile styling */
-  }
-  
-  .movie-title {
-    font-size: 14px;
-    margin-bottom: 10px;
-    text-align: center;
-    /* Enhanced small mobile movie title */
-  }
-  
-  .movie-title a {
-    font-size: 14px;
-    padding: 12px 8px;
-    text-align: center;
-    white-space: normal;
-    word-wrap: break-word;
-    line-height: 1.4;
-    /* Enhanced small mobile movie title links */
-  }
-  
-  .movie-time, .movie-cinema, .movie-seats {
-    font-size: 12px;
-    padding: 12px 14px;
-    height: auto;
-    min-height: 44px;
+
+  .sold-bar {
+    flex: none;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    border-radius: 6px;
-    font-weight: bold;
-    /* Enhanced small mobile styling */
+    height: 22px;
   }
-  
+
+  .sold-label { font-size: 8px; }
+
+  .movie-actions {
+    flex: none;
+    width: 100%;
+    justify-content: flex-end;
+    margin-left: 0;
+  }
+
   .other-times-btn {
-    font-size: 12px;
-    padding: 12px 14px;
-    height: auto;
-    min-height: 44px;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    border-radius: 6px;
-    font-weight: bold;
-    /* Enhanced small mobile styling */
+    font-size: 8px;
+    height: 28px;
+    min-width: 0;
+    padding: 0 8px;
+    flex: 0 0 auto;
   }
-  
+
   .share-btn {
-    padding: 12px 14px;
-    height: auto;
-    min-height: 44px;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    border-radius: 6px;
-    font-weight: bold;
-    /* Enhanced small mobile styling */
+    font-size: 0;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    padding: 0;
+    flex: 0 0 auto;
   }
+
+  .share-btn::before { font-size: 14px; }
+
+  .content-section { padding: 12px; }
+
+  .text-content { font-size: 11px; line-height: 1.7; }
+
+  footer {
+    font-size: 8px;
+    margin-top: 24px;
+    padding: 12px 4px;
+  }
+
+  .other-times-dialog {
+    min-width: 0;
+    width: 92vw;
+    padding: 16px;
+    font-size: 10px;
+  }
+
+  .other-times-dialog-title { font-size: 11px; }
+  .other-times-link { font-size: 9px; padding: 8px 10px; }
+  .closeBtn,
+  .other-times-dialog button { font-size: 10px; padding: 8px 14px; }
 }
 
-@media (max-width: 768px) {
-  .content-section {
-    padding: 20px;
-  }
-  
-  .text-content {
-    font-size: 12px;
-  }
+/* ── Tablet ── */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .container { width: 95%; padding: 24px; }
+  .filter { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; padding: 20px; }
+  .tab { padding: 14px 20px; font-size: 11px; }
+  .movie-title { font-size: 16px; }
+  .movie-time { width: 84px; font-size: 15px; }
 }

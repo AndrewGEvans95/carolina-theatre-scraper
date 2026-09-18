@@ -1,11 +1,12 @@
 import argparse
+import html
 import sqlite3
 import re
 import os
 import shutil
 import textwrap
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 
 def slugify(title):
@@ -144,42 +145,131 @@ def load_template(template_file="template.html"):
 def reindent(text, length):
     return textwrap.indent(textwrap.dedent(text), " " * length)
 
-def seats_badge(movie):
-    """
-    Build the "seats left" badge for a showtime, or an empty string when the
-    showing has no inventory figures.
+def esc(value):
+    """Escape text for HTML, including quotes so it is safe in attributes."""
+    return html.escape("" if value is None else str(value), quote=True)
 
-    Covers reserved seating and general admission alike, since the ticketing
-    API reports both. The badge shows seats still for sale; the tooltip adds
-    how many have actually sold, which is not simply the remainder - the
-    theatre also holds seats back.
+
+def fullness(movie):
+    """
+    How full a showing is, as a percentage, or None when unknown.
+    Prefers real sales; older scraped rows only know what isn't available.
     """
     total = movie.get("seats_total")
     available = movie.get("seats_available")
     if not total or available is None:
+        return None
+
+    sold_count = movie.get("seats_sold")
+    taken = sold_count if sold_count is not None else total - available
+    return round(taken / total * 100)
+
+
+def sold_bar(movie):
+    """
+    Build the "how full" bar for a showtime, or an empty string when the
+    showing has no inventory figures.
+
+    A bar reads faster than a number when scanning a day, and the fill
+    colour carries the urgency. The label is how full the showing is, since
+    that is what people are judging; the tooltip keeps the exact counts.
+    """
+    full = fullness(movie)
+    if full is None:
         return ""
 
-    remaining = round(available / total * 100)
+    total = movie.get("seats_total")
+    available = movie.get("seats_available")
     sold_count = movie.get("seats_sold")
-    sold = (round(sold_count / total * 100) if sold_count is not None
-            else 100 - remaining)
 
-    # Fewer seats left means a more urgent colour
-    if remaining <= 15:
-        level = "low"
-    elif remaining <= 50:
-        level = "medium"
-    else:
+    if full >= 90:
+        level = "full"
+    elif full >= 70:
         level = "high"
+    elif full >= 40:
+        level = "mid"
+    else:
+        level = "low"
 
     if sold_count is not None:
-        tooltip = (f"{available} of {total} seats still available - "
-                   f"{sold_count} sold ({sold}%)")
+        tooltip = (f"{sold_count} of {total} sold - "
+                   f"{available} seats still available")
     else:
-        tooltip = f"{available} of {total} seats still available - {sold}% sold"
-    return (f"<span class='movie-seats seats-{level}' title='{tooltip}' "
-            f"data-seats-remaining='{remaining}' data-seats-sold='{sold}'>"
-            f"{remaining}% left</span>")
+        tooltip = f"{available} of {total} seats still available"
+
+    return (f"<div class=\"sold-bar\" data-level=\"{level}\" "
+            f"title=\"{esc(tooltip)}\" data-seats-remaining=\"{100 - full}\" "
+            f"data-seats-sold=\"{full}\">"
+            f"<div class=\"sold-fill\" style=\"width:{full}%\"></div>"
+            f"<span class=\"sold-label\">{full}% full</span></div>")
+
+
+def day_heading(date_str, today):
+    """
+    Heading for a day section: "Today · Fri, Sep 18". Leading with Today or
+    Tomorrow gives the eye something to land on when scanning.
+    """
+    try:
+        day = datetime.strptime(date_str, "%a, %b %d, %Y").date()
+    except ValueError:
+        return esc(date_str)
+
+    label = day.strftime("%a, %b %d").replace(" 0", " ")
+    if day.year != today.year:
+        label = f"{label}, {day.year}"
+
+    if day == today:
+        relative = "Today"
+    elif day == today + timedelta(days=1):
+        relative = "Tomorrow"
+    else:
+        return label
+
+    return (f"<span class='day-relative'>{relative}</span>"
+            f"<span class='day-sep'> · </span>{label}")
+
+
+def movie_row(movie, movie_id, date_label, time_label, other_times,
+              date_note=None, show_title=True):
+    """
+    One showtime: time anchor, then title with room and fullness beneath,
+    then the actions. Only the element id is passed to the click handlers -
+    the rest is read back from the data attributes, so titles containing
+    quotes can't break the markup or the script.
+
+    date_note adds the day to the quiet meta line, for the by-film view
+    where the heading is the title rather than the date. It goes there
+    rather than beside the time so the time column stays the same width in
+    both views and times still line up.
+    """
+    actions = ""
+    if other_times > 0:
+        actions += (f"<button class=\"other-times-btn\" "
+                    f"onclick=\"showOtherTimes('{movie_id}')\">"
+                    f"Other Times ({other_times})</button>")
+    actions += (f"<button class=\"share-btn\" "
+                f"onclick=\"copyShareLink('{movie_id}', event)\" "
+                f"title=\"Copy link to this showtime\" "
+                f"aria-label=\"Copy link to this showtime\"></button>")
+
+    # Lets the capacity filter work without re-reading the bar markup
+    full = fullness(movie)
+    full_attr = f' data-full="{full}"' if full is not None else ""
+
+    return f"""
+              <div class="movie" id="{movie_id}"{full_attr} data-movie-title="{esc(movie['title'])}" data-movie-time="{esc(movie['time'])}" data-movie-date="{esc(date_label)}" data-movie-cinema="{esc(movie['cinema'])}" data-formatted-datetime="{esc(movie.get('formatted_datetime', ''))}">
+                <span class="movie-time">{esc(time_label)}</span>
+                <div class="movie-main">
+                  {f'<span class="movie-title"><a href="{esc(movie["link"])}" target="_blank" title="{esc(movie["title"])}">{esc(movie["title"])}</a></span>' if show_title else ''}
+                  <div class="movie-meta">
+                    {f'<span class="movie-date">{esc(date_note)}</span>' if date_note else ''}
+                    <span class="movie-cinema" data-venue="{esc(movie['cinema'])}">{esc(movie['cinema'])}</span>
+                    {sold_bar(movie)}
+                  </div>
+                </div>
+                <div class="movie-actions">{actions}</div>
+              </div>
+              """
 
 def generate_html(db_name="movie_showtimes.db", 
                   output_html_file=None, 
@@ -308,38 +398,48 @@ def generate_html(db_name="movie_showtimes.db",
             f"""<option value="{date}">{date}</option>
             """
         )
+
+    # Rooms that actually have showings, so the venue filter only offers
+    # choices that lead somewhere
+    venues = sorted({movie['cinema'] for date in sorted_dates
+                     for movie in showtimes_by_date[date] if movie['cinema']})
+    venue_filter_options = ""
+    for venue in venues:
+        venue_filter_options += (
+            f"""<option value="{esc(venue)}">{esc(venue)}</option>
+            """
+        )
     
+    # How many other showtimes each film has, for the "Other Times (n)"
+    # labels; counted over distinct showtimes so duplicates don't inflate it
+    showtime_counts = Counter()
+    counted_showtimes = set()
+    for date in sorted_dates:
+        for movie in schedule_showtimes_by_date[date]:
+            key = (movie['title'], movie['time'], date, movie['cinema'])
+            if key not in counted_showtimes:
+                counted_showtimes.add(key)
+                showtime_counts[movie['title']] += 1
+
     # Build schedule content
     schedule_content = ""
-    
+
     # Output movies grouped by day (as before) and also grouped by movie (new).
     movie_counter = 1
     for date in sorted_dates:
         schedule_content += (
             f"""
             <div class='day' data-date='{date}'>
-              <h2>{date}</h2>
+              <h2>{day_heading(date, today)}</h2>
             """
         )
         for movie in schedule_showtimes_by_date[date]:
             # Create a unique movie ID based on the title slug and counter.
             movie_slug = slugify(movie['title'])
             movie_id = f"movie-{movie_slug}-{movie_counter}"
-            formatted_datetime = movie.get('formatted_datetime', '')
-            schedule_content += (
-              f"""
-              <div class='movie' id='{movie_id}' data-movie-title='{movie['title']}' data-movie-time='{movie['time']}' data-movie-date='{date}' data-movie-cinema='{movie['cinema']}' data-formatted-datetime='{formatted_datetime}'>
-                <span class='movie-title'><a href='{movie['link']}' target='_blank'>{movie['title']}</a></span>
-                <div class='movie-info'>
-                  <span class='movie-time'>{movie['time']}</span>
-                  <span class='movie-cinema'>{movie['cinema']}</span>
-                  {seats_badge(movie)}
-                  <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{date}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>
-                  <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>Copy Link</button>
-                </div>
-              </div>
-              """
-            )
+            schedule_content += movie_row(
+                movie, movie_id, date, movie['time'],
+                showtime_counts[movie['title']] - 1)
             movie_counter += 1
         schedule_content += """
             </div>
@@ -363,28 +463,22 @@ def generate_html(db_name="movie_showtimes.db",
         schedule_content += (
             f"""
             <div class='movie-group hidden'>
-              <h3>{title}</h3>
+              <h3>{esc(title)}</h3>
             """)
-      
+
         for movie in movies:
             movie_slug = slugify(movie['title'])
             movie_id = f"movie-{movie_slug}-{movie_counter}"
-            # Append the day (date) (e.g. "(Fri, Feb 28)") so that the user can see on which day the movie is playing.
+            # In this view the film title is the section heading, so each row
+            # carries its date instead: "7:00pm · Fri, Sep 18"
             day_str = movie.get("display_date", "").strip()
-            formatted_datetime = movie.get('formatted_datetime', '')
-            schedule_content += (
-              f"""
-              <div class='movie' id='{movie_id}' data-movie-title='{movie['title']}' data-movie-time='{movie['time']}' data-movie-date='{day_str}' data-movie-cinema='{movie['cinema']}' data-formatted-datetime='{formatted_datetime}'>
-                <div class='movie-info'>
-                  <span class='movie-time'>{movie['time']} ({day_str})</span>
-                  <span class='movie-cinema'>{movie['cinema']}</span>
-                  {seats_badge(movie)}
-                  <button class='other-times-btn' onclick="showOtherTimes('{movie['title']}', '{movie['time']}', '{day_str}', '{movie['cinema']}', '{movie_id}')">Show Other Times</button>
-                  <button class='share-btn' onclick='copyShareLink("{movie_id}", event)' title='Copy link'>Copy Link</button>
-                </div>
-              </div>
-              """
-            )
+            short_day = re.sub(r",\s*\d{4}$", "", day_str)
+            # The group heading already names the film, so the rows don't
+            # repeat it - they just carry day, room and fullness
+            schedule_content += movie_row(
+                movie, movie_id, day_str, movie['time'],
+                showtime_counts[movie['title']] - 1,
+                date_note=short_day, show_title=False)
             movie_counter += 1
         schedule_content += """
             </div>
@@ -394,6 +488,7 @@ def generate_html(db_name="movie_showtimes.db",
     
     # Replace template variables with actual content
     html_content = template_content.replace('{{DAY_FILTER_OPTIONS}}', day_filter_options)
+    html_content = html_content.replace('{{VENUE_FILTER_OPTIONS}}', venue_filter_options)
     html_content = html_content.replace('{{SCHEDULE_CONTENT}}', schedule_content)
     
     # Copy CSS file to output directory
