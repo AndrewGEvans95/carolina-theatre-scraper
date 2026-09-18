@@ -30,3 +30,6 @@ carolina-theatre-astro/
 
 # Generated JSON export
 showtimes.json
+
+# Browser captures used for research (contain session cookies)
+har_files/

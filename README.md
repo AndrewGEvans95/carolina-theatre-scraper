@@ -66,10 +66,39 @@ python site_generator.py /path/to/output.html
 ## Files
 
 - `movie_scraper.py` - Main scraper that fetches showtimes from Carolina Theatre website
+- `availability.py` - Reads how many seats each upcoming showing has left
 - `site_generator.py` - Generates HTML website from the database
 - `requirements.txt` - Python dependencies
 - `movie_showtimes.db` - SQLite database (created after first run)
 - `movie_showtimes.csv` - CSV backup (created after first run)
+
+## Seat Availability
+
+After scraping showtimes, `movie_scraper.py` records how full each showing is.
+
+The theatre sells through Agile Ticketing, whose seat-map page exposes the
+total seat count and marks each available seat, so for reserved-seating rooms
+we can work out the percentage still for sale:
+
+```
+seats_available / seats_total  ->  % remaining      (the rest is unavailable)
+```
+
+Notes:
+
+- Only showings sold with reserved seating publish a seat map, which is a
+  per-showing choice rather than a property of the room: first-run films are
+  usually reserved, repertory titles are often general admission even in the
+  same cinema. General admission showings are recorded as
+  `general_admission` with no numbers, since their quantity dropdown is a
+  per-order purchase limit rather than remaining stock. In a recent check,
+  37 of 61 upcoming showings had seat counts.
+- "Unavailable" is not strictly "sold" - it also covers comps and seats the
+  theatre holds back.
+- Only showings starting within the next 14 days are checked, and each check
+  is a single page load with a short pause between them.
+- Readings are appended to the `availability` table rather than overwritten,
+  so a showing's sales can be compared over time.
 
 ## Database Schema
 
@@ -81,6 +110,12 @@ The SQLite database contains a `showtimes` table with:
 - `cinema` - Theater/screen name
 - `link` - Link to movie details
 - `created_at` - Timestamp of record creation
+- `showing_id` - Agile Ticketing showing id, used to look up availability
+
+And an `availability` table, one row per check:
+- `showing_id`, `checked_at` - which showing, and when it was read
+- `status` - `reserved`, `general_admission`, `multi_section`, or `no_data`
+- `seats_total`, `seats_available` - set for `reserved` showings only
 
 ## Requirements
 

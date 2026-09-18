@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 import re
 from dateutil import parser
 
+import availability
+
 def format_datetime(date_str, time_str):
     """
     Parse and format date and time strings to a standard format
@@ -140,7 +142,11 @@ def fetch_movie_showtimes(movie):
     
     soup = BeautifulSoup(response.text, "html.parser")
     showtimes = []
-    
+
+    # The film page links to its ticketing event; availability.py needs that
+    # reference to find each showing's seat map
+    event_ref = availability.extract_event_ref(response.text)
+
     for date_elem in soup.select("li.showInfo__date"):
         date = date_elem.select_one(".date").text.strip() if date_elem.select_one(".date") else ""
         
@@ -161,7 +167,8 @@ def fetch_movie_showtimes(movie):
                 "time": time,  # Keep original time
                 "formatted_datetime": formatted_datetime,  # Add formatted version
                 "cinema": cinema,
-                "link": movie["link"]
+                "link": movie["link"],
+                "event_ref": event_ref
             }
             
             if showtime_entry not in showtimes:
@@ -307,6 +314,15 @@ if __name__ == "__main__":
     # Optional: Export to CSV as backup
     print("Exporting to CSV...")
     export_to_csv_from_db(DB_NAME, "movie_showtimes.csv")
+
+    # Seat availability is a bonus: the showtimes above are the important
+    # part, so a ticketing hiccup must not fail the run and block the site
+    # from being regenerated
+    print("Checking seat availability...")
+    try:
+        availability.update_availability(DB_NAME, movie_showtimes)
+    except Exception as e:
+        print(f"Warning: availability check failed: {e}")
     
     # Optional: Show some sample queries
     print("\n--- Sample Database Queries ---")
