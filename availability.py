@@ -353,12 +353,16 @@ def showings_to_check(db_name, lookahead_days=LOOKAHEAD_DAYS,
     start, end = window_bounds(lookahead_days)
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
+    # Grouped by showing rather than by showtime: a double feature lists two
+    # titles against one showing, and its seat map only needs reading once.
     cursor.execute('''
-        SELECT DISTINCT showing_id, org_guid, formatted_datetime, title, cinema
+        SELECT showing_id, org_guid, MIN(formatted_datetime), MIN(title),
+               MIN(cinema)
         FROM showtimes
         WHERE showing_id IS NOT NULL AND org_guid IS NOT NULL
           AND formatted_datetime BETWEEN ? AND ?
-        ORDER BY formatted_datetime
+        GROUP BY showing_id, org_guid
+        ORDER BY MIN(formatted_datetime)
         LIMIT ?
     ''', (start, end, limit))
     rows = cursor.fetchall()
