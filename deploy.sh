@@ -25,7 +25,9 @@ echo "Before: $(sudo -u "$APP_USER" git log --oneline -1)"
 sudo -u "$APP_USER" git pull --ff-only origin "$BRANCH"
 echo "After:  $(sudo -u "$APP_USER" git log --oneline -1)"
 
-sudo -u "$APP_USER" venv/bin/pip install -q -r requirements.txt
+# python -m pip, not venv/bin/pip: the venv was copied from another path, so
+# the console scripts' shebangs point at an interpreter this user can't read
+sudo -u "$APP_USER" venv/bin/python -m pip install -q -r requirements.txt
 
 "$APP_DIR/manual_run.sh"
 EOF
