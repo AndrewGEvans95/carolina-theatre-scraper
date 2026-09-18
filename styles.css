@@ -236,7 +236,7 @@ h3 {
   flex-wrap: nowrap;
 }
 
-.movie-time, .movie-cinema {
+.movie-time, .movie-cinema, .movie-seats {
   flex: 0 0 auto;
   text-align: center;
   font-size: 12px;
@@ -253,6 +253,40 @@ h3 {
   justify-content: center;
   /* Standardized dimensions for consistent alignment */
   /* Video game styling: solid borders, blue accent */
+}
+
+.movie-seats {
+  flex: 0 0 auto;
+  text-align: center;
+  font-size: 12px;
+  color: #ecf0f1;
+  background: #2c3e50;
+  border: 2px solid #7f8c8d;
+  padding: 8px 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  height: 32px;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  /* Seats still for sale; colour gets more urgent as they run out */
+}
+
+.movie-seats.seats-high {
+  border-color: #2ecc71;
+  color: #2ecc71;
+}
+
+.movie-seats.seats-medium {
+  border-color: #f39c12;
+  color: #f39c12;
+}
+
+.movie-seats.seats-low {
+  border-color: #e74c3c;
+  color: #e74c3c;
 }
 
 .other-times-btn {
@@ -693,7 +727,8 @@ footer {
   }
   
   .movie-info > .movie-time,
-  .movie-info > .movie-cinema {
+  .movie-info > .movie-cinema,
+  .movie-info > .movie-seats {
     order: 1;
   }
   
@@ -706,7 +741,7 @@ footer {
   }
   
   
-  .movie-time, .movie-cinema {
+  .movie-time, .movie-cinema, .movie-seats {
     font-size: 13px;
     padding: 14px 16px;
     height: auto;
@@ -904,7 +939,7 @@ footer {
     /* Enhanced tablet movie title sizing */
   }
   
-  .movie-time, .movie-cinema {
+  .movie-time, .movie-cinema, .movie-seats {
     font-size: 11px;
     padding: 8px 10px;
     height: 36px;
@@ -1004,7 +1039,7 @@ footer {
     /* Enhanced small mobile movie title links */
   }
   
-  .movie-time, .movie-cinema {
+  .movie-time, .movie-cinema, .movie-seats {
     font-size: 12px;
     padding: 12px 14px;
     height: auto;
