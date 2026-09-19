@@ -164,6 +164,10 @@ run puts it back in a directory Apache doesn't serve). To read it:
 That directory is self-contained (the page, its stylesheet and
 `power.json`), so the copy renders exactly as the published version would.
 
+A small square between the title and the tabs on the schedule page opens
+it when tapped five times inside three seconds; it appears only while the
+dashboard is published.
+
 The page opens on a WarGames-style WOPR terminal; the password is
 `JOSHUA`, and it stays unlocked for the rest of the browser session. This
 is a doorman, not a lock: the check runs in the browser, so the password
