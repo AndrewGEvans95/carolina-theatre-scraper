@@ -109,10 +109,18 @@ Alias `carolinashowtimes` → root on the DigitalOcean droplet.
 
 ## 5. The power dashboard is private
 
-`power.html` / `power.json` are generated to
-`/opt/carolina-theatre-scraper/private/`, which Apache does not serve, and
-nothing links to them. Don't point the generator at `/var/www/html` or add
-a nav link back without being asked — that would republish them.
+The dashboard is published at an **unlisted URL**, not from the normal
+web root and not linked from anywhere. Where it goes is decided on the
+server by `/etc/carolina-scraper/power-path`:
+
+- **file present** → published at `/var/www/html/<token>/power.html`
+- **file absent** → private, at `/opt/carolina-theatre-scraper/private/`
+
+So publishing and unpublishing are a server-side toggle, taking effect on
+the next run; deleting the token file and removing the directory takes it
+offline. Don't write the token into the repository, a `robots.txt` or a
+nav link — any of those would advertise the path that keeps it quiet. The
+page carries `noindex,nofollow` so search engines skip it.
 
 To look at it: `./view_power.sh` copies that directory down and opens the
 page. It opens on a WOPR terminal - password `JOSHUA` - which is set

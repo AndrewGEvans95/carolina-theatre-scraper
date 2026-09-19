@@ -151,9 +151,10 @@ have to be guessed at.
 Filters for date, room and seating mode, and sorting by start time, fill,
 sold, seats left, price or 24h velocity.
 
-Each showing's raw readings are included as `sold_history`. **Currently private.** The page is generated to
-`/opt/carolina-theatre-scraper/private/` on the server, which Apache does
-not serve, and is not linked from the site. To read it:
+Each showing's raw readings are included as `sold_history`. **Unlisted.** The page is published at a random path that is not linked
+from anywhere and carries `noindex,nofollow`; the server decides where it
+goes via `/etc/carolina-scraper/power-path` (remove that file and the next
+run puts it back in a directory Apache doesn't serve). To read it:
 
 ```bash
 ./view_power.sh              # fetch it and open it in a browser

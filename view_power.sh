@@ -12,10 +12,27 @@
 set -euo pipefail
 
 HOST="${DEPLOY_HOST:-carolinashowtimes}"
-REMOTE_DIR="/opt/carolina-theatre-scraper/private"
 DEST="${1:-$(mktemp -d)/power-dashboard}"
 
 mkdir -p "$DEST"
+
+# Ask the server where the dashboard currently lives: an unlisted
+# directory under the web root when published, otherwise the private one.
+REMOTE_DIR=$(ssh "$HOST" 'T=/etc/carolina-scraper/power-path
+if [ -r "$T" ]; then
+    TOKEN=$(tr -d " \t\n\r" < "$T")
+    [ -n "$TOKEN" ] && echo "/var/www/html/$TOKEN" && exit
+fi
+echo /opt/carolina-theatre-scraper/private')
+
+case "$REMOTE_DIR" in
+    /var/www/html/*)
+        echo "Published at: https://carolinashowtimes.com/${REMOTE_DIR#/var/www/html/}/power.html"
+        ;;
+    *)
+        echo "Not published; reading the private copy"
+        ;;
+esac
 
 # One connection: the server rate-limits ssh
 scp -q "$HOST:$REMOTE_DIR/*" "$DEST/"

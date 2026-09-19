@@ -46,12 +46,18 @@ if [ $? -eq 0 ]; then
         python3 json_generator.py /var/www/html/showtimes.json || true
         chmod 644 /var/www/html/showtimes.json 2>/dev/null || true
 
-        # Power dashboard: kept OUT of the web root while it is private.
-        # /opt/.../private is not served by Apache, so the page and its
-        # JSON are reachable over ssh only. Non-fatal, like the JSON
-        # export - the schedule is the thing that must not break.
-        mkdir -p /opt/carolina-theatre-scraper/private
-        python3 power_generator.py -o /opt/carolina-theatre-scraper/private || true
+        # Where the dashboard is published. With no token file it stays
+        # private, in a directory Apache does not serve. Writing a token to
+        # /etc/carolina-scraper/power-path publishes it at an unlisted URL;
+        # deleting that file takes it private again on the next run.
+        POWER_DIR="/opt/carolina-theatre-scraper/private"
+        POWER_TOKEN_FILE="/etc/carolina-scraper/power-path"
+        if [ -r "$POWER_TOKEN_FILE" ]; then
+            POWER_TOKEN=$(tr -d " \t\n\r" < "$POWER_TOKEN_FILE")
+            [ -n "$POWER_TOKEN" ] && POWER_DIR="/var/www/html/$POWER_TOKEN"
+        fi
+        mkdir -p "$POWER_DIR"
+        python3 power_generator.py -o "$POWER_DIR" || true
 
     else
         echo "$(date): ERROR: Website generation failed"
