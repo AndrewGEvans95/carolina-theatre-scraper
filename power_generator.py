@@ -20,7 +20,7 @@ import html
 import json
 import os
 import sqlite3
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 
 # Matches availability.py: showtimes are stored in theatre-local time while
@@ -41,6 +41,8 @@ SALES_STATES = {
     5: "CUSTOM MESSAGE",
 }
 INSIGHT_LIMIT = 5
+# How much snapshot history the trend line draws on
+HISTORY_DAYS = 7
 
 
 def theatre_now():
@@ -92,34 +94,87 @@ def fill_level(pct_filled):
     return "low"
 
 
-def sold_deltas(conn, showing_id, latest_checked_at, seats_sold):
+def load_history(conn, days=HISTORY_DAYS):
     """
-    How many more tickets have sold over the last 6 and 24 hours.
+    Every sold-count reading of the last few days, grouped by showing.
 
-    Compares the newest reading with the newest one at least that old. A
-    showing checked for the first time has nothing to compare against, so
-    both come back None rather than 0 - "no data" and "no sales" are
-    different facts.
+    One query for the lot: the page needs each showing's whole series for
+    its trend line, and the deltas fall out of the same data.
     """
-    deltas = {}
-    if seats_sold is None or not latest_checked_at:
+    since = (theatre_now() - timedelta(days=days)).strftime("%Y-%m-%d %H:%M:%S")
+    series = defaultdict(list)
+    rows = conn.execute(
+        "SELECT showing_id, checked_at, seats_sold FROM availability "
+        "WHERE seats_sold IS NOT NULL AND checked_at >= ? "
+        "ORDER BY checked_at", (since,))
+    for showing_id, checked_at, sold in rows:
+        series[showing_id].append((checked_at, sold))
+    return series
+
+
+def sold_deltas(points):
+    """
+    How many tickets sold in the last 6 and 24 hours.
+
+    Compares the newest reading with the newest one at least that old. With
+    nothing old enough to compare against the answer is None, not 0: "no
+    data" and "no sales" are different facts. Values can be negative -
+    refunds happen, and the box office figures reflect them.
+    """
+    if not points:
         return {"6h": None, "24h": None}
 
     try:
-        latest = datetime.strptime(latest_checked_at, "%Y-%m-%d %H:%M:%S")
+        latest_at = datetime.strptime(points[-1][0], "%Y-%m-%d %H:%M:%S")
     except ValueError:
         return {"6h": None, "24h": None}
 
+    latest_sold = points[-1][1]
+    deltas = {}
     for label, hours in (("6h", 6), ("24h", 24)):
-        cutoff = (latest - timedelta(hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
-        row = conn.execute('''
-            SELECT seats_sold FROM availability
-            WHERE showing_id = ? AND checked_at <= ? AND seats_sold IS NOT NULL
-            ORDER BY checked_at DESC LIMIT 1
-        ''', (showing_id, cutoff)).fetchone()
-        deltas[label] = seats_sold - row[0] if row and row[0] is not None else None
-
+        cutoff = latest_at - timedelta(hours=hours)
+        earlier = [sold for at, sold in points
+                   if datetime.strptime(at, "%Y-%m-%d %H:%M:%S") <= cutoff]
+        deltas[label] = latest_sold - earlier[-1] if earlier else None
     return deltas
+
+
+def sparkline(points, width=64, height=18):
+    """
+    A small trend line of tickets sold over time.
+
+    Scaled to the showing's own range rather than to its capacity: the
+    shape of the selling is the point, and the exact numbers sit in the
+    columns beside it. Needs two readings before it can draw anything.
+    """
+    if len(points) < 2:
+        return '<span class="nodata">-</span>'
+
+    values = [sold for _, sold in points]
+    low, high = min(values), max(values)
+    span = (high - low) or 1
+    step = width / (len(values) - 1)
+
+    coords = " ".join(
+        f"{i * step:.1f},{height - 1 - (v - low) / span * (height - 2):.1f}"
+        for i, v in enumerate(values))
+    last_y = height - 1 - (values[-1] - low) / span * (height - 2)
+
+    hours = 0
+    try:
+        hours = round((datetime.strptime(points[-1][0], "%Y-%m-%d %H:%M:%S")
+                       - datetime.strptime(points[0][0], "%Y-%m-%d %H:%M:%S")
+                       ).total_seconds() / 3600)
+    except ValueError:
+        pass
+    tip = (f"{len(values)} readings over {hours}h: "
+           f"{values[0]} to {values[-1]} tickets sold")
+
+    return (f'<svg class="spark" viewBox="0 0 {width + 3} {height}" '
+            f'width="{width + 3}" height="{height}" role="img" '
+            f'aria-label="{esc(tip)}"><title>{esc(tip)}</title>'
+            f'<polyline points="{coords}" />'
+            f'<circle cx="{width:.1f}" cy="{last_y:.1f}" r="1.8" /></svg>')
 
 
 def load_showings(db_name="movie_showtimes.db", lookahead_days=LOOKAHEAD_DAYS):
@@ -130,6 +185,7 @@ def load_showings(db_name="movie_showtimes.db", lookahead_days=LOOKAHEAD_DAYS):
 
     conn = sqlite3.connect(db_name)
     guid = org_guid(conn)
+    history = load_history(conn)
 
     rows = conn.execute('''
         SELECT s.showing_id, s.title, s.venue, s.starts_at, s.seat_mode,
@@ -161,7 +217,8 @@ def load_showings(db_name="movie_showtimes.db", lookahead_days=LOOKAHEAD_DAYS):
         total = seats_total or 0
         pct_filled = round(seats_sold / total * 100, 1) if total and seats_sold is not None else None
         pct_remaining = round(seats_available / total * 100, 1) if total and seats_available is not None else None
-        deltas = sold_deltas(conn, showing_id, checked_at, seats_sold)
+        points = history.get(showing_id, [])
+        deltas = sold_deltas(points)
         fee = (round(charged_price - list_price, 2)
                if charged_price is not None and list_price is not None else None)
 
@@ -191,6 +248,7 @@ def load_showings(db_name="movie_showtimes.db", lookahead_days=LOOKAHEAD_DAYS):
             "checked_at": checked_at,
             "sold_delta_6h": deltas["6h"],
             "sold_delta_24h": deltas["24h"],
+            "sold_history": [[at, sold] for at, sold in points],
             "ticket_url": (TICKET_URL.format(showing_id=showing_id, org_guid=guid)
                            if guid else None),
         })
@@ -360,10 +418,11 @@ def render_row(showing):
             <td class="c-fill">{fill_cell}</td>
             <td class="c-seats" data-label="Sold">{seats}</td>
             <td class="c-left" data-label="Left">{left_cell}</td>
-            <td class="c-list" data-label="List">{list_cell}</td>
-            <td class="c-paid" data-label="Paid">{paid_cell}</td>
-            <td class="c-move" data-label="6h">{signed(showing['sold_delta_6h'])}</td>
-            <td class="c-move" data-label="24h">{signed(showing['sold_delta_24h'])}</td>
+            <td class="c-list" data-label="Face value">{list_cell}</td>
+            <td class="c-paid" data-label="At checkout">{paid_cell}</td>
+            <td class="c-spark" data-label="Trend">{sparkline(showing['sold_history'])}</td>
+            <td class="c-move" data-label="Sold in 6h">{signed(showing['sold_delta_6h'])}</td>
+            <td class="c-move" data-label="Sold in 24h">{signed(showing['sold_delta_24h'])}</td>
           </tr>"""
 
 
@@ -423,15 +482,21 @@ def render_html(showings, template_path, lookahead_days):
         board = f"""
         <table class="board-table">
           <thead>
+            <tr class="group-row">
+              <th rowspan="2" class="c-when">Time</th>
+              <th rowspan="2" class="c-film">Film</th>
+              <th rowspan="2" class="c-room">Room</th>
+              <th colspan="3" class="group">Seats</th>
+              <th colspan="2" class="group">Price per ticket</th>
+              <th colspan="3" class="group">Tickets sold</th>
+            </tr>
             <tr>
-              <th class="c-when">Time</th>
-              <th class="c-film">Film</th>
-              <th class="c-room">Room</th>
-              <th class="c-fill">Full</th>
-              <th class="c-seats">Sold</th>
-              <th class="c-left">Left</th>
-              <th class="c-list">List</th>
-              <th class="c-paid">Paid</th>
+              <th class="c-fill" title="Share of the room already sold">Full</th>
+              <th class="c-seats" title="Tickets sold, out of the room's capacity">Sold</th>
+              <th class="c-left" title="Tickets still for sale">Left</th>
+              <th class="c-list" title="Face value of a standard adult ticket, before fees">Face</th>
+              <th class="c-paid" title="What a buyer actually pays at checkout, fees included">Checkout</th>
+              <th class="c-spark" title="Tickets sold over the last week of readings">Trend</th>
               <th class="c-move" title="Tickets sold in the last 6 hours">6h</th>
               <th class="c-move" title="Tickets sold in the last 24 hours">24h</th>
             </tr>
