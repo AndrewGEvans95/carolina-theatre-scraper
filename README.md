@@ -162,6 +162,12 @@ not serve, and is not linked from the site. To read it:
 
 That directory is self-contained (the page, its stylesheet and
 `power.json`), so the copy renders exactly as the published version would.
+
+The page opens on a WarGames-style WOPR terminal; the password is
+`JOSHUA`, and it stays unlocked for the rest of the browser session. This
+is a doorman, not a lock: the check runs in the browser, so the password
+is readable in the page source. If the dashboard is ever published and
+the data needs actually protecting, put it behind server-side auth.
 To build one from local data instead: `python power_generator.py -o .`
 
 The same data is written beside it as `power.json`, so it can be consumed
