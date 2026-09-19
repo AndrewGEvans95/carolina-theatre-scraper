@@ -392,10 +392,22 @@ def render_row(showing):
     if held:
         left_cell += f'<span class="held" title="{held} seats held back by the theatre">+{held} held</span>'
 
+    # A concert prices by seating tier, so the figure shown is the cheapest
+    # and says so; the tooltip lists every tier either way.
+    tiers = showing.get("prices") or []
+    tiered = len(tiers) > 1 and not any(
+        "standard" in (t.get("name") or "").lower() for t in tiers)
+    tip = esc(" · ".join(
+        f"{t.get('name')}: {t.get('list'):.2f} face, {t.get('charged'):.2f} at checkout"
+        for t in tiers
+        if t.get("list") is not None and t.get("charged") is not None))
+    tip_attr = f' title="{tip}"' if tip else ""
+    from_mark = '<span class="from">from </span>' if tiered else ""
+
     list_cell = ("—" if showing["list_price"] is None
-                 else f'{showing["list_price"]:.2f}')
+                 else f'<span{tip_attr}>{from_mark}{showing["list_price"]:.2f}</span>')
     paid_cell = ("—" if showing["charged_price"] is None
-                 else f'<strong>{showing["charged_price"]:.2f}</strong>')
+                 else f'<span{tip_attr}><strong>{showing["charged_price"]:.2f}</strong></span>')
 
     mode = "RESERVED" if showing["has_reserved_seating"] else "GA"
     flags = ""

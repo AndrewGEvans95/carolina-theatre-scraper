@@ -71,6 +71,9 @@ scrape, availability, `index.html`, `showtimes.json`, `power.html` +
 
 - **Deploy only ships code.** Cron runs the same pipeline every 6 hours
   (00:00, 06:00, 12:00, 18:00 UTC), so content refreshes without you.
+- **Only changed a generator, template or stylesheet?** `./deploy.sh
+  --no-scrape` rebuilds the pages from the data already on the server.
+  A full deploy re-fetches 66 film pages for data that hasn't moved.
 - **Takes 2–5 minutes.** If your tool call times out, it is still running
   server-side — redirect to a log and read that rather than re-running:
   ```bash

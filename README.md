@@ -166,6 +166,10 @@ sold nor for sale, which is why sold + left rarely equals capacity.
 Velocity shows a dash until two snapshots exist far enough apart - it is
 never inferred from a single reading.
 
+Deploying only generator or template changes? `./deploy.sh --no-scrape`
+rebuilds the pages from the data already on the server instead of
+re-fetching every film page.
+
 ```bash
 python power_generator.py -o .        # power.html + power.json here
 python power_generator.py --days 30   # a longer window
