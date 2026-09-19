@@ -4,29 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carolina Theatre Schedule</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="theme-color" content="#080e14">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="{{STYLESHEET}}">
+  <script src="{{SCRIPT}}" defer></script>
 </head>
-<body>
-  <div class="container">
-    <h1>Carolina Theatre Schedule</h1>
-    
-    <div class="tabs">
-      <div class="tab" style="background: #3498db; color: #1a1a2e;">Movie Schedule</div>
-      <a href="daily-cinema.html" class="tab">The Daily Cinema Club</a>
-      <a href="about.html" class="tab">Why This Exists</a>
-      <a href="power.html" class="tab">Power</a>
-    </div>
-    
+<body class="ui-page schedule-page">
+  <a class="skip-link" href="#schedule">Skip to showtimes</a>
+  <div class="app-shell">
+    <header class="masthead">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">C/</span><span>CAROLINA<span class="brand-sub">SHOWTIMES · DURHAM, NC</span></span></a>
+      <nav aria-label="Main navigation"><a href="index.html" aria-current="page">Schedule</a><a href="daily-cinema.html">Cinema Club</a><a href="about.html">About</a><a href="power.html">Power <span aria-hidden="true">↗</span></a></nav>
+    </header>
+    <main>
+      <section class="hero schedule-hero">
+        <div><p class="eyebrow"><span class="status-dot"></span> THE CAROLINA THEATRE / DURHAM</p>
+          <h1>A good time.<br><span>A great film.</span></h1>
+          <p class="hero-description">Your next trip to the movies starts here.</p></div>
+        <a class="schedule-power-link" href="power.html"><span class="eyebrow">BEHIND THE SCREEN</span><strong>Meet the box office.</strong><span>Explore seats, prices &amp; demand <b aria-hidden="true">↗</b></span></a>
+      </section>
     <div id="dialogOverlay" class="dialog-overlay hidden" onclick="closeOtherTimesDialog()"></div>
-    <div id="otherTimesDialog" class="other-times-dialog hidden">
-      <div class='other-times-dialog-title'></div>
+    <div id="otherTimesDialog" class="other-times-dialog hidden" role="dialog" aria-modal="true" aria-labelledby="otherTimesTitle">
+      <h2 id="otherTimesTitle" class="other-times-dialog-title"></h2>
       <div class="other-times-list"></div>
       <button class="closeBtn" onclick="closeOtherTimesDialog()">Close</button>
     </div>
     
     <!-- Movie Schedule Content -->
     <div id="schedule" class="tab-content active">
-      <div class="filter">
+      <div class="filter" role="search" aria-label="Filter showtimes">
         <div class="filter-group">
           <label for="groupFilter">View:</label>
           <select id="groupFilter" onchange="filterByDay()" aria-label="Group movies by day or movie">
@@ -37,8 +43,8 @@
         <div class="filter-group">
           <label for="dayFilter">Date:</label>
           <select id="dayFilter" onchange="filterByDay()" aria-label="Filter movies by day">
-            <option value="month">This Month</option>
-            <option value="week">This Week</option>
+            <option value="month">Next 31 days</option>
+            <option value="week">Next 7 days</option>
             <option value="all">All Days</option>
 {{DAY_FILTER_OPTIONS}}
           </select>
@@ -60,300 +66,13 @@
           </select>
         </div>
       </div>
+      <div class="results-line"><p id="scheduleCount" role="status" aria-live="polite"></p><span>Times in Durham · fullness is a snapshot</span></div>
+      <div class="empty-state" id="scheduleEmpty" hidden><span aria-hidden="true">[ ∅ ]</span><h2>No showtimes match</h2><p>Try another date, room or fullness filter.</p><button class="secondary-button" type="button" onclick="resetSchedule()">Clear filters</button></div>
 {{SCHEDULE_CONTENT}}
     </div>
     
-    <footer>
-      <p>"I wish it need not have happened in my time," said Frodo.<br>
-      "So do I," said Gandalf, "and so do all who live to see such times. But that is not for them to decide. 
-      All we have to decide is what to do with the time that is given us." – J.R.R. Tolkien</p>
-    </footer>
+    </main>
+    <footer class="app-footer"><span>CAROLINA SHOWTIMES <span class="footer-slash">/</span> Less searching. More cinema.</span><a href="about.html">Why this exists <span aria-hidden="true">↗</span></a></footer>
   </div>
-
-  <script>
-
-
-    function filterByDay() {
-      var selectedDay = document.getElementById("dayFilter").value;
-      var selectedGroup = document.getElementById("groupFilter").value;
-      var days = document.querySelectorAll(".day");
-      var movieGroups = document.querySelectorAll(".movie-group");
-      const today = Date.now();
-
-      function matchesDate(dateString) {
-          let movieDate = Date.parse(dateString);
-          let difference = (movieDate - today) / (1000 * 60 * 60 * 24);
-          if (selectedDay === "week") {
-            if (difference <= 7) {
-              return true;
-            } 
-          } else if (selectedDay === "month") {
-            if (difference <= 31) {
-              return true;
-            } 
-          } else if (selectedDay === "all" || dateString === selectedDay) {
-            return true;
-          }
-          return false;
-      }
-
-      function hide(element) {
-        element.classList.add("hidden");
-      }
-
-      function show(element) {
-        element.classList.remove("hidden");
-      }
-
-      var selectedVenue = document.getElementById("venueFilter").value;
-      var selectedCapacity = document.getElementById("capacityFilter").value;
-
-      function matchesVenue(movie) {
-        return selectedVenue === "all" ||
-               movie.getAttribute("data-movie-cinema") === selectedVenue;
-      }
-
-      // Rows with no inventory figure can't be judged, so they drop out
-      // whenever a specific fullness is asked for.
-      function matchesCapacity(movie) {
-        if (selectedCapacity === "all") return true;
-        let full = movie.getAttribute("data-full");
-        if (full === null) return false;
-        full = parseInt(full, 10);
-        if (selectedCapacity === "quiet") return full < 50;
-        if (selectedCapacity === "busy") return full >= 50;
-        if (selectedCapacity === "almost") return full >= 90;
-        return true;
-      }
-
-      // Filtering happens per showtime, then a section is shown only if it
-      // still has something in it.
-      function applyToSection(section, sectionDate) {
-        let visible = 0;
-        section.querySelectorAll(".movie").forEach(function(movie) {
-          let date = sectionDate || movie.getAttribute("data-movie-date");
-          if (matchesDate(date) && matchesVenue(movie) && matchesCapacity(movie)) {
-            show(movie);
-            visible++;
-          } else {
-            hide(movie);
-          }
-        });
-        if (visible > 0) {
-          show(section);
-        } else {
-          hide(section);
-        }
-      }
-
-      if (selectedGroup === "by-day") {
-        days.forEach(function(day) {
-          applyToSection(day, day.getAttribute("data-date"));
-        });
-        movieGroups.forEach(hide);
-      } else if (selectedGroup === "by-movie") {
-        days.forEach(hide);
-        movieGroups.forEach(function(group) {
-          applyToSection(group, null);
-        });
-      }
-    }
-
-    // On page load, if a hash is present, scroll to that movie and highlight it.
-    document.addEventListener("DOMContentLoaded", function() {
-      if (window.location.hash) {
-        var target = document.getElementById(window.location.hash.substring(1));
-        if (target) {
-          setTimeout(function() {
-            target.scrollIntoView({ behavior: "smooth", block: "center" });
-            target.classList.add("highlight");
-            setTimeout(function() {
-              target.classList.remove("highlight");
-            }, 3000);
-          }, 100);
-        }
-      } else {
-        filterByDay();
-      }
-    });
-
-    let allShowtimes = {};
-    // Takes only the row's id and reads the rest from its data attributes,
-    // so titles containing quotes can't break the handler.
-    function showOtherTimes(currentId) {
-      let row = document.getElementById(currentId);
-      if (!row) return;
-      let title = row.getAttribute('data-movie-title');
-      let currentTime = row.getAttribute('data-movie-time');
-      let currentDate = row.getAttribute('data-movie-date');
-      let currentCinema = row.getAttribute('data-movie-cinema');
-      let dialog = document.getElementById('otherTimesDialog');
-      let list = '';
-      let found = false;
-      let seenShowtimes = new Set();
-
-      if (allShowtimes[title]) {
-        allShowtimes[title].sort((a, b) => {
-          return a.formatted_datetime.localeCompare(b.formatted_datetime);
-        });
-
-        allShowtimes[title].forEach(function(st) {
-          const showtimeKey = `${st.time}-${st.date}-${st.cinema}`;
-          
-          if (!seenShowtimes.has(showtimeKey) && 
-              !(st.time === currentTime && st.date === currentDate && st.cinema === currentCinema)) {
-            seenShowtimes.add(showtimeKey);
-            let targetId = st.id ? st.id : '';
-            const displayDate = st.date || 'Unknown Date';
-            list += `<a class='other-times-link' href='#${targetId}' onclick="closeOtherTimesDialog('${targetId}')">${displayDate} — ${st.time} @ ${st.cinema}</a>`;
-            found = true;
-          }
-        });
-      }
-      if (!found) {
-        list = '<div>No other showtimes for this movie.</div>';
-      }
-      dialog.querySelector('.other-times-list').innerHTML = list;
-      dialog.querySelector('.other-times-dialog-title').innerText = `Other Showtimes for: ${title}`;
-      dialog.classList.remove("hidden");
-      document.getElementById('dialogOverlay').classList.remove("hidden");
-    }
-
-    function closeOtherTimesDialog(targetId) {
-      document.getElementById('otherTimesDialog').classList.add("hidden");
-      document.getElementById('dialogOverlay').classList.add("hidden");
-
-      if (targetId) {
-        setTimeout(() => {
-          let el = document.getElementById(targetId);
-          el.scrollIntoView({behavior:'instant',block:'center'});
-          el.classList.add("highlight");
-          setTimeout(() => {
-            el.classList.remove("highlight");
-          }, 1000);
-        }, 0);
-      }
-    }
-
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        closeOtherTimesDialog();
-      }
-    });
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      let seenShowtimes = new Set();
-      document.querySelectorAll('[data-movie-title]').forEach(function(el) {
-        let title = el.getAttribute('data-movie-title');
-        let time = el.getAttribute('data-movie-time');
-        let date = el.getAttribute('data-movie-date');
-        let cinema = el.getAttribute('data-movie-cinema');
-        let formatted_datetime = el.getAttribute('data-formatted-datetime') || '';
-        let id = el.getAttribute('id');
-        
-        if (!title || !time || !date || !cinema) {
-          console.warn('Missing data for showtime:', {title, time, date, cinema});
-          return;
-        }
-        
-        const showtimeKey = `${title}|${time}|${date}|${cinema}`;
-        
-        if (!seenShowtimes.has(showtimeKey)) {
-          seenShowtimes.add(showtimeKey);
-          if (!allShowtimes[title]) allShowtimes[title] = [];
-          allShowtimes[title].push({time, date, cinema, id, formatted_datetime});
-        }
-      });
-    });
-    
-    function copyShareLink(movieId, event) {
-      event.preventDefault();
-      event.stopPropagation();
-      
-      const url = window.location.href.split('#')[0] + '#' + movieId;
-      const btn = event.currentTarget;
-      const originalText = btn.innerHTML;
-      window.location.hash = movieId;
-      
-      function fallbackCopyToClipboard(text) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        let successful = false;
-        try {
-          successful = document.execCommand('copy');
-        } catch (err) {
-          console.error('Fallback copy failed:', err);
-        }
-        
-        document.body.removeChild(textArea);
-        return successful;
-      }
-      
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(url)
-          .then(() => {
-            showCopySuccess(btn, originalText);
-          })
-          .catch(() => {
-            if (fallbackCopyToClipboard(url)) {
-              showCopySuccess(btn, originalText);
-            } else {
-              showCopyError(btn, originalText);
-            }
-          });
-      } else {
-        if (fallbackCopyToClipboard(url)) {
-          showCopySuccess(btn, originalText);
-        } else {
-          showCopyError(btn, originalText);
-        }
-      }
-    }
-    
-    function showCopySuccess(btn, originalText) {
-      btn.classList.add('copied');
-      
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.classList.remove('copied');
-      }, 2000);
-    }
-    
-    function showCopyError(btn, originalText) {
-      btn.classList.add('error');
-      
-      const errorMsg = document.createElement('div');
-      const linkSpan = `<span style="user-select: all;">${window.location.href.split('#')[0] + '#' + btn.closest('.movie').id}</span>`;
-      errorMsg.className = 'copy-error-message';
-      errorMsg.innerHTML = 'Click to copy manually: ' + linkSpan;
-      
-      const closeBtn = document.createElement('button');
-      closeBtn.textContent = 'Close';
-      closeBtn.className = "closeBtn";
-      closeBtn.onclick = () => {
-        document.body.removeChild(errorMsg);
-        btn.innerHTML = originalText;
-        btn.classList.remove('error');
-      };
-      
-      errorMsg.appendChild(closeBtn);
-      document.body.appendChild(errorMsg);
-      
-      setTimeout(() => {
-        if (document.body.contains(errorMsg)) {
-          document.body.removeChild(errorMsg);
-        }
-        btn.innerHTML = originalText;
-        btn.classList.remove('error');
-      }, 10000);
-    }
-  </script>
 </body>
 </html>

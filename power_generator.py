@@ -16,10 +16,12 @@ as a dash until then, never as a fabricated zero.
 """
 
 import argparse
-import html
 import json
 import os
 import sqlite3
+import shutil
+
+from power_view import render_dashboard
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 
@@ -32,33 +34,10 @@ TICKET_URL = ("https://tickets.carolinatheatre.org/websales/pages/"
 # Public identifier from the theatre's own ticket links, used when the
 # database has no org_guid recorded
 ORG_GUID_DEFAULT = "05de892e-fe79-4e77-8f75-9f03e89f9235"
-# Sales states from the ticketing API; 2 is on sale now
-SALES_STATES = {
-    1: "BEFORE SALES",
-    2: "ON SALE",
-    3: "SALES CLOSED",
-    4: "AFTER EVENT",
-    5: "CUSTOM MESSAGE",
-}
-INSIGHT_LIMIT = 5
 
 
 def theatre_now():
     return datetime.now(THEATRE_TZ).replace(tzinfo=None)
-
-
-def esc(value):
-    return html.escape("" if value is None else str(value), quote=True)
-
-
-def money(value):
-    return f"${value:,.2f}" if isinstance(value, (int, float)) else "—"
-
-
-def signed(value):
-    if value is None:
-        return "—"
-    return f"+{value}" if value > 0 else str(value)
 
 
 def org_guid(conn):
@@ -77,19 +56,6 @@ def org_guid(conn):
         if guids:
             return guids.most_common(1)[0][0]
     return ORG_GUID_DEFAULT
-
-
-def fill_level(pct_filled):
-    """Colour band for a fill bar, matching the schedule page."""
-    if pct_filled is None:
-        return "unknown"
-    if pct_filled >= 90:
-        return "full"
-    if pct_filled >= 70:
-        return "high"
-    if pct_filled >= 40:
-        return "mid"
-    return "low"
 
 
 def sold_deltas(conn, showing_id, latest_checked_at, seats_sold):
@@ -224,239 +190,9 @@ def build_json(showings, lookahead_days):
     }
 
 
-def insights(showings):
-    """Short lists that point at the interesting rows in the board."""
-    filled = [s for s in showings if s["pct_filled"] is not None]
-    velocity = [s for s in showings if s["sold_delta_24h"] is not None]
-    fees = [s for s in showings if s["fee"] is not None]
-
-    return [
-        ("FULLEST", sorted(filled, key=lambda s: -s["pct_filled"])[:INSIGHT_LIMIT],
-         lambda s: f"{s['pct_filled']:.0f}% full"),
-        ("EMPTIEST ON SALE",
-         sorted([s for s in filled if s["on_sale"] is not False],
-                key=lambda s: s["pct_filled"])[:INSIGHT_LIMIT],
-         lambda s: f"{s['pct_filled']:.0f}% full"),
-        ("MOVING FASTEST (24H)",
-         sorted(velocity, key=lambda s: -s["sold_delta_24h"])[:INSIGHT_LIMIT],
-         lambda s: f"{signed(s['sold_delta_24h'])} sold"),
-        ("BIGGEST FEE GAP",
-         sorted(fees, key=lambda s: -s["fee"])[:INSIGHT_LIMIT],
-         lambda s: f"{money(s['list_price'])} → {money(s['charged_price'])}"),
-    ]
-
-
-def format_when(starts_at, compact=False):
-    """
-    "Fri, Sep 19 · 7:00pm", or "Fri 19 · 7:00pm" when compact - the table
-    needs the date but can't afford the width of the long form.
-    """
-    try:
-        when = datetime.strptime(starts_at, "%Y-%m-%d %H:%M")
-    except (ValueError, TypeError):
-        return esc(starts_at)
-    if compact:
-        # Numeric in the table: it reads fine in a data column and buys
-        # width for the film titles
-        day = f"{when.month}/{when.day}"
-    else:
-        day = when.strftime("%a, %b %d").replace(" 0", " ")
-    clock = when.strftime("%I:%M%p").lower().lstrip("0")
-    return f"{day} · {clock}"
-
-
-def house_rules(showings):
-    """
-    The facts that are the same for every showing.
-
-    Order limits, the hidden-quantity policy and the sale state are
-    identical across the listing, so stating them once beats repeating them
-    on all sixty rows. Anything that varies stays in the table.
-    """
-    rules = []
-
-    caps = {s["max_per_order"] for s in showings if s["max_per_order"]}
-    if len(caps) == 1:
-        rules.append(f"max {caps.pop()} tickets per order")
-
-    hidden = [s["show_available_qty_on_web"] for s in showings
-              if s["show_available_qty_on_web"] is not None]
-    if hidden and all(h is False for h in hidden):
-        rules.append("the theatre hides remaining counts on its own site")
-
-    not_on_sale = [s for s in showings if s["on_sale"] is False]
-    if showings and not not_on_sale:
-        rules.append("all on sale")
-
-    checked = sorted({s["checked_at"][:16] for s in showings if s["checked_at"]})
-    if len(checked) == 1:
-        rules.append(f"checked {checked[0][11:16]}")
-
-    return " · ".join(rules)
-
-
-def render_row(showing):
-    """
-    One table row. Numbers sit in aligned columns so a column can be read
-    down the page; only fields that actually differ between showings are
-    here, the constant ones are stated once above the table.
-    """
-    pct_filled = showing["pct_filled"]
-    # Band from the same rounded figure the label shows, so a bar reading
-    # "70%" isn't coloured as if it were 69%
-    shown_pct = round(pct_filled) if pct_filled is not None else None
-    level = fill_level(shown_pct)
-
-    title = esc(showing["title"])
-    if showing["ticket_url"]:
-        title = (f"<a href=\"{esc(showing['ticket_url'])}\" target=\"_blank\" "
-                 f"rel=\"noopener\" title=\"{esc(showing['title'])}\">{title}</a>")
-
-    if shown_pct is None:
-        fill_cell = '<span class="nodata">no data</span>'
-    else:
-        fill_cell = (f'<span class="fill" data-level="{level}" '
-                     f'title="{shown_pct}% of capacity sold">'
-                     f'<span class="fill-track">'
-                     f'<span class="fill-bar" style="width:{pct_filled}%"></span>'
-                     f'</span>'
-                     f'<span class="fill-pct">{shown_pct}%</span></span>')
-
-    sold = showing["seats_sold"]
-    total = showing["seats_total"]
-    seats = (f'<strong>{sold}</strong><span class="of">/{total}</span>'
-             if sold is not None and total else "—")
-
-    # Held seats are almost always zero; call them out only when they aren't
-    held = showing["seats_hold"]
-    left = showing["seats_available"]
-    left_cell = "—" if left is None else str(left)
-    if held:
-        left_cell += f'<span class="held" title="{held} seats held back by the theatre">+{held} held</span>'
-
-    list_cell = ("—" if showing["list_price"] is None
-                 else f'{showing["list_price"]:.2f}')
-    paid_cell = ("—" if showing["charged_price"] is None
-                 else f'<strong>{showing["charged_price"]:.2f}</strong>')
-
-    mode = "RESERVED" if showing["has_reserved_seating"] else "GA"
-    flags = ""
-    if showing["on_sale"] is False:
-        flags = (f'<span class="rowflag">'
-                 f'{esc(SALES_STATES.get(showing["sales_state"], "NOT ON SALE"))}</span>')
-
-    return f"""
-          <tr class="prow" data-venue="{esc(showing['venue'])}" data-mode="{mode}"
-              data-starts="{esc(showing['starts_at'])}"
-              data-filled="{pct_filled if pct_filled is not None else -1}"
-              data-sold="{sold if sold is not None else -1}"
-              data-left="{left if left is not None else -1}"
-              data-price="{showing['charged_price'] if showing['charged_price'] is not None else -1}"
-              data-velocity="{showing['sold_delta_24h'] if showing['sold_delta_24h'] is not None else -1}"
-              data-level="{level}">
-            <td class="c-when">{format_when(showing['starts_at'], compact=True)}</td>
-            <td class="c-film">{title}{flags}</td>
-            <td class="c-room" data-label="Room" data-venue="{esc(showing['venue'])}">{esc(showing['venue'])}<span class="mode mode-{mode.lower()}">{'RES' if mode == 'RESERVED' else 'GA'}</span></td>
-            <td class="c-fill">{fill_cell}</td>
-            <td class="c-seats" data-label="Sold">{seats}</td>
-            <td class="c-left" data-label="Left">{left_cell}</td>
-            <td class="c-list" data-label="List">{list_cell}</td>
-            <td class="c-paid" data-label="Paid">{paid_cell}</td>
-            <td class="c-move" data-label="6h">{signed(showing['sold_delta_6h'])}</td>
-            <td class="c-move" data-label="24h">{signed(showing['sold_delta_24h'])}</td>
-          </tr>"""
-
-
-def render_hud(summary):
-    tiles = [
-        ("SHOWINGS", summary["showings"]),
-        ("SEATS SOLD", f"{summary['seats_sold']:,}"),
-        ("SEATS LEFT", f"{summary['seats_left']:,}"),
-        ("CAPACITY", f"{summary['capacity']:,}"),
-    ]
-    cells = "".join(f"""
-          <div class="ptile">
-            <span class="ptile-label">{label}</span>
-            <span class="ptile-value">{value}</span>
-          </div>""" for label, value in tiles)
-    filled = (f"{summary['pct_filled']:.1f}% of capacity sold"
-              if summary["pct_filled"] is not None else "no inventory data")
-    return f"""
-      <section class="hud">
-        {cells}
-      </section>
-      <p class="hud-note">{filled} across {summary['with_inventory']} showings with data</p>
-      """
-
-
-def render_insights(showings):
-    blocks = []
-    for heading, rows, describe in insights(showings):
-        if not rows:
-            continue
-        items = "".join(
-            f"<li><span class=\"pinsight-what\">{esc(s['title'])}"
-            f"<span class=\"pinsight-when\">{format_when(s['starts_at'])}"
-            f" · {esc(s['venue'])}</span></span>"
-            f"<span class=\"pinsight-value\">{describe(s)}</span></li>"
-            for s in rows)
-        blocks.append(f"""
-        <div class="pinsight">
-          <h3>{heading}</h3>
-          <ul>{items}</ul>
-        </div>""")
-    if not blocks:
-        return ""
-    return f"""
-      <section class="insights">
-        {''.join(blocks)}
-      </section>
-      """
-
-
 def render_html(showings, template_path, lookahead_days):
-    with open(template_path, "r", encoding="utf-8") as handle:
-        template = handle.read()
-
-    summary = totals(showings)
-    if showings:
-        board = f"""
-        <table class="board-table">
-          <thead>
-            <tr>
-              <th class="c-when">Time</th>
-              <th class="c-film">Film</th>
-              <th class="c-room">Room</th>
-              <th class="c-fill">Full</th>
-              <th class="c-seats">Sold</th>
-              <th class="c-left">Left</th>
-              <th class="c-list">List</th>
-              <th class="c-paid">Paid</th>
-              <th class="c-move" title="Tickets sold in the last 6 hours">6h</th>
-              <th class="c-move" title="Tickets sold in the last 24 hours">24h</th>
-            </tr>
-          </thead>
-          <tbody id="boardRows">{''.join(render_row(s) for s in showings)}
-          </tbody>
-        </table>"""
-    else:
-        board = ('<div class="pempty">NO DATA · RUN PIPELINE</div>')
-
-    venues = sorted({s["venue"] for s in showings if s["venue"]})
-    venue_options = "".join(
-        f'<option value="{esc(v)}">{esc(v)}</option>' for v in venues)
-
-    generated = theatre_now().strftime("%a, %b %d %Y · %I:%M%p").replace(" 0", " ")
-
-    return (template
-            .replace("{{HUD}}", render_hud(summary))
-            .replace("{{BOARD}}", board)
-            .replace("{{INSIGHTS}}", render_insights(showings))
-            .replace("{{VENUE_OPTIONS}}", venue_options)
-            .replace("{{HOUSE_RULES}}", esc(house_rules(showings)))
-            .replace("{{WINDOW_DAYS}}", str(lookahead_days))
-            .replace("{{GENERATED_AT}}", esc(generated))
-            .replace("{{SHOWING_COUNT}}", str(len(showings))))
+    generated = theatre_now().strftime("%b %d, %Y · %I:%M%p ET").replace(" 0", " ")
+    return render_dashboard(showings, template_path, lookahead_days, generated)
 
 
 def generate(db_name="movie_showtimes.db", output_dir=".",
@@ -470,6 +206,12 @@ def generate(db_name="movie_showtimes.db", output_dir=".",
           f"{lookahead_days} days")
 
     os.makedirs(output_dir, exist_ok=True)
+    for asset in ("interface.css", "power.js"):
+        source = os.path.join(here, asset)
+        destination = os.path.join(output_dir, asset)
+        if os.path.abspath(source) != os.path.abspath(destination):
+            shutil.copy2(source, destination)
+        os.chmod(destination, 0o644)
 
     json_path = os.path.join(output_dir, "power.json")
     with open(json_path, "w", encoding="utf-8") as handle:

@@ -2,144 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Power Dashboard - Carolina Showtimes</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080e14">
+  <meta name="description" content="Inside the Carolina Theatre box office: seats, ticket prices and demand at a glance.">
+  <title>Box Office / Power — Carolina Showtimes</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="{{STYLESHEET}}">
+  <script src="{{SCRIPT}}" defer></script>
 </head>
-<body>
-  <div class="container">
-    <h1>Power Dashboard</h1>
+<body class="ui-page power-page">
+  <a class="skip-link" href="#board">Skip to showings</a>
+  <div class="app-shell">
+    <header class="masthead">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">C/</span><span>CAROLINA<span class="brand-sub">SHOWTIMES · DURHAM, NC</span></span></a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">Schedule</a><a href="daily-cinema.html">Cinema Club</a><a href="about.html">About</a><a href="power.html" aria-current="page">Power <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
 
-    <div class="tabs">
-      <a href="index.html" class="tab">Movie Schedule</a>
-      <a href="daily-cinema.html" class="tab">The Daily Cinema Club</a>
-      <a href="about.html" class="tab">Why This Exists</a>
-      <div class="tab active">Power</div>
-    </div>
+    <main>
+      <section class="hero power-hero" aria-labelledby="pageTitle">
+        <div><p class="eyebrow"><span class="status-dot"></span> BOX OFFICE INTELLIGENCE <span class="system-code">/ 01</span></p>
+          <h1 id="pageTitle">The box office.<br><span>Decoded.</span></h1>
+          <p class="hero-description">Seats, ticket prices and demand.<br>Your next {{WINDOW_DAYS}} days at the Carolina Theatre.</p>
+          <a href="#board" class="explore-link">Explore showings <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-telemetry">
+          <div class="radar" aria-hidden="true"><span></span><i></i><b></b></div>
+          <div class="snapshot-label">SNAPSHOT / {{WINDOW_DAYS}}-DAY WINDOW</div>
+          <time>{{GENERATED_AT}}</time>
+          <span class="telemetry-note">Updated every 6 hours · not live</span>
+          <a href="power.json" class="text-link">Explore the raw data <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
 
-    <p class="power-intro">
-      Every showing in the next {{WINDOW_DAYS}} days, straight from the box
-      office. Raw data: <a href="power.json">power.json</a>.
-    </p>
+      <section class="metrics" aria-label="Inventory for matching showings">
+        <div class="metric"><span class="metric-index">01 / PROGRAM</span><strong id="metricShowings">{{SHOWING_COUNT}}</strong><span>Upcoming showings</span><small id="metricScope">Across the next {{WINDOW_DAYS}} days</small></div>
+        <div class="metric"><span class="metric-index">02 / BOOKED</span><strong id="metricSold">{{SOLD}}</strong><span>Tickets sold</span><small>Confirmed sales, excluding holds</small></div>
+        <div class="metric"><span class="metric-index">03 / AVAILABLE</span><strong id="metricLeft">{{LEFT}}</strong><span>Seats still available</span><small>Reported inventory for your selection</small></div>
+        <div class="metric occupancy-metric"><span class="metric-index">04 / OCCUPANCY</span><strong id="metricPercent">{{PERCENT}}</strong><span>Of known capacity sold</span><div id="summaryMeter">{{SUMMARY_METER}}</div></div>
+      </section>
+      <div class="metric-caption"><span id="coverage">{{COVERAGE}}</span><span>Overview follows your filters <span aria-hidden="true">↓</span></span></div>
 
-    <div class="filter">
-      <div class="filter-group">
-        <label for="dateFilter">Date:</label>
-        <select id="dateFilter" onchange="applyPowerFilters()">
-          <option value="all">All {{WINDOW_DAYS}} days</option>
-          <option value="today">Today</option>
-          <option value="week">Next 7 days</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="roomFilter">Room:</label>
-        <select id="roomFilter" onchange="applyPowerFilters()">
-          <option value="all">All rooms</option>
-{{VENUE_OPTIONS}}
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="modeFilter">Seating:</label>
-        <select id="modeFilter" onchange="applyPowerFilters()">
-          <option value="all">GA + reserved</option>
-          <option value="GA">GA only</option>
-          <option value="RESERVED">Reserved only</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="sortField">Sort:</label>
-        <select id="sortField" onchange="applyPowerFilters()">
-          <option value="starts">Start time</option>
-          <option value="filled">% filled</option>
-          <option value="sold">Tickets sold</option>
-          <option value="left">Seats left</option>
-          <option value="price">Charged price</option>
-          <option value="velocity">Sold in 24h</option>
-        </select>
-      </div>
-    </div>
+      <section class="timeline-panel" aria-labelledby="timelineTitle">
+        <div class="section-label"><h2 id="timelineTitle"><span>01</span> The next {{WINDOW_DAYS}} days</h2><p>Showings per day · select to filter</p></div>
+        <div class="day-signals">{{DAY_SIGNALS}}</div>
+      </section>
 
-{{HUD}}
+      <section class="board-panel" id="board" aria-labelledby="boardTitle">
+        <div class="section-label board-title"><h2 id="boardTitle"><span>02</span> Showing explorer</h2><span class="panel-tag">INVENTORY / USD</span></div>
+        <form id="powerFilters" class="explorer-controls" role="search">
+          <div class="search-wrap"><label for="searchInput" class="sr-only">Search titles or rooms</label><span aria-hidden="true">⌕</span><input type="search" id="searchInput" placeholder="Find a film, a room, a showing…" autocomplete="off"><kbd aria-hidden="true">/</kbd></div>
+          <div class="filter-grid">
+            <label>Date<select id="dateFilter"><option value="all">All {{WINDOW_DAYS}} days</option><option value="today">Today</option><option value="week">Next 7 days</option>{{DAY_OPTIONS}}</select></label>
+            <label>Room<select id="roomFilter"><option value="all">All rooms</option>{{VENUE_OPTIONS}}</select></label>
+            <label>Seating<select id="modeFilter"><option value="all">All seating</option><option value="ga">General admission</option><option value="reserved">Reserved</option></select></label>
+            <label>Sort by<select id="sortField"><option value="starts">Soonest first</option><option value="filled">Fullest first</option><option value="sold">Most tickets sold</option><option value="left">Fewest seats left</option><option value="price">Lowest ticket price</option><option value="velocity">Most sales / 24h</option></select></label>
+          </div>
+          <div class="filter-bottom"><div class="quick-filters" aria-label="Occupancy shortcuts"><button type="button" data-preset="all" aria-pressed="true">All showings</button><button type="button" data-preset="quiet" aria-pressed="false">Room to spare</button><button type="button" data-preset="busy" aria-pressed="false">Filling up <span aria-hidden="true">↗</span></button></div><button type="reset" class="reset-button">Reset filters</button></div>
+        </form>
+        <div class="results-line"><p id="boardNote" role="status" aria-live="polite">{{SHOWING_COUNT}} showings</p><span>Select a showing for tickets &amp; details</span></div>
+        <div class="board-columns" aria-hidden="true"><span>Film / room</span><span>Start time</span><span>Occupancy</span><span>Available</span><span>Ticket + fees</span><span>Sold / 24h</span><span></span></div>
+        <div id="boardRows">{{BOARD}}</div>
+        <div class="empty-state" id="powerEmpty" {{EMPTY_HIDDEN}}><span aria-hidden="true">[ ∅ ]</span><h3>No showings found</h3><p>Try another date, room or search.</p><button type="button" class="secondary-button" id="emptyReset">Clear filters</button></div>
+      </section>
 
-    <p class="house-rules">Same for every showing: {{HOUSE_RULES}}.</p>
-
-    <section class="board" id="board">
-{{BOARD}}
-    </section>
-
-    <p class="board-note" id="boardNote"></p>
-
-{{INSIGHTS}}
-
-    <footer>
-      <p>{{SHOWING_COUNT}} showings · generated {{GENERATED_AT}} ·
-      inventory and prices from the Carolina Theatre box office.<br>
-      Sold counts are real sales; held seats are kept back by the theatre and
-      are neither sold nor for sale.</p>
-    </footer>
+      <section class="data-guide" aria-label="How to read the dashboard">
+        <div><span class="eyebrow">READING THE SIGNAL</span><h2>A little context.<br>A clearer picture.</h2></div>
+        <p><strong>Full means sold.</strong> The meter shows tickets purchased as a share of total capacity. Held seats are set aside by the theatre; they are neither sold nor available.</p>
+        <p><strong>A dash means unknown.</strong> Sales changes need an earlier snapshot at least 6 or 24 hours old. They can span longer gaps between checks and include returns.</p>
+      </section>
+    </main>
+    <footer class="app-footer"><span>CAROLINA SHOWTIMES <span class="footer-slash">/</span> An independent view of the box office.</span><a href="index.html">Back to the movies <span aria-hidden="true">↗</span></a></footer>
   </div>
-
-  <script>
-    // Rows carry their own numbers as data attributes, so filtering and
-    // sorting are just DOM operations - no refetching, no second copy of
-    // the data in JavaScript.
-    function applyPowerFilters() {
-      const board = document.getElementById("board");
-      const body = document.getElementById("boardRows");
-      if (!body) return;
-      const rows = Array.from(body.querySelectorAll(".prow"));
-      const date = document.getElementById("dateFilter").value;
-      const room = document.getElementById("roomFilter").value;
-      const mode = document.getElementById("modeFilter").value;
-      const sortField = document.getElementById("sortField").value;
-
-      const now = new Date();
-      const todayKey = now.getFullYear() + "-" +
-        String(now.getMonth() + 1).padStart(2, "0") + "-" +
-        String(now.getDate()).padStart(2, "0");
-
-      function matchesDate(row) {
-        const starts = row.getAttribute("data-starts") || "";
-        if (date === "all") return true;
-        if (date === "today") return starts.startsWith(todayKey);
-        if (date === "week") {
-          const when = new Date(starts.replace(" ", "T"));
-          return (when - now) / 86400000 <= 7;
-        }
-        return true;
-      }
-
-      let shown = 0;
-      rows.forEach(function(row) {
-        const ok = matchesDate(row) &&
-          (room === "all" || row.getAttribute("data-venue") === room) &&
-          (mode === "all" || row.getAttribute("data-mode") === mode);
-        row.classList.toggle("hidden", !ok);
-        if (ok) shown++;
-      });
-
-      // Start time ascending; every other sort is "most interesting first".
-      const numeric = {filled: 1, sold: 1, left: 1, price: 1, velocity: 1};
-      rows.sort(function(a, b) {
-        if (sortField === "starts") {
-          return (a.getAttribute("data-starts") || "").localeCompare(
-                  b.getAttribute("data-starts") || "");
-        }
-        if (numeric[sortField]) {
-          return parseFloat(b.getAttribute("data-" + sortField)) -
-                 parseFloat(a.getAttribute("data-" + sortField));
-        }
-        return 0;
-      });
-      rows.forEach(row => body.appendChild(row));
-
-      const note = document.getElementById("boardNote");
-      note.textContent = shown === rows.length
-        ? shown + " showings"
-        : shown + " of " + rows.length + " showings match";
-    }
-
-    document.addEventListener("DOMContentLoaded", applyPowerFilters);
-  </script>
 </body>
 </html>
