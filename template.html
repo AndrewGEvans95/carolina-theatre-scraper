@@ -10,6 +10,10 @@
   <div class="container">
     <h1>Carolina Theatre Schedule</h1>
     
+    <!-- Five taps open the box office dashboard. Rendered only when the
+         dashboard is published; see site_generator.easter_egg(). -->
+{{EASTER_EGG}}
+
     <div class="tabs">
       <div class="tab" style="background: #3498db; color: #1a1a2e;">Movie Schedule</div>
       <a href="daily-cinema.html" class="tab">The Daily Cinema Club</a>
@@ -70,7 +74,48 @@
   </div>
 
   <script>
+    // ── Five taps ─────────────────────────────────────────────────────
+    // A quiet way in to the box office dashboard. The destination is
+    // assembled at runtime rather than written out in the markup, which
+    // keeps it out of a casual read of the source - not a secret, just
+    // not advertised.
+    (function () {
+      var dot = document.getElementById("waygate");
+      if (!dot) return;
 
+      var NEEDED = 5;
+      var WINDOW_MS = 3000;
+      var taps = [];
+
+      function destination() {
+        try {
+          return atob(dot.getAttribute("data-to")) + "power.html";
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function tapped() {
+        var now = Date.now();
+        taps = taps.filter(function (t) { return now - t < WINDOW_MS; });
+        taps.push(now);
+
+        // Faint acknowledgement once they're clearly trying
+        dot.classList.toggle("waygate-warm", taps.length >= 3);
+
+        if (taps.length >= NEEDED) {
+          taps = [];
+          dot.classList.add("waygate-open");
+          var to = destination();
+          if (to) setTimeout(function () { window.location.href = to; }, 220);
+        }
+      }
+
+      dot.addEventListener("click", function (e) {
+        e.preventDefault();
+        tapped();
+      });
+    })();
 
     function filterByDay() {
       var selectedDay = document.getElementById("dayFilter").value;

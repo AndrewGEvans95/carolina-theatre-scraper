@@ -118,7 +118,9 @@ server by `/etc/carolina-scraper/power-path`:
 
 So publishing and unpublishing are a server-side toggle, taking effect on
 the next run; deleting the token file and removing the directory takes it
-offline. Don't write the token into the repository, a `robots.txt` or a
+offline. The same token drives the five-tap button on the schedule page
+(`site_generator.easter_egg()`), which renders only while the dashboard is
+published — so unpublishing removes the way in too, with no code change. Don't write the token into the repository, a `robots.txt` or a
 nav link — any of those would advertise the path that keeps it quiet. The
 page carries `noindex,nofollow` so search engines skip it.
 

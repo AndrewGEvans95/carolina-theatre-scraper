@@ -1,4 +1,5 @@
 import argparse
+import base64
 import html
 import sqlite3
 import re
@@ -144,6 +145,36 @@ def load_template(template_file="template.html"):
 
 def reindent(text, length):
     return textwrap.indent(textwrap.dedent(text), " " * length)
+
+def easter_egg():
+    """
+    The five-tap way in to the box office dashboard.
+
+    Rendered only when the dashboard is actually published: the path comes
+    from the server's token file (or POWER_PATH for local testing), so on a
+    machine without it the button simply isn't there. The value is base64'd
+    in the markup - that hides it from a casual read of the source, not
+    from anyone who means it, which is why the dashboard has its own gate.
+    """
+    token = os.environ.get("POWER_PATH", "").strip()
+    if not token:
+        for path in ("/etc/carolina-scraper/power-path",):
+            try:
+                with open(path, "r", encoding="utf-8") as handle:
+                    token = handle.read().strip()
+                break
+            except OSError:
+                continue
+
+    token = token.strip("/")
+    if not token:
+        return ""
+
+    encoded = base64.b64encode(f"/{token}/".encode("utf-8")).decode("ascii")
+    return (f'    <button id="waygate" class="waygate" data-to="{encoded}" '
+            f'type="button" aria-label="Box office terminal" '
+            f'title="WOPR"></button>')
+
 
 def esc(value):
     """Escape text for HTML, including quotes so it is safe in attributes."""
@@ -487,7 +518,8 @@ def generate_html(db_name="movie_showtimes.db",
     schedule_content = reindent(schedule_content, 5)
     
     # Replace template variables with actual content
-    html_content = template_content.replace('{{DAY_FILTER_OPTIONS}}', day_filter_options)
+    html_content = template_content.replace('{{EASTER_EGG}}', easter_egg())
+    html_content = html_content.replace('{{DAY_FILTER_OPTIONS}}', day_filter_options)
     html_content = html_content.replace('{{VENUE_FILTER_OPTIONS}}', venue_filter_options)
     html_content = html_content.replace('{{SCHEDULE_CONTENT}}', schedule_content)
     
