@@ -124,10 +124,17 @@ curl -s https://carolinashowtimes.com/ | grep -c sold-bar          # content pre
 ssh carolinashowtimes 'tail -5 /var/log/carolina-scraper/scraper.log'
 ```
 
-- **UI changes:** screenshot at 1280px and 390px with headless Chrome and
+- **UI changes:** screenshot at several widths with headless Chrome and
   *look at the image*. Check for horizontal overflow, ragged row heights,
   and glyphs the font lacks — Press Start 2P has no `→`, which shipped
   once as `12.00_14.45`.
+  - **Copy `styles.css` into the directory you generate into.** An
+    unstyled page trivially "fits", so measuring one proves nothing. A
+    table overflow on every laptop-width window shipped this way.
+  - **Check a range of widths, not two.** The page was fine at 1280px and
+    390px while broken at everything between. A layout that needs a fixed
+    width needs the breakpoint set from that measurement, plus room for a
+    scrollbar.
 - **Data changes:** query the database on the server, don't infer from the
   page.
 - **Interaction:** drive the filters/sort in a real browser and read the
