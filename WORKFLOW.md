@@ -114,6 +114,10 @@ Alias `carolinashowtimes` → root on the DigitalOcean droplet.
 nothing links to them. Don't point the generator at `/var/www/html` or add
 a nav link back without being asked — that would republish them.
 
+To look at it: `./view_power.sh` copies that directory down and opens the
+page. The directory carries its own `styles.css`, so the copy renders the
+same as the published version would.
+
 ## 6. Secrets
 
 - Ticketing API keys live at **`/etc/carolina-scraper/api.env`** on the
