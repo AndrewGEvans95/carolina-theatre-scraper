@@ -146,31 +146,6 @@ a showtime. It lists every showing in the next 14 days with:
 Filters for date, room and seating mode, and sorting by start time, fill,
 sold, seats left, price or 24h velocity.
 
-The dashboard includes title/room search, a clickable day chart, fullness
-shortcuts, and overview totals that follow the active filters. Expand a
-showing for price tiers, held seats, order limits and its ticket link.
-Desktop rows become cards on smaller screens. Inventory is a snapshot,
-not a live feed; missing readings are shown explicitly rather than as zero.
-
-The schedule and dashboard share `interface.css` and the accessible meter
-in `ui_components.py`. `schedule.js` and `power.js` handle local filtering
-without extra requests. `power_view.py` renders the dashboard markup;
-`power_generator.py` remains responsible for loading data and publishing.
-CSS and JavaScript URLs are content-versioned to prevent stale browser
-assets after a deploy. Both generators copy their required assets.
-
-For browser checks, install Playwright in a development environment and
-run against generated pages or the live site:
-
-```bash
-python -m playwright install chromium firefox webkit
-python scripts/check_ui.py --url https://carolinashowtimes.com --output /tmp/carolina-ui-check
-```
-
-This checks layout and interactions in all three browser engines at
-320, 390, 768, 1024 and 1280 pixels, and saves review screenshots. It
-requires a populated snapshot; it never follows a purchase link.
-
 The same data is written next to it as `power.json`, so it can be consumed
 without scraping the page. Held seats are kept back by the theatre: neither
 sold nor for sale, which is why sold + left rarely equals capacity.
