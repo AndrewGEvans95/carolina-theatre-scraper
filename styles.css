@@ -879,7 +879,7 @@ footer {
 .legend dd { margin: 0; }
 
 /* Trend line: shape of the selling, scaled to the showing itself */
-.c-spark { width: 74px; }
+.c-spark { width: 68px; }
 
 .spark {
   display: block;
@@ -917,7 +917,7 @@ footer {
    in the link's tooltip. */
 .c-film {
   font-size: 11px;
-  max-width: 228px;
+  max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1079,24 +1079,28 @@ footer {
 .pinsight-value { color: #f39c12; white-space: nowrap; }
 
 /* ═══════════════════════════════════════════════════
-   POWER DASHBOARD - MOBILE
-   The table becomes one card per showing: the header row
-   is hidden and each cell states its own label, so no
-   horizontal scrolling and nothing gets clipped.
+   POWER TABLE -> CARDS (< 1280px)
+   Press Start 2P is wide: the ten-column table needs about
+   1030px of content box, which the container only provides
+   more viewport than that once a scrollbar is allowed for.
+   The table therefore appears from 1280px up; rather than
+   shrink the type into
+   illegibility or make laptops scroll sideways, anything
+   narrower gets one card per showing with the same fields.
 ═══════════════════════════════════════════════════ */
-@media (max-width: 767px) {
-  .power-intro { font-size: 9px; margin-bottom: 12px; }
-  .house-rules { font-size: 7px; }
-
-  .hud { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .ptile { padding: 10px 12px; gap: 6px; }
-  .ptile-label { font-size: 7px; }
-  .ptile-value { font-size: 14px; }
-  .hud-note { font-size: 7px; margin-bottom: 16px; }
-
+@media (max-width: 1279px) {
   .board { overflow-x: visible; }
-  .board-table, .board-table tbody { display: block; width: 100%; }
+  .board-table { display: block; width: 100%; }
   .board-table thead { display: none; }
+
+  /* Cards tile to fill the width: one column on a phone, two or three on
+     a laptop, rather than one wide card per row */
+  .board-table tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
 
   .prow {
     display: grid;
@@ -1105,7 +1109,8 @@ footer {
     background: #0f3460;
     border: 1px solid #2980b9;
     padding: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    align-content: start;
   }
 
   .prow td {
@@ -1147,6 +1152,24 @@ footer {
   .legend { grid-template-columns: 1fr; gap: 2px 0; font-size: 7px; margin-bottom: 20px; }
   .legend dd { margin-bottom: 6px; }
   .prow .c-spark { grid-column: 1 / -1; }
+
+}
+
+/* ═══════════════════════════════════════════════════
+   POWER DASHBOARD - MOBILE
+   The table becomes one card per showing: the header row
+   is hidden and each cell states its own label, so no
+   horizontal scrolling and nothing gets clipped.
+═══════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .power-intro { font-size: 9px; margin-bottom: 12px; }
+  .house-rules { font-size: 7px; }
+
+  .hud { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .ptile { padding: 10px 12px; gap: 6px; }
+  .ptile-label { font-size: 7px; }
+  .ptile-value { font-size: 14px; }
+  .hud-note { font-size: 7px; margin-bottom: 16px; }
 
   .insights { grid-template-columns: 1fr; gap: 10px; }
   .pinsight { padding: 12px; }
