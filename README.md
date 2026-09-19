@@ -151,7 +151,15 @@ have to be guessed at.
 Filters for date, room and seating mode, and sorting by start time, fill,
 sold, seats left, price or 24h velocity.
 
-Each showing's raw readings are included as `sold_history`. The same data is written next to it as `power.json`, so it can be consumed
+Each showing's raw readings are included as `sold_history`. **Currently private.** The page is generated to
+`/opt/carolina-theatre-scraper/private/` on the server, which Apache does
+not serve, and is not linked from the site. Read it over ssh:
+
+```bash
+scp carolinashowtimes:/opt/carolina-theatre-scraper/private/power.html .
+```
+
+The same data is written beside it as `power.json`, so it can be consumed
 without scraping the page. Held seats are kept back by the theatre: neither
 sold nor for sale, which is why sold + left rarely equals capacity.
 

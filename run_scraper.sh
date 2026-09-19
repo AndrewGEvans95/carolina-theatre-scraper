@@ -46,9 +46,12 @@ if [ $? -eq 0 ]; then
         python3 json_generator.py /var/www/html/showtimes.json || true
         chmod 644 /var/www/html/showtimes.json 2>/dev/null || true
 
-        # Power dashboard: page plus its raw JSON. Non-fatal, like the
-        # JSON export - the schedule is the thing that must not break.
-        python3 power_generator.py -o /var/www/html || true
+        # Power dashboard: kept OUT of the web root while it is private.
+        # /opt/.../private is not served by Apache, so the page and its
+        # JSON are reachable over ssh only. Non-fatal, like the JSON
+        # export - the schedule is the thing that must not break.
+        mkdir -p /opt/carolina-theatre-scraper/private
+        python3 power_generator.py -o /opt/carolina-theatre-scraper/private || true
 
     else
         echo "$(date): ERROR: Website generation failed"

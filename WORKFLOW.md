@@ -104,7 +104,14 @@ Alias `carolinashowtimes` → root on the DigitalOcean droplet.
   ssh carolinashowtimes '/opt/carolina-theatre-scraper/manual_run.sh'   # rerun pipeline
   ```
 
-## 5. Secrets
+## 5. The power dashboard is private
+
+`power.html` / `power.json` are generated to
+`/opt/carolina-theatre-scraper/private/`, which Apache does not serve, and
+nothing links to them. Don't point the generator at `/var/www/html` or add
+a nav link back without being asked — that would republish them.
+
+## 6. Secrets
 
 - Ticketing API keys live at **`/etc/carolina-scraper/api.env`** on the
   server — `root:carolina-scraper`, mode `640`, deliberately **outside
@@ -114,7 +121,7 @@ Alias `carolinashowtimes` → root on the DigitalOcean droplet.
 - Without credentials the availability step logs and skips; the rest of
   the pipeline still works. Keep it that way.
 
-## 6. Verify — the step that actually matters
+## 7. Verify — the step that actually matters
 
 A clean deploy log is not evidence the change worked. Check the thing you
 changed, on the live site:
@@ -145,7 +152,7 @@ window skipping the next four hours of showings (UTC vs theatre time), a
 stale-snapshot ordering bug, and velocity columns silently clipped off the
 page by 84px of table overflow.
 
-## 7. Standing gotchas
+## 8. Standing gotchas
 
 - **Time:** showtimes are stored in **theatre-local** time; the server runs
   **UTC**. Anything compared against `formatted_datetime` or `starts_at`
