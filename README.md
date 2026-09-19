@@ -153,11 +153,16 @@ sold, seats left, price or 24h velocity.
 
 Each showing's raw readings are included as `sold_history`. **Currently private.** The page is generated to
 `/opt/carolina-theatre-scraper/private/` on the server, which Apache does
-not serve, and is not linked from the site. Read it over ssh:
+not serve, and is not linked from the site. To read it:
 
 ```bash
-scp carolinashowtimes:/opt/carolina-theatre-scraper/private/power.html .
+./view_power.sh              # fetch it and open it in a browser
+./view_power.sh ~/dashboards # or keep the copy somewhere
 ```
+
+That directory is self-contained (the page, its stylesheet and
+`power.json`), so the copy renders exactly as the published version would.
+To build one from local data instead: `python power_generator.py -o .`
 
 The same data is written beside it as `power.json`, so it can be consumed
 without scraping the page. Held seats are kept back by the theatre: neither

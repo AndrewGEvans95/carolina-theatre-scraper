@@ -19,6 +19,7 @@ import argparse
 import html
 import json
 import os
+import shutil
 import sqlite3
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
@@ -553,6 +554,18 @@ def generate(db_name="movie_showtimes.db", output_dir=".",
         json.dump(build_json(showings, lookahead_days), handle, indent=2)
     os.chmod(json_path, 0o644)
     print(f"Wrote {json_path}")
+
+    # The page links styles.css, so keep a copy beside it: the private
+    # directory is then self-contained and can be fetched and opened as is
+    here = os.path.dirname(os.path.abspath(__file__))
+    stylesheet = os.path.join(here, "styles.css")
+    destination = os.path.join(output_dir, "styles.css")
+    if os.path.exists(stylesheet) and os.path.abspath(stylesheet) != os.path.abspath(destination):
+        try:
+            shutil.copy2(stylesheet, destination)
+            os.chmod(destination, 0o644)
+        except OSError as e:
+            print(f"Warning: could not copy styles.css: {e}")
 
     html_path = os.path.join(output_dir, "power.html")
     with open(html_path, "w", encoding="utf-8") as handle:
