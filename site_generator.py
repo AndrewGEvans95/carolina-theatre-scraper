@@ -8,6 +8,7 @@ import textwrap
 
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
+from ui_components import asset_url, occupancy_meter
 
 def slugify(title):
     """
@@ -69,13 +70,15 @@ def get_showtimes_from_database(db_name="movie_showtimes.db"):
         """).fetchone() is not None
 
         if has_availability:
-            cursor.execute("""
+            columns = {r[1] for r in cursor.execute("PRAGMA table_info(availability)")}
+            sold_column = "seats_sold" if "seats_sold" in columns else "NULL AS seats_sold"
+            cursor.execute(f"""
                 SELECT s.title, s.date, s.time, s.formatted_datetime, s.cinema, s.link,
                        a.status, a.seats_total, a.seats_available, a.seats_sold
                 FROM showtimes s
                 LEFT JOIN (
                     SELECT showing_id, status, seats_total, seats_available,
-                           seats_sold,
+                           {sold_column},
                            ROW_NUMBER() OVER (
                                PARTITION BY showing_id ORDER BY checked_at DESC
                            ) AS recency
@@ -162,46 +165,16 @@ def fullness(movie):
 
     sold_count = movie.get("seats_sold")
     taken = sold_count if sold_count is not None else total - available
-    return round(taken / total * 100)
+    return round(max(0, min(100, taken / total * 100)), 1)
 
 
 def sold_bar(movie):
-    """
-    Build the "how full" bar for a showtime, or an empty string when the
-    showing has no inventory figures.
-
-    A bar reads faster than a number when scanning a day, and the fill
-    colour carries the urgency. The label is how full the showing is, since
-    that is what people are judging; the tooltip keeps the exact counts.
-    """
     full = fullness(movie)
-    if full is None:
-        return ""
-
-    total = movie.get("seats_total")
+    total, sold = movie.get("seats_total"), movie.get("seats_sold")
     available = movie.get("seats_available")
-    sold_count = movie.get("seats_sold")
-
-    if full >= 90:
-        level = "full"
-    elif full >= 70:
-        level = "high"
-    elif full >= 40:
-        level = "mid"
-    else:
-        level = "low"
-
-    if sold_count is not None:
-        tooltip = (f"{sold_count} of {total} sold - "
-                   f"{available} seats still available")
-    else:
-        tooltip = f"{available} of {total} seats still available"
-
-    return (f"<div class=\"sold-bar\" data-level=\"{level}\" "
-            f"title=\"{esc(tooltip)}\" data-seats-remaining=\"{100 - full}\" "
-            f"data-seats-sold=\"{full}\">"
-            f"<div class=\"sold-fill\" style=\"width:{full}%\"></div>"
-            f"<span class=\"sold-label\">{full}% full</span></div>")
+    tooltip = (f"{sold} of {total} sold; {available} seats available"
+               if sold is not None else f"{available} of {total} seats available")
+    return occupancy_meter(full, tooltip)
 
 
 def day_heading(date_str, today):
@@ -260,7 +233,7 @@ def movie_row(movie, movie_id, date_label, time_label, other_times,
               <div class="movie" id="{movie_id}"{full_attr} data-movie-title="{esc(movie['title'])}" data-movie-time="{esc(movie['time'])}" data-movie-date="{esc(date_label)}" data-movie-cinema="{esc(movie['cinema'])}" data-formatted-datetime="{esc(movie.get('formatted_datetime', ''))}">
                 <span class="movie-time">{esc(time_label)}</span>
                 <div class="movie-main">
-                  {f'<span class="movie-title"><a href="{esc(movie["link"])}" target="_blank" title="{esc(movie["title"])}">{esc(movie["title"])}</a></span>' if show_title else ''}
+                  {f'<span class="movie-title"><a href="{esc(movie["link"])}" target="_blank" rel="noopener" title="{esc(movie["title"])}">{esc(movie["title"])}</a></span>' if show_title else ''}
                   <div class="movie-meta">
                     {f'<span class="movie-date">{esc(date_note)}</span>' if date_note else ''}
                     <span class="movie-cinema" data-venue="{esc(movie['cinema'])}">{esc(movie['cinema'])}</span>
@@ -338,18 +311,14 @@ def generate_html(db_name="movie_showtimes.db",
         cinema = row["Cinema"].strip()
         link = row["Link"].strip()
         
-        # For grouping, we'll use the display date with year added for consistency
-        # If the date doesn't already have a year, add the current year
-        if ", 2025" not in date_str and ", 2024" not in date_str:
-            # Determine year from formatted datetime
-            try:
-                dt = datetime.strptime(formatted_datetime, "%Y-%m-%d %H:%M")
-                date_with_year = f"{date_str}, {dt.year}"
-            except:
-                date_with_year = f"{date_str}, 2025"  # Default fallback
-        else:
-            date_with_year = date_str
-        
+        # The canonical date also handles relative labels and year rollover.
+        try:
+            dt = datetime.strptime(formatted_datetime, "%Y-%m-%d %H:%M")
+        except (ValueError, TypeError):
+            continue
+        date_with_year = dt.strftime("%a, %b %d, %Y").replace(" 0", " ")
+        time_str = format_time_for_display(formatted_datetime)
+
         showtimes_by_date[date_with_year].append({
             "title": title,
             "time": time_str,
@@ -487,6 +456,8 @@ def generate_html(db_name="movie_showtimes.db",
     schedule_content = reindent(schedule_content, 5)
     
     # Replace template variables with actual content
+    template_content = template_content.replace("{{STYLESHEET}}", asset_url("interface.css"))
+    template_content = template_content.replace("{{SCRIPT}}", asset_url("schedule.js"))
     html_content = template_content.replace('{{DAY_FILTER_OPTIONS}}', day_filter_options)
     html_content = html_content.replace('{{VENUE_FILTER_OPTIONS}}', venue_filter_options)
     html_content = html_content.replace('{{SCHEDULE_CONTENT}}', schedule_content)
@@ -519,7 +490,7 @@ def generate_html(db_name="movie_showtimes.db",
         print(f"Warning: CSS file '{css_source}' not found")
 
     # Copy additional HTML files to output directory
-    additional_files = ["daily-cinema.html", "about.html", "truth.html", "drawing.png", "favicon.ico"]
+    additional_files = ["daily-cinema.html", "about.html", "truth.html", "drawing.png", "favicon.ico", "interface.css", "schedule.js"]
     output_dir = os.path.dirname(output_path) or "."
     for filename in additional_files:
         # Use absolute path to ensure we find files even when run from cron
