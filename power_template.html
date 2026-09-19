@@ -6,7 +6,26 @@
   <title>Power Dashboard - Carolina Showtimes</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="locked">
+  <!-- WOPR gate. The check runs in the browser, so this keeps casual
+       visitors out and sets the tone - it is not access control. Anything
+       that must actually be private belongs behind server-side auth. -->
+  <div id="wopr" class="wopr">
+    <div class="wopr-screen">
+      <pre id="woprOut" class="wopr-out"></pre>
+      <form id="woprForm" class="wopr-form" autocomplete="off">
+        <label for="woprInput" class="wopr-prompt">LOGON:</label>
+        <input id="woprInput" class="wopr-input" type="text"
+               autocomplete="off" autocapitalize="characters"
+               spellcheck="false" aria-label="Logon">
+        <button type="submit" class="wopr-enter">ENTER</button>
+      </form>
+      <noscript>
+        <p class="wopr-out">THIS TERMINAL REQUIRES JAVASCRIPT.</p>
+      </noscript>
+    </div>
+  </div>
+
   <div class="container">
     <h1>Power Dashboard</h1>
 
@@ -90,6 +109,92 @@
   </div>
 
   <script>
+    // ── WOPR ──────────────────────────────────────────────────────────
+    // Types its lines out a character at a time, the way the film's
+    // terminal does. JOSHUA was Falken's backdoor.
+    (function () {
+      var PASSWORD = "JOSHUA";
+      var screen = document.getElementById("wopr");
+      var out = document.getElementById("woprOut");
+      var form = document.getElementById("woprForm");
+      var input = document.getElementById("woprInput");
+      var typing = false;
+
+      // Already answered this session? Don't make them do it twice.
+      try {
+        if (sessionStorage.getItem("wopr") === "open") {
+          screen.remove();
+          document.body.classList.remove("locked");
+          return;
+        }
+      } catch (e) { /* private browsing: just ask again */ }
+
+      function type(lines, done) {
+        typing = true;
+        var line = 0, char = 0;
+        (function step() {
+          if (line >= lines.length) {
+            typing = false;
+            out.textContent += "\n";
+            if (done) done();
+            return;
+          }
+          if (char === 0 && line > 0) out.textContent += "\n";
+          if (char < lines[line].length) {
+            out.textContent += lines[line][char++];
+            setTimeout(step, 28);
+          } else {
+            line++; char = 0;
+            setTimeout(step, 320);
+          }
+          out.scrollTop = out.scrollHeight;
+        })();
+      }
+
+      type([
+        "NORAD // WOPR",
+        "WAR OPERATION PLAN RESPONSE",
+        "",
+        "BOX OFFICE TERMINAL - AUTHORISED PERSONNEL"
+      ], function () { input.focus(); });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (typing) return;
+        var attempt = (input.value || "").trim().toUpperCase();
+        out.textContent += "\nLOGON: " + attempt + "\n";
+        input.value = "";
+
+        if (attempt === PASSWORD) {
+          form.style.display = "none";
+          type([
+            "",
+            "GREETINGS PROFESSOR FALKEN.",
+            "SHALL WE PLAY A GAME?",
+            "",
+            "LOADING BOX OFFICE DATA..."
+          ], function () {
+            try { sessionStorage.setItem("wopr", "open"); } catch (e) {}
+            setTimeout(function () {
+              screen.classList.add("wopr-open");
+              document.body.classList.remove("locked");
+              setTimeout(function () { screen.remove(); }, 900);
+            }, 700);
+          });
+        } else {
+          type([
+            "",
+            "IDENTIFICATION NOT RECOGNIZED BY SYSTEM",
+            "--CONNECTION TERMINATED--"
+          ], function () { input.focus(); });
+        }
+      });
+
+      screen.addEventListener("click", function () {
+        if (!typing) input.focus();
+      });
+    })();
+
     // Rows carry their own numbers as data attributes, so filtering and
     // sorting are just DOM operations - no refetching, no second copy of
     // the data in JavaScript.

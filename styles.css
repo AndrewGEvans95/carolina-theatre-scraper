@@ -1180,3 +1180,145 @@ footer {
   .pinsight-when { font-size: 7px; }
   .board-note { font-size: 7px; }
 }
+
+
+/* ═══════════════════════════════════════════════════
+   WOPR GATE (power.html)
+   A pastiche of the WarGames terminal: monospace green
+   phosphor on black, scanlines, slow type-out. It sets
+   the tone and keeps casual visitors out; the check runs
+   in the browser, so it is not access control.
+═══════════════════════════════════════════════════ */
+body.locked {
+  overflow: hidden;
+}
+
+body.locked .container {
+  visibility: hidden;
+}
+
+.wopr {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: text;
+  transition: opacity 0.9s ease;
+}
+
+/* Faint scanlines over the whole screen */
+.wopr::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.35) 3px,
+    rgba(0, 0, 0, 0.35) 4px
+  );
+}
+
+.wopr-open {
+  opacity: 0;
+}
+
+.wopr-screen {
+  width: 100%;
+  max-width: 720px;
+  /* The site centres its text; a terminal does not */
+  text-align: left;
+  color: #33ff33;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 18px;
+  line-height: 1.6;
+  text-shadow: 0 0 6px rgba(51, 255, 51, 0.7);
+}
+
+/* Blinking block cursor on the prompt line */
+.wopr-input {
+  animation: wopr-caret 1.06s steps(1) infinite;
+}
+
+@keyframes wopr-caret {
+  0%, 49% { border-bottom-color: #33ff33; }
+  50%, 100% { border-bottom-color: rgba(51, 255, 51, 0.25); }
+}
+
+.wopr-out {
+  margin: 0 0 18px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 7.5em;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+.wopr-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wopr-prompt {
+  flex: 0 0 auto;
+}
+
+.wopr-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #33ff33;
+  color: #33ff33;
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 4px;
+  caret-color: #33ff33;
+  text-shadow: inherit;
+}
+
+.wopr-input:focus {
+  outline: none;
+  background: rgba(51, 255, 51, 0.06);
+}
+
+.wopr-enter {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid #33ff33;
+  color: #33ff33;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 6px 14px;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+
+.wopr-enter:hover {
+  background: #33ff33;
+  color: #000;
+  text-shadow: none;
+}
+
+@media (max-width: 767px) {
+  .wopr { padding: 16px; }
+  .wopr-screen { font-size: 14px; }
+  .wopr-out { min-height: 9em; }
+  .wopr-enter { font-size: 12px; padding: 6px 10px; }
+}
+
+/* Honour a stated preference for less motion: no blinking, no glow */
+@media (prefers-reduced-motion: reduce) {
+  .wopr, .wopr-screen { text-shadow: none; transition: none; }
+  .wopr-input { animation: none; }
+}
