@@ -844,8 +844,60 @@ footer {
   white-space: nowrap;
 }
 
+/* Grouping row: says what a cluster of columns measures, so the short
+   labels beneath it don't have to carry the explanation alone */
+.board-table thead .group-row th.group {
+  top: 0;
+  color: #7dd3fc;
+  font-size: 7px;
+  text-align: center;
+  border-bottom: 1px solid #1e3a5f;
+  padding-bottom: 5px;
+}
+
+.board-table thead .group-row th[rowspan] {
+  vertical-align: bottom;
+}
+
+.board-table thead tr:last-child th {
+  top: 22px;
+}
+
+/* Legend: the same words as the headers, in a sentence each */
+.legend {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 14px;
+  text-align: left;
+  font-size: 8px;
+  color: #95a5a6;
+  margin: 0 0 40px 0;
+  line-height: 1.7;
+}
+
+.legend dt { color: #3498db; }
+.legend dd { margin: 0; }
+
+/* Trend line: shape of the selling, scaled to the showing itself */
+.c-spark { width: 74px; }
+
+.spark {
+  display: block;
+  overflow: visible;
+}
+
+.spark polyline {
+  fill: none;
+  stroke: #a8ffee;
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.spark circle { fill: #f39c12; }
+
 .board-table td {
-  padding: 11px 6px;
+  padding: 10px 5px;
   border-bottom: 1px solid #1e3a5f;
   color: #ecf0f1;
   vertical-align: middle;
@@ -865,7 +917,7 @@ footer {
    in the link's tooltip. */
 .c-film {
   font-size: 11px;
-  max-width: 280px;
+  max-width: 228px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -901,7 +953,7 @@ footer {
 
 /* Compact fill bar: wide enough to compare at a glance, not so wide it
    turns a 6% showing into an empty canvas */
-.c-fill { width: 116px; }
+.c-fill { width: 100px; }
 
 /* Bar and figure side by side: legible at any fill, unlike a label
    floating on top of a mostly-empty track */
@@ -915,7 +967,7 @@ footer {
 .fill-track {
   position: relative;
   display: block;
-  width: 64px;
+  width: 50px;
   height: 14px;
   background: #1b2a3a;
   border: 1px solid #2c3e50;
@@ -1091,6 +1143,10 @@ footer {
   .prow[data-level="full"] td:first-child { box-shadow: none; }
   .prow[data-level="high"] { border-left: 3px solid #e67e22; }
   .prow[data-level="full"] { border-left: 3px solid #e74c3c; }
+
+  .legend { grid-template-columns: 1fr; gap: 2px 0; font-size: 7px; margin-bottom: 20px; }
+  .legend dd { margin-bottom: 6px; }
+  .prow .c-spark { grid-column: 1 / -1; }
 
   .insights { grid-template-columns: 1fr; gap: 10px; }
   .pinsight { padding: 12px; }

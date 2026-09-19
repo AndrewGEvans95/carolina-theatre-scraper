@@ -140,13 +140,18 @@ a showtime. It lists every showing in the next 14 days with:
 - pricing: list price, charged price and the fee between them
 - seating mode (GA or reserved), order limits, and whether the theatre
   hides its remaining quantity on the public site
-- freshness (when it was last checked) and how many tickets sold in the
-  last 6 and 24 hours, once there is enough snapshot history to say
+- freshness (when it was last checked), how many tickets sold in the last
+  6 and 24 hours, and a trend line of the last week of readings, once
+  there is enough snapshot history to say
+
+Column headings are grouped (Seats / Price per ticket / Tickets sold) and a
+legend under the table defines each one, so "Face" and "At checkout" don't
+have to be guessed at.
 
 Filters for date, room and seating mode, and sorting by start time, fill,
 sold, seats left, price or 24h velocity.
 
-The same data is written next to it as `power.json`, so it can be consumed
+Each showing's raw readings are included as `sold_history`. The same data is written next to it as `power.json`, so it can be consumed
 without scraping the page. Held seats are kept back by the theatre: neither
 sold nor for sale, which is why sold + left rarely equals capacity.
 
