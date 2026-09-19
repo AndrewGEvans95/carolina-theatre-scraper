@@ -39,6 +39,10 @@ ITEM_TYPE_SHOWING = 1
 # bought and far-future ones have barely sold anything yet.
 LOOKAHEAD_DAYS = 14
 REQUEST_TIMEOUT_SECONDS = 30
+# Identify ourselves to the ticketing system rather than going out as a
+# bare HTTP library, so the theatre can see who is calling
+USER_AGENT = ("CarolinaShowtimesBot/1.0 (+https://carolinashowtimes.com; "
+              "automated showtimes listing for the Carolina Theatre)")
 # Prices and order limits hardly ever change, so re-read them at most
 # this often per showing
 DETAILS_STALE_DAYS = 7
@@ -46,6 +50,13 @@ DETAILS_STALE_DAYS = 7
 DETAIL_DELAY_SECONDS = 0.3
 # Cap on detail lookups per run so a big new listing spreads over runs
 MAX_DETAIL_FETCHES = 80
+# Buyer types to try for prices, in order. Films are sold under Fandango;
+# the concerts and live events price under Online instead, and asking only
+# for the first would silently drop them.
+BUYER_TYPE_FALLBACKS = ("1798", "1821")
+# A showing whose prices can't be read is retried after this long rather
+# than on every run
+DETAILS_RETRY_DAYS = 1
 
 # Looked for in this order; first file that exists is read. Keep these
 # outside the repository - the keys are as sensitive as passwords.
@@ -120,6 +131,7 @@ def api_get(creds, method, params=None, session=None):
     getter = session or requests
     try:
         response = getter.get(f"{creds['api_base']}/{method}", params=query,
+                              headers={"User-Agent": USER_AGENT},
                               timeout=REQUEST_TIMEOUT_SECONDS)
     except requests.RequestException as e:
         print(f"Warning: {method} request failed: {e}")
@@ -210,14 +222,18 @@ def pick_standard_price(prices):
     """
     The headline ticket price out of a showing's tiers.
 
-    A showing usually lists Standard plus Senior/Student discounts. The
-    standard adult ticket is the one to lead with, so prefer a tier named
-    "Standard" and otherwise take the dearest.
+    A film lists Standard plus Senior/Student discounts, so the tier named
+    "Standard" is the one to lead with. A concert instead lists seating
+    tiers - Grand Suite down to balcony - where no tier is "standard" and
+    the dearest would misrepresent the event, so the cheapest is used and
+    the full list stays in prices_json.
     """
     if not prices:
         return None
     standard = [p for p in prices if "standard" in (p.get("name") or "").lower()]
-    return max(standard or prices, key=lambda p: p.get("charged") or 0)
+    if standard:
+        return max(standard, key=lambda p: p.get("charged") or 0)
+    return min(prices, key=lambda p: p.get("charged") if p.get("charged") is not None else float("inf"))
 
 
 def fetch_showing_details(creds, showing_id, session=None):
@@ -227,49 +243,74 @@ def fetch_showing_details(creds, showing_id, session=None):
     Two calls, because neither endpoint has everything:
       ItemGetAvailability -> BasePrice (list) and FullPrice (charged)
       ItemListPrices      -> MinPerOrder/MaxPerOrder, ShowAvailableQty
+
+    Tried against each buyer type in turn until one answers with prices.
+    Films sell under Fandango, but the concerts price under Online, and
+    asking only about the configured type left those showings blank.
     """
-    details = {"prices": [], "min_per_order": None, "max_per_order": None,
-               "show_available_qty": None, "sold_out_text": None}
+    tried = []
+    for buyer_type in (creds["buyer_type_id"],) + BUYER_TYPE_FALLBACKS:
+        if buyer_type in tried:
+            continue
+        tried.append(buyer_type)
 
-    availability = api_get(creds, "ItemGetAvailability", {
-        "type": ITEM_TYPE_SHOWING,
-        "itemID": showing_id,
-        "buyerTypeID": creds["buyer_type_id"],
-        "withSeats": "false",
-    }, session=session)
+        details = {"prices": [], "min_per_order": None, "max_per_order": None,
+                   "show_available_qty": None, "sold_out_text": None,
+                   "buyer_type_id": buyer_type}
 
-    if isinstance(availability, dict):
-        for section in availability.get("Sections") or []:
-            for price in section.get("Prices") or []:
-                details["prices"].append({
-                    "name": price.get("Name"),
-                    "list": price.get("BasePrice"),
-                    "charged": price.get("FullPrice"),
-                    "service_fee": price.get("ServiceFeePrice"),
-                    "tax": price.get("Tax"),
-                })
+        availability = api_get(creds, "ItemGetAvailability", {
+            "type": ITEM_TYPE_SHOWING,
+            "itemID": showing_id,
+            "buyerTypeID": buyer_type,
+            "withSeats": "false",
+        }, session=session)
 
-    limits = api_get(creds, "ItemListPrices", {
-        "type": ITEM_TYPE_SHOWING,
-        "itemID": showing_id,
-        "buyerTypeID": creds["buyer_type_id"],
-    }, session=session)
+        if isinstance(availability, dict):
+            # Prices come back per section, so a venue with many sections
+            # repeats the same tiers - 49 entries for 7 real prices on one
+            # concert. Keep one of each.
+            seen = set()
+            for section in availability.get("Sections") or []:
+                for price in section.get("Prices") or []:
+                    tier = (price.get("Name"), price.get("BasePrice"),
+                            price.get("FullPrice"))
+                    if tier in seen:
+                        continue
+                    seen.add(tier)
+                    details["prices"].append({
+                        "name": price.get("Name"),
+                        "list": price.get("BasePrice"),
+                        "charged": price.get("FullPrice"),
+                        "service_fee": price.get("ServiceFeePrice"),
+                        "tax": price.get("Tax"),
+                    })
 
-    if isinstance(limits, list):
-        for group in limits:
-            if details["show_available_qty"] is None:
-                details["show_available_qty"] = group.get("ShowAvailableQty")
-                details["sold_out_text"] = group.get("SoldOutText") or None
-            for price in group.get("Prices") or []:
-                # Order limits are per price tier but in practice uniform;
-                # take the widest range on offer.
-                lo, hi = price.get("MinPerOrder"), price.get("MaxPerOrder")
-                if lo is not None:
-                    details["min_per_order"] = (lo if details["min_per_order"] is None
-                                                else min(details["min_per_order"], lo))
-                if hi is not None:
-                    details["max_per_order"] = (hi if details["max_per_order"] is None
-                                                else max(details["max_per_order"], hi))
+        limits = api_get(creds, "ItemListPrices", {
+            "type": ITEM_TYPE_SHOWING,
+            "itemID": showing_id,
+            "buyerTypeID": buyer_type,
+        }, session=session)
+
+        if isinstance(limits, list):
+            for group in limits:
+                if details["show_available_qty"] is None:
+                    details["show_available_qty"] = group.get("ShowAvailableQty")
+                    details["sold_out_text"] = group.get("SoldOutText") or None
+                for price in group.get("Prices") or []:
+                    # Order limits are per price tier but in practice
+                    # uniform; take the widest range on offer.
+                    lo, hi = price.get("MinPerOrder"), price.get("MaxPerOrder")
+                    if lo is not None:
+                        details["min_per_order"] = (
+                            lo if details["min_per_order"] is None
+                            else min(details["min_per_order"], lo))
+                    if hi is not None:
+                        details["max_per_order"] = (
+                            hi if details["max_per_order"] is None
+                            else max(details["max_per_order"], hi))
+
+        if details["prices"] or details["max_per_order"] is not None:
+            return details
 
     return details
 
@@ -311,31 +352,50 @@ def showings_needing_details(db_name, lookahead_days=LOOKAHEAD_DAYS,
     down to the handful of newly announced showings.
     """
     start, end = window_bounds(lookahead_days)
-    cutoff = (theatre_now() - timedelta(days=stale_days)).strftime("%Y-%m-%d %H:%M:%S")
+    stale = (theatre_now() - timedelta(days=stale_days)).strftime("%Y-%m-%d %H:%M:%S")
+    retry = (theatre_now() - timedelta(days=DETAILS_RETRY_DAYS)).strftime("%Y-%m-%d %H:%M:%S")
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     cursor.execute('''
         SELECT showing_id FROM showings
         WHERE starts_at BETWEEN ? AND ?
           AND (details_updated_at IS NULL OR details_updated_at < ?)
+          AND (details_attempted_at IS NULL OR details_attempted_at < ?)
         ORDER BY starts_at
-    ''', (start, end, cutoff))
+    ''', (start, end, stale, retry))
     ids = [row[0] for row in cursor.fetchall()]
     conn.close()
     return ids
 
 
-def save_showing_details(db_name, showing_id, details):
-    """Store the prices and order limits for one showing."""
-    standard = pick_standard_price(details["prices"])
+def save_showing_details(db_name, showing_id, details, found=True):
+    """
+    Store the prices and order limits for one showing.
+
+    A lookup that came back empty still records the attempt, so it backs
+    off instead of being retried on every run for as long as the showing
+    is listed.
+    """
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
+
+    if not found:
+        cursor.execute(
+            "UPDATE showings SET details_attempted_at = ? WHERE showing_id = ?",
+            (now, showing_id))
+        conn.commit()
+        conn.close()
+        return
+
+    standard = pick_standard_price(details["prices"])
     cursor.execute('''
         UPDATE showings SET
             list_price = ?, charged_price = ?,
             min_per_order = ?, max_per_order = ?,
             show_available_qty = ?, sold_out_text = ?,
-            prices_json = ?, details_updated_at = ?
+            prices_json = ?, buyer_type_id = ?,
+            details_updated_at = ?, details_attempted_at = ?
         WHERE showing_id = ?
     ''', (standard.get("list") if standard else None,
           standard.get("charged") if standard else None,
@@ -344,7 +404,7 @@ def save_showing_details(db_name, showing_id, details):
           else int(bool(details["show_available_qty"])),
           details["sold_out_text"],
           json.dumps(details["prices"]) if details["prices"] else None,
-          datetime.now().strftime("%Y-%m-%d %H:%M:%S"), showing_id))
+          details.get("buyer_type_id"), now, now, showing_id))
     conn.commit()
     conn.close()
 
@@ -384,8 +444,18 @@ def ensure_schema(db_name="movie_showtimes.db"):
             cursor.execute(f"ALTER TABLE availability ADD COLUMN {column} INTEGER")
             print(f"Added availability.{column}")
 
+    showing_columns = [row[1] for row in
+                       cursor.execute("PRAGMA table_info(showings)")]
+    for column in ("buyer_type_id", "details_attempted_at"):
+        if column not in showing_columns:
+            cursor.execute(f"ALTER TABLE showings ADD COLUMN {column} TEXT")
+            print(f"Added showings.{column}")
+
     # Facts about a showing that barely move: prices, order limits, seating
     # mode, sale state. One row per showing, not a time series.
+    # details_updated_at marks a successful read; details_attempted_at marks
+    # any attempt, so a showing whose prices can't be read backs off instead
+    # of being retried every run.
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS showings (
             showing_id TEXT PRIMARY KEY,
@@ -402,7 +472,9 @@ def ensure_schema(db_name="movie_showtimes.db"):
             show_available_qty INTEGER,
             sold_out_text TEXT,
             prices_json TEXT,
-            details_updated_at TIMESTAMP
+            details_updated_at TIMESTAMP,
+            buyer_type_id TEXT,
+            details_attempted_at TIMESTAMP
         )
     ''')
 
@@ -557,9 +629,9 @@ def refresh_showing_details(db_name, creds, lookahead_days=LOOKAHEAD_DAYS,
     done = 0
     for showing_id in pending:
         details = fetch_showing_details(creds, showing_id, session=session)
-        if details["prices"] or details["max_per_order"] is not None:
-            save_showing_details(db_name, showing_id, details)
-            done += 1
+        found = bool(details["prices"]) or details["max_per_order"] is not None
+        save_showing_details(db_name, showing_id, details, found=found)
+        done += found
         time.sleep(DETAIL_DELAY_SECONDS)
 
     print(f"Prices recorded for {done} showings")

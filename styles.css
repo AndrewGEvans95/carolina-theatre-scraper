@@ -1016,6 +1016,8 @@ footer {
 .c-paid { text-align: right; white-space: nowrap; width: 66px; }
 .c-paid strong { font-weight: normal; color: #f39c12; }
 
+.from { color: #7f8c8d; font-size: 7px; }
+
 .board-note {
   text-align: left;
   font-size: 8px;

@@ -12,6 +12,11 @@ from dateutil import parser
 
 import availability
 
+# Identify the scraper rather than pretending to be a browser, so the
+# theatre can see who is fetching their pages and reach us if they would
+# rather we did it differently.
+USER_AGENT = ("CarolinaShowtimesBot/1.0 (+https://carolinashowtimes.com; automated showtimes listing for the Carolina Theatre)")
+
 def format_datetime(date_str, time_str):
     """
     Parse and format date and time strings to a standard format
@@ -112,7 +117,7 @@ def get_movie_links():
     options.add_argument("--disable-images")  # Don't load images
     options.add_argument("--remote-debugging-port=9222")  # Enable remote debugging
     options.add_argument("--window-size=1920,1080")  # Set window size
-    options.add_argument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+    options.add_argument(f"--user-agent={USER_AGENT}")
     movie_links = []
     
     for url in urls:
@@ -136,7 +141,7 @@ def get_movie_links():
 
 def fetch_movie_showtimes(movie):
     """Fetch showtimes from an individual movie page"""
-    response = requests.get(movie["link"], headers={"User-Agent": "Mozilla/5.0"})
+    response = requests.get(movie["link"], headers={"User-Agent": USER_AGENT})
     if response.status_code != 200:
         return []
     
